@@ -7,12 +7,18 @@ import {
   isGPT5SeriesModel,
   isGPT5SeriesReasoningModel,
   isGPT51SeriesModel,
+  isGPT56ProModel,
+  isGPT56SeriesModel,
+  isGPT6AstraModel,
+  isGPT6FamilyModel,
   isOpenAIChatCompletionOnlyModel,
   isOpenAILLMModel,
   isOpenAIModel,
   isOpenAIOpenWeightModel,
   isSupportNoneReasoningEffortModel,
-  isSupportVerbosityModel
+  isSupportOpenAIReasoningModeModel,
+  isSupportVerbosityModel,
+  isSupportedReasoningEffortOpenAIModel
 } from '../openai'
 
 // Mock store and settings to avoid initialization issues
@@ -123,6 +129,8 @@ describe('OpenAI Model Detection', () => {
         expect(isGPT5FamilyModel(createModel({ id: 'gpt-5.1-mini' }))).toBe(true)
         expect(isGPT5FamilyModel(createModel({ id: 'gpt-5.2-pro' }))).toBe(true)
         expect(isGPT5FamilyModel(createModel({ id: 'gpt-5.4' }))).toBe(true)
+        expect(isGPT5FamilyModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(true)
+        expect(isGPT5FamilyModel(createModel({ id: 'gpt-5-6-terra' }))).toBe(true)
       })
 
       it('returns false for non-GPT-5 models', () => {
@@ -130,6 +138,7 @@ describe('OpenAI Model Detection', () => {
         expect(isGPT5FamilyModel(createModel({ id: 'gpt-4.1' }))).toBe(false)
         expect(isGPT5FamilyModel(createModel({ id: 'claude-3.5' }))).toBe(false)
         expect(isGPT5FamilyModel(createModel({ id: 'o3-mini' }))).toBe(false)
+        expect(isGPT5FamilyModel(createModel({ id: 'gpt-6-astra' }))).toBe(false)
       })
     })
 
@@ -336,6 +345,38 @@ describe('OpenAI Model Detection', () => {
         expect(isSupportNoneReasoningEffortModel(createModel({ id: 'GPT-5.1-CHAT' }))).toBe(false)
         expect(isSupportNoneReasoningEffortModel(createModel({ id: 'GPT-5.2-PRO' }))).toBe(false)
       })
+    })
+  })
+
+  describe('GPT-5.6 and GPT-6 detection', () => {
+    it('detects GPT-5.6 dotted and hyphenated ids', () => {
+      expect(isGPT56SeriesModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(true)
+      expect(isGPT56SeriesModel(createModel({ id: 'gpt-5-6-terra' }))).toBe(true)
+      expect(isGPT56SeriesModel(createModel({ id: 'gpt-5.4' }))).toBe(false)
+    })
+
+    it('detects GPT-5.6 Pro SKUs', () => {
+      expect(isGPT56ProModel(createModel({ id: 'gpt-5.6-sol-pro' }))).toBe(true)
+      expect(isGPT56ProModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(false)
+    })
+
+    it('detects GPT-6 Astra and family', () => {
+      expect(isGPT6AstraModel(createModel({ id: 'gpt-6-astra' }))).toBe(true)
+      expect(isGPT6FamilyModel(createModel({ id: 'gpt-6-astra-pro' }))).toBe(true)
+      expect(isGPT6FamilyModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(false)
+    })
+
+    it('marks GPT-6 Astra as reasoning-effort capable without none', () => {
+      expect(isSupportedReasoningEffortOpenAIModel(createModel({ id: 'gpt-6-astra' }))).toBe(true)
+      expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-6-astra' }))).toBe(false)
+      expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(true)
+    })
+
+    it('supports reasoning.mode on standard GPT-5.6 / GPT-6 Astra ids but not dedicated Pro SKUs', () => {
+      expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(true)
+      expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-6-astra' }))).toBe(true)
+      expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-5.6-sol-pro' }))).toBe(false)
+      expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-6-astra-pro' }))).toBe(false)
     })
   })
 })

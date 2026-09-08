@@ -744,7 +744,10 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
 export function getOpenAIReasoningParams(
   assistant: Assistant,
   model: Model
-): Pick<OpenAIResponsesProviderOptions, 'reasoningEffort' | 'reasoningSummary'> {
+): Pick<OpenAIResponsesProviderOptions, 'reasoningEffort' | 'reasoningSummary'> & {
+  /** Responses API `reasoning.mode` — requires @ai-sdk/openai patch to serialize. */
+  reasoningMode?: 'standard' | 'pro'
+} {
   if (!isReasoningModel(model)) {
     return {}
   }
@@ -779,13 +782,41 @@ export function getOpenAIReasoningParams(
 
   // OpenAI 推理参数
   if (isSupportedReasoningEffortOpenAIModel(model)) {
+    const reasoningMode = getOpenAIReasoningModeFromCustomParameters(assistant)
     return {
       reasoningEffort,
-      reasoningSummary
+      reasoningSummary,
+      ...(reasoningMode ? { reasoningMode } : {})
     }
   }
 
   return {}
+}
+
+/**
+ * Read Responses API `reasoning.mode` from assistant custom parameters.
+ * Accepts either `reasoningMode` or nested-style `reasoning.mode`.
+ * Dedicated `*-pro` model IDs do not need this — Pro is already baked into the SKU.
+ */
+function getOpenAIReasoningModeFromCustomParameters(
+  assistant: Assistant
+): 'standard' | 'pro' | undefined {
+  const params = assistant?.settings?.customParameters
+  if (!params?.length) {
+    return undefined
+  }
+
+  for (const param of params) {
+    if (param.name !== 'reasoningMode' && param.name !== 'reasoning.mode') {
+      continue
+    }
+    const value = String(param.value).toLowerCase()
+    if (value === 'pro' || value === 'standard') {
+      return value
+    }
+  }
+
+  return undefined
 }
 
 // Conservative fallback token limit for models not in THINKING_TOKEN_MAP.

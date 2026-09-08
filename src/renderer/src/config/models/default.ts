@@ -316,6 +316,10 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
   ],
   alayanew: [],
   openai: [
+    { id: 'gpt-6-astra', provider: 'openai', name: ' GPT 6 Astra', group: 'gpt-6' },
+    { id: 'gpt-5.6-sol', provider: 'openai', name: ' GPT 5.6 Sol', group: 'gpt-5.6' },
+    { id: 'gpt-5.6-terra', provider: 'openai', name: ' GPT 5.6 Terra', group: 'gpt-5.6' },
+    { id: 'gpt-5.6-luna', provider: 'openai', name: ' GPT 5.6 Luna', group: 'gpt-5.6' },
     { id: 'gpt-5.4', provider: 'openai', name: ' GPT 5.4', group: 'gpt-5.4' },
     { id: 'gpt-5.4-pro', provider: 'openai', name: ' GPT 5.4 Pro', group: 'gpt-5.4' },
     { id: 'gpt-5.2', provider: 'openai', name: ' GPT 5.2', group: 'gpt-5.2' },

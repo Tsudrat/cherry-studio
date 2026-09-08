@@ -1,8 +1,18 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1020,6 +1020,7 @@
+     promptCacheRetention?: "in_memory" | "24h" | null | undefined;
+     reasoningEffort?: string | null | undefined;
+     reasoningSummary?: string | null | undefined;
++    reasoningMode?: "standard" | "pro" | null | undefined;
+     safetyIdentifier?: string | null | undefined;
+     serviceTier?: "default" | "auto" | "flex" | "priority" | null | undefined;
+     store?: boolean | null | undefined;
 diff --git a/dist/index.js b/dist/index.js
-index 1c78d6f..a81c976 100644
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -1753,13 +1753,15 @@ var modelMaxImagesPerCall = {
+@@ -1753,13 +1753,15 @@
    "gpt-image-1": 10,
    "gpt-image-1-mini": 10,
    "gpt-image-1.5": 10,
@@ -19,11 +29,41 @@ index 1c78d6f..a81c976 100644
  ];
  function hasDefaultResponseFormat(modelId) {
    return defaultResponseFormatPrefixes.some(
+@@ -4276,6 +4278,12 @@
+        */
+       reasoningSummary: import_v422.z.string().nullish(),
+       /**
++       * Reasoning mode for GPT-5.6 / GPT-6 models on the Responses API.
++       * Independent of reasoningEffort. Default is `standard`.
++       * Set to `pro` for higher-quality multi-pass reasoning at higher latency/token usage.
++       */
++      reasoningMode: import_v422.z.enum(["standard", "pro"]).nullish(),
++      /**
+        * The identifier for safety monitoring and tracking.
+        */
+       safetyIdentifier: import_v422.z.string().nullish(),
+@@ -4801,13 +4809,16 @@
+       top_logprobs: topLogprobs,
+       truncation: openaiOptions == null ? void 0 : openaiOptions.truncation,
+       // model-specific settings:
+-      ...isReasoningModel && ((openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null) && {
++      ...isReasoningModel && ((openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningMode) != null) && {
+         reasoning: {
+           ...(openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null && {
+             effort: openaiOptions.reasoningEffort
+           },
+           ...(openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null && {
+             summary: openaiOptions.reasoningSummary
++          },
++          ...(openaiOptions == null ? void 0 : openaiOptions.reasoningMode) != null && {
++            mode: openaiOptions.reasoningMode
+           }
+         }
+       }
 diff --git a/dist/index.mjs b/dist/index.mjs
-index 3dee885..441a6af 100644
 --- a/dist/index.mjs
 +++ b/dist/index.mjs
-@@ -1768,13 +1768,15 @@ var modelMaxImagesPerCall = {
+@@ -1768,13 +1768,15 @@
    "gpt-image-1": 10,
    "gpt-image-1-mini": 10,
    "gpt-image-1.5": 10,
@@ -40,11 +80,41 @@ index 3dee885..441a6af 100644
  ];
  function hasDefaultResponseFormat(modelId) {
    return defaultResponseFormatPrefixes.some(
+@@ -4353,6 +4355,12 @@
+        */
+       reasoningSummary: z22.string().nullish(),
+       /**
++       * Reasoning mode for GPT-5.6 / GPT-6 models on the Responses API.
++       * Independent of reasoningEffort. Default is `standard`.
++       * Set to `pro` for higher-quality multi-pass reasoning at higher latency/token usage.
++       */
++      reasoningMode: z22.enum(["standard", "pro"]).nullish(),
++      /**
+        * The identifier for safety monitoring and tracking.
+        */
+       safetyIdentifier: z22.string().nullish(),
+@@ -4880,13 +4888,16 @@
+       top_logprobs: topLogprobs,
+       truncation: openaiOptions == null ? void 0 : openaiOptions.truncation,
+       // model-specific settings:
+-      ...isReasoningModel && ((openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null) && {
++      ...isReasoningModel && ((openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningMode) != null) && {
+         reasoning: {
+           ...(openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null && {
+             effort: openaiOptions.reasoningEffort
+           },
+           ...(openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null && {
+             summary: openaiOptions.reasoningSummary
++          },
++          ...(openaiOptions == null ? void 0 : openaiOptions.reasoningMode) != null && {
++            mode: openaiOptions.reasoningMode
+           }
+         }
+       }
 diff --git a/dist/internal/index.js b/dist/internal/index.js
-index 27527ce..b359aa3 100644
 --- a/dist/internal/index.js
 +++ b/dist/internal/index.js
-@@ -1780,13 +1780,15 @@ var modelMaxImagesPerCall = {
+@@ -1780,13 +1780,15 @@
    "gpt-image-1": 10,
    "gpt-image-1-mini": 10,
    "gpt-image-1.5": 10,
@@ -61,11 +131,41 @@ index 27527ce..b359aa3 100644
  ];
  function hasDefaultResponseFormat(modelId) {
    return defaultResponseFormatPrefixes.some(
+@@ -4218,6 +4220,12 @@
+        */
+       reasoningSummary: import_v418.z.string().nullish(),
+       /**
++       * Reasoning mode for GPT-5.6 / GPT-6 models on the Responses API.
++       * Independent of reasoningEffort. Default is `standard`.
++       * Set to `pro` for higher-quality multi-pass reasoning at higher latency/token usage.
++       */
++      reasoningMode: import_v418.z.enum(["standard", "pro"]).nullish(),
++      /**
+        * The identifier for safety monitoring and tracking.
+        */
+       safetyIdentifier: import_v418.z.string().nullish(),
+@@ -5062,13 +5070,16 @@
+       top_logprobs: topLogprobs,
+       truncation: openaiOptions == null ? void 0 : openaiOptions.truncation,
+       // model-specific settings:
+-      ...isReasoningModel && ((openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null) && {
++      ...isReasoningModel && ((openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningMode) != null) && {
+         reasoning: {
+           ...(openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null && {
+             effort: openaiOptions.reasoningEffort
+           },
+           ...(openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null && {
+             summary: openaiOptions.reasoningSummary
++          },
++          ...(openaiOptions == null ? void 0 : openaiOptions.reasoningMode) != null && {
++            mode: openaiOptions.reasoningMode
+           }
+         }
+       }
 diff --git a/dist/internal/index.mjs b/dist/internal/index.mjs
-index db50bed..04b9e17 100644
 --- a/dist/internal/index.mjs
 +++ b/dist/internal/index.mjs
-@@ -1760,13 +1760,15 @@ var modelMaxImagesPerCall = {
+@@ -1760,13 +1760,15 @@
    "gpt-image-1": 10,
    "gpt-image-1-mini": 10,
    "gpt-image-1.5": 10,
@@ -82,3 +182,75 @@ index db50bed..04b9e17 100644
  ];
  function hasDefaultResponseFormat(modelId) {
    return defaultResponseFormatPrefixes.some(
+@@ -4244,6 +4246,12 @@
+        */
+       reasoningSummary: z18.string().nullish(),
+       /**
++       * Reasoning mode for GPT-5.6 / GPT-6 models on the Responses API.
++       * Independent of reasoningEffort. Default is `standard`.
++       * Set to `pro` for higher-quality multi-pass reasoning at higher latency/token usage.
++       */
++      reasoningMode: z18.enum(["standard", "pro"]).nullish(),
++      /**
+        * The identifier for safety monitoring and tracking.
+        */
+       safetyIdentifier: z18.string().nullish(),
+@@ -5118,13 +5126,16 @@
+       top_logprobs: topLogprobs,
+       truncation: openaiOptions == null ? void 0 : openaiOptions.truncation,
+       // model-specific settings:
+-      ...isReasoningModel && ((openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null) && {
++      ...isReasoningModel && ((openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null || (openaiOptions == null ? void 0 : openaiOptions.reasoningMode) != null) && {
+         reasoning: {
+           ...(openaiOptions == null ? void 0 : openaiOptions.reasoningEffort) != null && {
+             effort: openaiOptions.reasoningEffort
+           },
+           ...(openaiOptions == null ? void 0 : openaiOptions.reasoningSummary) != null && {
+             summary: openaiOptions.reasoningSummary
++          },
++          ...(openaiOptions == null ? void 0 : openaiOptions.reasoningMode) != null && {
++            mode: openaiOptions.reasoningMode
+           }
+         }
+       }
+diff --git a/src/responses/openai-responses-language-model.ts b/src/responses/openai-responses-language-model.ts
+--- a/src/responses/openai-responses-language-model.ts
++++ b/src/responses/openai-responses-language-model.ts
+@@ -344,7 +344,8 @@
+       // model-specific settings:
+       ...(isReasoningModel &&
+         (openaiOptions?.reasoningEffort != null ||
+-          openaiOptions?.reasoningSummary != null) && {
++          openaiOptions?.reasoningSummary != null ||
++          openaiOptions?.reasoningMode != null) && {
+           reasoning: {
+             ...(openaiOptions?.reasoningEffort != null && {
+               effort: openaiOptions.reasoningEffort,
+@@ -352,6 +353,9 @@
+             ...(openaiOptions?.reasoningSummary != null && {
+               summary: openaiOptions.reasoningSummary,
+             }),
++            ...(openaiOptions?.reasoningMode != null && {
++              mode: openaiOptions.reasoningMode,
++            }),
+           },
+         }),
+     };
+diff --git a/src/responses/openai-responses-options.ts b/src/responses/openai-responses-options.ts
+--- a/src/responses/openai-responses-options.ts
++++ b/src/responses/openai-responses-options.ts
+@@ -243,6 +243,14 @@
+       reasoningSummary: z.string().nullish(),
+ 
+       /**
++       * Reasoning mode for GPT-5.6 / GPT-6 models on the Responses API.
++       * Independent of reasoningEffort. Default is `standard`.
++       * Set to `pro` for higher-quality multi-pass reasoning at higher latency/token usage.
++       * Dedicated `*-pro` model IDs already embed Pro behavior and do not need this field.
++       */
++      reasoningMode: z.enum(['standard', 'pro']).nullish(),
++
++      /**
+        * The identifier for safety monitoring and tracking.
+        */
+       safetyIdentifier: z.string().nullish(),

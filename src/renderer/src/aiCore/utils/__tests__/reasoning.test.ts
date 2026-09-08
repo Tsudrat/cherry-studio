@@ -1103,6 +1103,38 @@ describe('reasoning utils', () => {
       })
     })
 
+    it('should pass reasoningMode from custom parameters for GPT-5.6 Pro mode', async () => {
+      const { isReasoningModel, isOpenAIModel, isSupportedReasoningEffortOpenAIModel } = await import(
+        '@renderer/config/models'
+      )
+
+      vi.mocked(isReasoningModel).mockReturnValue(true)
+      vi.mocked(isOpenAIModel).mockReturnValue(true)
+      vi.mocked(isSupportedReasoningEffortOpenAIModel).mockReturnValue(true)
+
+      const model: Model = {
+        id: 'gpt-5.6-sol',
+        name: 'GPT 5.6 Sol',
+        provider: SystemProviderIds.openai
+      } as Model
+
+      const assistant: Assistant = {
+        id: 'test',
+        name: 'Test',
+        settings: {
+          reasoning_effort: 'medium',
+          customParameters: [{ name: 'reasoningMode', value: 'pro', type: 'string' }]
+        }
+      } as Assistant
+
+      const result = getOpenAIReasoningParams(assistant, model)
+      expect(result).toEqual({
+        reasoningEffort: 'medium',
+        reasoningSummary: 'auto',
+        reasoningMode: 'pro'
+      })
+    })
+
     it('should include reasoning summary when not o1-pro', async () => {
       const { isReasoningModel, isOpenAIModel, isSupportedReasoningEffortOpenAIModel } = await import(
         '@renderer/config/models'

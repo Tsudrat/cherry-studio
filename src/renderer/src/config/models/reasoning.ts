@@ -15,6 +15,9 @@ import {
   isGPT51CodexMaxModel,
   isGPT51SeriesModel,
   isGPT52SeriesModel,
+  isGPT56ProModel,
+  isGPT56SeriesModel,
+  isGPT6FamilyModel,
   isOpenAIDeepResearchModel,
   isOpenAIOpenWeightModel,
   isOpenAIReasoningModel,
@@ -59,9 +62,15 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   gpt5_2_codex: ['low', 'medium', 'high', 'xhigh'] as const,
   // Fallback for GPT-5.2+ base models and GPT-5.3+ codex models
   gpt5_2: ['none', 'low', 'medium', 'high', 'xhigh'] as const,
+  // GPT-5.6 Sol / Terra / Luna (Responses API also documents `max`)
+  gpt5_6: ['none', 'low', 'medium', 'high', 'xhigh', 'max'] as const,
   gpt5pro: ['high'] as const,
   // Fallback for GPT-5.2+ pro models
   gpt52pro: ['medium', 'high', 'xhigh'] as const,
+  // GPT-5.6 dedicated Pro SKUs (no `none`)
+  gpt56pro: ['medium', 'high', 'xhigh', 'max'] as const,
+  // GPT-6 Astra — does not support `none`
+  gpt6_astra: ['low', 'medium', 'high', 'xhigh', 'max'] as const,
   gpt_oss: ['low', 'medium', 'high'] as const,
   grok: ['low', 'high'] as const,
   grok4_fast: ['auto'] as const,
@@ -133,8 +142,11 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   gpt5_1_codex: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt5_1_codex] as const,
   gpt5_2_codex: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt5_2_codex] as const,
   gpt5_2: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt5_2] as const,
+  gpt5_6: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt5_6] as const,
   gpt5_1_codex_max: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt5_1_codex_max] as const,
   gpt52pro: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt52pro] as const,
+  gpt56pro: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt56pro] as const,
+  gpt6_astra: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt6_astra] as const,
   gpt_oss: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt_oss] as const,
   grok: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.grok] as const,
   grok4_fast: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.grok4_fast] as const,
@@ -253,6 +265,11 @@ const _getThinkModelType = (model: Model): ThinkingModelType => {
     thinkingModelType = solarProType
   } else if (isOpenAIDeepResearchModel(model)) {
     return 'openai_deep_research'
+  } else if (isGPT6FamilyModel(model)) {
+    // Currently only Astra; keep a single type until more GPT-6 SKUs need distinct ladders.
+    thinkingModelType = 'gpt6_astra'
+  } else if (isGPT56SeriesModel(model)) {
+    thinkingModelType = isGPT56ProModel(model) ? 'gpt56pro' : 'gpt5_6'
   } else if (isGPT5FamilyModel(model)) {
     if (isGPT51SeriesModel(model)) {
       if (modelId.includes('codex')) {
