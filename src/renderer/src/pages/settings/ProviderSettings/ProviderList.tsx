@@ -7,6 +7,7 @@ import {
 } from '@renderer/components/DraggableList'
 import { DeleteIcon, EditIcon } from '@renderer/components/Icons'
 import { ProviderAvatar } from '@renderer/components/ProviderAvatar'
+import { isHiddenSystemProviderId } from '@renderer/config/providers'
 import { useAllProviders, useProviders } from '@renderer/hooks/useProvider'
 import { useTimer } from '@renderer/hooks/useTimer'
 import ImageStorage from '@renderer/services/ImageStorage'
@@ -51,9 +52,10 @@ interface ProviderListProps {
 const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const providers = useAllProviders()
+  const visibleProviders = providers.filter((provider) => !isHiddenSystemProviderId(provider.id))
   const { updateProviders, addProvider, removeProvider, updateProvider } = useProviders()
   const { setTimeoutTimer } = useTimer()
-  const [selectedProvider, _setSelectedProvider] = useState<Provider>(providers[0])
+  const [selectedProvider, _setSelectedProvider] = useState<Provider>(visibleProviders[0] ?? providers[0])
   const { t } = useTranslation()
   const [searchText, setSearchText] = useState<string>('')
   const [dragging, setDragging] = useState(false)
@@ -66,6 +68,16 @@ const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
   const setSelectedProvider = useCallback((provider: Provider) => {
     startTransition(() => _setSelectedProvider(provider))
   }, [])
+
+  useEffect(() => {
+    if (!visibleProviders.length) {
+      return
+    }
+    const stillVisible = visibleProviders.some((p) => p.id === selectedProvider?.id)
+    if (!stillVisible) {
+      setSelectedProvider(visibleProviders[0])
+    }
+  }, [visibleProviders, selectedProvider, setSelectedProvider])
 
   useEffect(() => {
     const loadAllLogos = async () => {
@@ -100,11 +112,11 @@ const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
       shouldUpdate = true
     } else if (searchParams.get('id')) {
       const providerId = searchParams.get('id')
-      const provider = providers.find((p) => p.id === providerId)
+      const provider = visibleProviders.find((p) => p.id === providerId)
       if (provider) {
         setSelectedProvider(provider)
         // 滚动到选中的 provider
-        const index = providers.findIndex((p) => p.id === providerId)
+        const index = visibleProviders.findIndex((p) => p.id === providerId)
         if (index >= 0) {
           setTimeoutTimer(
             'scroll-to-selected-provider',
@@ -113,7 +125,7 @@ const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
           )
         }
       } else {
-        setSelectedProvider(providers[0])
+        setSelectedProvider(visibleProviders[0] ?? providers[0])
       }
       searchParams.delete('id')
       shouldUpdate = true
@@ -122,7 +134,7 @@ const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
     if (shouldUpdate) {
       setSearchParams(searchParams)
     }
-  }, [providers, searchParams, setSearchParams, setSelectedProvider, setTimeoutTimer])
+  }, [providers, visibleProviders, searchParams, setSearchParams, setSelectedProvider, setTimeoutTimer])
 
   // Handle provider add key from URL schema
   useEffect(() => {
@@ -284,7 +296,7 @@ const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
               }
             }
 
-            setSelectedProvider(providers.filter((p) => isSystemProvider(p))[0])
+            setSelectedProvider(visibleProviders.filter((p) => isSystemProvider(p))[0] ?? visibleProviders[0])
             removeProvider(provider)
           }
         })
@@ -308,7 +320,7 @@ const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
     }
   }
 
-  const filteredProviders = providers.filter((provider) => {
+  const filteredProviders = visibleProviders.filter((provider) => {
     // don't show it when isOvmsSupported is loading
     if (provider.id === 'ovms' && !isOvmsSupported) {
       return false
@@ -326,9 +338,13 @@ const ProviderList: FC<ProviderListProps> = ({ isOnboarding = false }) => {
   })
 
   const { onDragEnd: handleReorder, itemKey } = useDraggableReorder({
-    originalList: providers,
+    originalList: visibleProviders,
     filteredList: filteredProviders,
-    onUpdate: updateProviders,
+    onUpdate: (nextVisible) => {
+      // Preserve hidden system providers in the persisted order while reordering the visible list.
+      const hidden = providers.filter((p) => isHiddenSystemProviderId(p.id))
+      updateProviders([...nextVisible, ...hidden])
+    },
     itemKey: 'id'
   })
 
