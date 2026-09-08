@@ -31,11 +31,19 @@ vi.mock('@main/constant', () => ({
   isWin: false
 }))
 
+vi.mock('@main/utils/ipService', () => ({
+  getIpCountry: vi.fn(async () => 'US')
+}))
+
 vi.mock('@main/utils/locales', () => ({
   locales: {
     en: { translation: { update: {} } },
     'zh-CN': { translation: { update: {} } }
   }
+}))
+
+vi.mock('@main/utils/systemInfo', () => ({
+  generateUserAgent: vi.fn(() => 'test-user-agent')
 }))
 
 vi.mock('electron', () => ({
@@ -74,6 +82,8 @@ vi.mock('electron-updater', () => ({
   AppUpdater: vi.fn()
 }))
 
+import { getIpCountry } from '@main/utils/ipService'
+import { UpgradeChannel } from '@shared/config/constant'
 import { app } from 'electron'
 import { autoUpdater } from 'electron-updater'
 
@@ -87,10 +97,77 @@ describe('AppUpdater', () => {
     vi.clearAllMocks()
     vi.mocked(app.getVersion).mockReturnValue('1.0.0')
     vi.mocked(configManager.getAutoUpdate).mockReturnValue(false)
+    vi.mocked(configManager.getTestPlan).mockReturnValue(false)
+    vi.mocked(configManager.getTestChannel).mockReturnValue(UpgradeChannel.LATEST)
+    vi.mocked(configManager.getClientId).mockReturnValue('test-client-id')
+    vi.mocked(getIpCountry).mockResolvedValue('US')
+    autoUpdater.requestHeaders = {}
+    autoUpdater.channel = ''
+    autoUpdater.allowDowngrade = false
+    autoUpdater.disableDifferentialDownload = false
     appUpdater = new AppUpdater()
   })
 
-  describe('checkForUpdates', () => {
+  describe('managed update feed', () => {
+    it('uses the managed release service and global mirror for users outside China', async () => {
+      await (appUpdater as any)._configureUpdaterForCheck()
+
+      expect(autoUpdater.channel).toBe(UpgradeChannel.LATEST)
+      expect(autoUpdater.requestHeaders).toMatchObject({
+        'User-Agent': 'test-user-agent',
+        'Cache-Control': 'no-cache',
+        'Client-Id': 'test-client-id',
+        'App-Version': 'v1.0.0',
+        OS: process.platform,
+        'X-Region': 'global'
+      })
+      expect(autoUpdater.requestHeaders).not.toHaveProperty('X-Release-Channel')
+    })
+
+    it('selects the GitCode region for users in China', async () => {
+      vi.mocked(getIpCountry).mockResolvedValue('CN')
+
+      await (appUpdater as any)._configureUpdaterForCheck()
+
+      expect(autoUpdater.requestHeaders).toMatchObject({
+        'X-Region': 'cn'
+      })
+      expect(autoUpdater.requestHeaders).not.toHaveProperty('X-Release-Channel')
+    })
+
+    it('keeps existing updater request headers', async () => {
+      autoUpdater.requestHeaders = { Authorization: 'existing-header' }
+
+      await (appUpdater as any)._configureUpdaterForCheck()
+
+      expect(autoUpdater.requestHeaders).toMatchObject({
+        Authorization: 'existing-header',
+        'X-Region': 'global'
+      })
+    })
+
+    it.each([
+      ['RC', UpgradeChannel.RC],
+      ['Beta', UpgradeChannel.BETA]
+    ])('requests the %s manifest when that test channel is enabled', async (_label, channel) => {
+      vi.mocked(configManager.getTestPlan).mockReturnValue(true)
+      vi.mocked(configManager.getTestChannel).mockReturnValue(channel)
+
+      await (appUpdater as any)._configureUpdaterForCheck()
+
+      expect(autoUpdater.channel).toBe(channel)
+    })
+
+    it('uses the explicitly selected test track even when the installed prerelease came from another track', async () => {
+      vi.mocked(app.getVersion).mockReturnValue('2.0.0-rc.1')
+      vi.mocked(configManager.getTestPlan).mockReturnValue(true)
+      vi.mocked(configManager.getTestChannel).mockReturnValue(UpgradeChannel.BETA)
+
+      await (appUpdater as any)._configureUpdaterForCheck()
+
+      expect(autoUpdater.channel).toBe(UpgradeChannel.BETA)
+    })
+
     it('skips official update checks for my-classic-cherry', async () => {
       const result = await appUpdater.checkForUpdates()
 

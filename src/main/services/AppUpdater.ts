@@ -1,5 +1,8 @@
 import { loggerService } from '@logger'
 import { isWin } from '@main/constant'
+import { getIpCountry } from '@main/utils/ipService'
+import { generateUserAgent } from '@main/utils/systemInfo'
+import { APP_NAME, UpgradeChannel } from '@shared/config/constant'
 import { IpcChannel } from '@shared/IpcChannel'
 import type { UpdateInfo } from 'builder-util-runtime'
 import { CancellationToken } from 'builder-util-runtime'
@@ -12,6 +15,20 @@ import { configManager } from './ConfigManager'
 import { windowService } from './WindowService'
 
 const logger = loggerService.withContext('AppUpdater')
+
+type ReleaseRegion = 'cn' | 'global'
+
+function getUpdateHeaders(region: ReleaseRegion) {
+  return {
+    'User-Agent': generateUserAgent(),
+    'Cache-Control': 'no-cache',
+    'Client-Id': configManager.getClientId(),
+    'App-Name': APP_NAME,
+    'App-Version': `v${app.getVersion()}`,
+    OS: process.platform,
+    'X-Region': region
+  }
+}
 
 // Language markers constants for multi-language release notes
 const LANG_MARKERS = {
@@ -74,6 +91,45 @@ export default class AppUpdater {
   public setAutoUpdate(isActive: boolean) {
     autoUpdater.autoDownload = isActive
     // autoInstallOnAppQuit is always false - user must explicitly click "Install Now"
+  }
+
+  private _getSelectedTestChannel() {
+    return configManager.getTestChannel() || UpgradeChannel.RC
+  }
+
+  private _applyUpdateChannel(channel: UpgradeChannel) {
+    this.autoUpdater.channel = channel
+
+    // disable downgrade after change the channel
+    this.autoUpdater.allowDowngrade = false
+    // github and gitcode don't support multiple range download
+    this.autoUpdater.disableDifferentialDownload = true
+  }
+
+  /**
+   * Configures managed update feed headers/channel.
+   * Personal my-classic-cherry builds do not call this from checkForUpdates
+   * (checks are hard-disabled), but the helper stays for unit coverage and
+   * one-line re-enable. Public so TypeScript does not treat it as unused.
+   */
+  public async _configureUpdaterForCheck() {
+    const currentVersion = app.getVersion()
+    const testPlan = configManager.getTestPlan()
+    const requestedChannel = testPlan ? this._getSelectedTestChannel() : UpgradeChannel.LATEST
+
+    const ipCountry = await getIpCountry()
+    const region: ReleaseRegion = ipCountry.toLowerCase() === 'cn' ? 'cn' : 'global'
+
+    const updateHeaders = getUpdateHeaders(region)
+    this.autoUpdater.requestHeaders = {
+      ...this.autoUpdater.requestHeaders,
+      ...updateHeaders
+    }
+
+    logger.info(
+      `Using managed update feed for version ${currentVersion}, testPlan: ${testPlan}, channel: ${requestedChannel}, region: ${region} (IP country: ${ipCountry})`
+    )
+    this._applyUpdateChannel(requestedChannel)
   }
 
   public cancelDownload() {
