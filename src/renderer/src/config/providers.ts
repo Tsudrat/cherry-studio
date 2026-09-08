@@ -78,35 +78,6 @@ export const CHERRYAI_PROVIDER: SystemProvider = {
   enabled: true
 }
 
-/**
- * Relay / aggregator system providers hidden from Settings → Providers
- * in the my-classic-cherry personal build. Config and store entries stay;
- * they are only filtered from the settings list (and disabled on migrate).
- * CherryIN / CherryAI are intentionally kept.
- */
-export const HIDDEN_SYSTEM_PROVIDER_IDS = [
-  'aihubmix',
-  'ocoolai',
-  'dmxapi',
-  'burncloud',
-  '302ai',
-  'ppio',
-  'qiniu',
-  'tokenflux',
-  'cephalon',
-  'lanyun',
-  'ph8',
-  'sophnet',
-  'aionly',
-  'alayanew',
-  'infini',
-  'xirang'
-] as const satisfies readonly SystemProviderId[]
-
-export function isHiddenSystemProviderId(id: string): boolean {
-  return (HIDDEN_SYSTEM_PROVIDER_IDS as readonly string[]).includes(id)
-}
-
 export const SYSTEM_PROVIDERS_CONFIG: Record<SystemProviderId, SystemProvider> = {
   cherryin: {
     id: 'cherryin',

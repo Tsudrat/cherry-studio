@@ -26,7 +26,7 @@ import { allMinApps } from '@renderer/config/minapps'
 import { isFunctionCallingModel, isNotSupportTextDeltaModel, qwenModel, SYSTEM_MODELS } from '@renderer/config/models'
 import { BUILTIN_OCR_PROVIDERS, BUILTIN_OCR_PROVIDERS_MAP, DEFAULT_OCR_PROVIDER } from '@renderer/config/ocr'
 import { TRANSLATE_PROMPT } from '@renderer/config/prompts'
-import { HIDDEN_SYSTEM_PROVIDER_IDS, SYSTEM_PROVIDERS } from '@renderer/config/providers'
+import { SYSTEM_PROVIDERS } from '@renderer/config/providers'
 import { DEFAULT_SIDEBAR_ICONS, HIDDEN_SIDEBAR_ICONS } from '@renderer/config/sidebar'
 import db from '@renderer/databases'
 import { getModel } from '@renderer/hooks/useModel'
@@ -3483,24 +3483,6 @@ const migrateConfig = {
       return state
     } catch (error) {
       logger.error('migrate 210 error', error as Error)
-      return state
-    }
-  },
-  '211': (state: RootState) => {
-    try {
-      // my-classic-cherry: disable relay/aggregator system providers that are
-      // hidden from Settings → Providers (config retained; list filters them out).
-      if (state.llm?.providers) {
-        const hidden = new Set<string>(HIDDEN_SYSTEM_PROVIDER_IDS)
-        state.llm.providers = state.llm.providers.map((provider) =>
-          hidden.has(provider.id) ? { ...provider, enabled: false } : provider
-        )
-      }
-
-      logger.info('migrate 211 success')
-      return state
-    } catch (error) {
-      logger.error('migrate 211 error', error as Error)
       return state
     }
   }
