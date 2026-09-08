@@ -162,7 +162,8 @@ export class ConfigManager {
   }
 
   getAutoUpdate(): boolean {
-    return this.get<boolean>(ConfigKeys.AutoUpdate, true)
+    // my-classic-cherry: never default to checking official feeds
+    return this.get<boolean>(ConfigKeys.AutoUpdate, false)
   }
 
   setAutoUpdate(value: boolean) {

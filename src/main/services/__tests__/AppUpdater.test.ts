@@ -168,19 +168,14 @@ describe('AppUpdater', () => {
       expect(autoUpdater.channel).toBe(UpgradeChannel.BETA)
     })
 
-    it('applies the channel and request headers before checking for updates', async () => {
-      vi.mocked(autoUpdater.checkForUpdates).mockImplementation(async () => {
-        expect(autoUpdater.channel).toBe(UpgradeChannel.LATEST)
-        expect(autoUpdater.requestHeaders).toMatchObject({
-          'App-Version': 'v1.0.0',
-          'X-Region': 'global'
-        })
-        return null
+    it('skips official update checks for my-classic-cherry', async () => {
+      const result = await appUpdater.checkForUpdates()
+
+      expect(autoUpdater.checkForUpdates).not.toHaveBeenCalled()
+      expect(result).toEqual({
+        currentVersion: '1.0.0',
+        updateInfo: null
       })
-
-      await appUpdater.checkForUpdates()
-
-      expect(autoUpdater.checkForUpdates).toHaveBeenCalledOnce()
     })
   })
 
