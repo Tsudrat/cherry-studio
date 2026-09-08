@@ -6,19 +6,19 @@ import {
   isGPT5ProModel,
   isGPT5SeriesModel,
   isGPT5SeriesReasoningModel,
+  isGPT6AstraModel,
+  isGPT6FamilyModel,
   isGPT51SeriesModel,
   isGPT56ProModel,
   isGPT56SeriesModel,
-  isGPT6AstraModel,
-  isGPT6FamilyModel,
   isOpenAIChatCompletionOnlyModel,
   isOpenAILLMModel,
   isOpenAIModel,
   isOpenAIOpenWeightModel,
+  isSupportedReasoningEffortOpenAIModel,
   isSupportNoneReasoningEffortModel,
   isSupportOpenAIReasoningModeModel,
-  isSupportVerbosityModel,
-  isSupportedReasoningEffortOpenAIModel
+  isSupportVerbosityModel
 } from '../openai'
 
 // Mock store and settings to avoid initialization issues

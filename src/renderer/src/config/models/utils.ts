@@ -8,9 +8,9 @@ import { getLowerBaseModelName } from '@renderer/utils'
 import {
   isGPT5FamilyModel,
   isGPT5SeriesModel,
+  isGPT6FamilyModel,
   isGPT51SeriesModel,
   isGPT52SeriesModel,
-  isGPT6FamilyModel,
   isOpenAIChatCompletionOnlyModel,
   isOpenAIOpenWeightModel,
   isOpenAIReasoningModel,

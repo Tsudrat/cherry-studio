@@ -798,9 +798,7 @@ export function getOpenAIReasoningParams(
  * Accepts either `reasoningMode` or nested-style `reasoning.mode`.
  * Dedicated `*-pro` model IDs do not need this — Pro is already baked into the SKU.
  */
-function getOpenAIReasoningModeFromCustomParameters(
-  assistant: Assistant
-): 'standard' | 'pro' | undefined {
+function getOpenAIReasoningModeFromCustomParameters(assistant: Assistant): 'standard' | 'pro' | undefined {
   const params = assistant?.settings?.customParameters
   if (!params?.length) {
     return undefined

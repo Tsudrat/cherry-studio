@@ -4,13 +4,7 @@ import type { SidebarIcon } from '@renderer/types'
  * Icons intentionally removed from the my-classic-cherry personal build.
  * Kept out of both the default visible list and the settings re-enable list.
  */
-export const HIDDEN_SIDEBAR_ICONS: SidebarIcon[] = [
-  'agents',
-  'store',
-  'minapp',
-  'code_tools',
-  'openclaw'
-]
+export const HIDDEN_SIDEBAR_ICONS: SidebarIcon[] = ['agents', 'store', 'minapp', 'code_tools', 'openclaw']
 
 /**
  * 默认显示的侧边栏图标
