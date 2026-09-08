@@ -1011,6 +1011,60 @@ describe('getThinkModelType - Comprehensive Coverage', () => {
     })
   })
 
+  describe('GPT-5.6 series models', () => {
+    it('should return gpt5_6 for Sol / Terra / Luna and base ids', () => {
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6' }))).toBe('gpt5_6')
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-sol' }))).toBe('gpt5_6')
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-terra' }))).toBe('gpt5_6')
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-luna' }))).toBe('gpt5_6')
+      expect(getThinkModelType(createModel({ id: 'gpt-5-6-sol' }))).toBe('gpt5_6')
+    })
+
+    it('should return gpt56pro for GPT-5.6 Pro SKUs', () => {
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-sol-pro' }))).toBe('gpt56pro')
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-pro' }))).toBe('gpt56pro')
+      expect(getThinkModelType(createModel({ id: 'gpt-5-6-luna-pro' }))).toBe('gpt56pro')
+    })
+
+    it('should expose max in supported efforts', () => {
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'gpt-5.6-sol' }))).toEqual([
+        'default',
+        'none',
+        'low',
+        'medium',
+        'high',
+        'xhigh',
+        'max'
+      ])
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'gpt-5.6-sol-pro' }))).toEqual([
+        'default',
+        'medium',
+        'high',
+        'xhigh',
+        'max'
+      ])
+    })
+  })
+
+  describe('GPT-6 Astra models', () => {
+    it('should return gpt6_astra for Astra ids', () => {
+      expect(getThinkModelType(createModel({ id: 'gpt-6-astra' }))).toBe('gpt6_astra')
+      expect(getThinkModelType(createModel({ id: 'gpt-6-astra-2026-09-01' }))).toBe('gpt6_astra')
+      expect(getThinkModelType(createModel({ id: 'gpt-6-astra-pro' }))).toBe('gpt6_astra')
+    })
+
+    it('should expose Astra efforts without none', () => {
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'gpt-6-astra' }))).toEqual([
+        'default',
+        'low',
+        'medium',
+        'high',
+        'xhigh',
+        'max'
+      ])
+    })
+  })
+
   describe('GPT-5.x future sub-version fallback', () => {
     it('should return gpt5_2 for future GPT-5.x models', () => {
       expect(getThinkModelType(createModel({ id: 'gpt-5.3' }))).toBe('gpt5_2')

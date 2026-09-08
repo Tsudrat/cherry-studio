@@ -8,6 +8,7 @@ import { getLowerBaseModelName } from '@renderer/utils'
 import {
   isGPT5FamilyModel,
   isGPT5SeriesModel,
+  isGPT6FamilyModel,
   isGPT51SeriesModel,
   isGPT52SeriesModel,
   isOpenAIChatCompletionOnlyModel,
@@ -261,13 +262,13 @@ const MODEL_SUPPORTED_VERBOSITY: readonly {
         return true
       }
       // pro variant: all support
-      return isGPT5FamilyModel(model)
+      return isGPT5FamilyModel(model) || isGPT6FamilyModel(model)
     },
     values: ['low', 'medium', 'high']
   },
   // Fallback to medium
   {
-    validator: isGPT5FamilyModel,
+    validator: (model: Model) => isGPT5FamilyModel(model) || isGPT6FamilyModel(model),
     values: ['medium']
   }
 ]

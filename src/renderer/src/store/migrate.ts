@@ -27,7 +27,7 @@ import { isFunctionCallingModel, isNotSupportTextDeltaModel, qwenModel, SYSTEM_M
 import { BUILTIN_OCR_PROVIDERS, BUILTIN_OCR_PROVIDERS_MAP, DEFAULT_OCR_PROVIDER } from '@renderer/config/ocr'
 import { TRANSLATE_PROMPT } from '@renderer/config/prompts'
 import { SYSTEM_PROVIDERS } from '@renderer/config/providers'
-import { DEFAULT_SIDEBAR_ICONS } from '@renderer/config/sidebar'
+import { DEFAULT_SIDEBAR_ICONS, HIDDEN_SIDEBAR_ICONS } from '@renderer/config/sidebar'
 import db from '@renderer/databases'
 import { getModel } from '@renderer/hooks/useModel'
 import i18n from '@renderer/i18n'
@@ -3466,6 +3466,23 @@ const migrateConfig = {
       return state
     } catch (error) {
       logger.error('migrate 209 error', error as Error)
+      return state
+    }
+  },
+  '210': (state: RootState) => {
+    try {
+      // my-classic-cherry: drop hidden sidebar icons from both lists so they
+      // cannot be re-enabled from Display Settings.
+      if (state.settings?.sidebarIcons) {
+        const hidden = new Set<string>(HIDDEN_SIDEBAR_ICONS)
+        state.settings.sidebarIcons.visible = state.settings.sidebarIcons.visible.filter((icon) => !hidden.has(icon))
+        state.settings.sidebarIcons.disabled = state.settings.sidebarIcons.disabled.filter((icon) => !hidden.has(icon))
+      }
+
+      logger.info('migrate 210 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 210 error', error as Error)
       return state
     }
   }

@@ -1,5 +1,22 @@
 # AI Assistant Guide
 
+> **my-classic-cherry (personal fork)**
+>
+> This checkout is a **private personal build** of Cherry Studio’s v1 lineage
+> (`my-classic-cherry`), not an upstream contribution branch.
+>
+> - **Do not** open pull requests, issues, or review requests against
+>   `CherryHQ/cherry-studio`.
+> - Prefer working on `cursor/my-classic-cherry-*` (or a local `v1`-based branch).
+>   Do not treat fork `main` (often synced to upstream v2) as the product line for
+>   this build.
+> - Keep the official `appId` (`com.kangfenmao.CherryStudio`) so the install shares
+>   the user’s existing data directory. Auto-update toward official feeds must stay
+>   disabled.
+> - Product focus: keep classic chat UX (including streaming fenced-code rendering),
+>   update model/provider compatibility on the Vercel AI SDK stack, and keep
+>   unwanted sidebar entries hidden—not a general upstream feature fork.
+
 This file provides guidance to AI coding assistants when working with code in this repository. Adherence to these guidelines is crucial for maintaining code quality and consistency.
 
 ## Guiding Principles (MUST FOLLOW)
@@ -8,7 +25,7 @@ This file provides guidance to AI coding assistants when working with code in th
 - **Match the house style**: Reuse existing patterns, naming, and conventions.
 - **Search smart**: Prefer `ast-grep` for semantic queries; fall back to `rg`/`grep` when needed.
 - **Log centrally**: Route all logging through `loggerService` with the right context—no `console.log`.
-- **Research via subagent**: Lean on `subagent` for external docs, APIs, news, and references.
+- **Research via subagent**: Lean on `subagent` for external docs, APIs, and references.
 - **Always propose before executing**: Before making any changes, clearly explain your planned approach and wait for explicit user approval to ensure alignment and prevent unwanted modifications.
 - **Lint, test, and format before completion**: Coding tasks are only complete after running `pnpm lint`, `pnpm test`, and `pnpm format` successfully.
 - **Write conventional commits**: Commit small, focused changes using Conventional Commit messages (e.g., `feat:`, `fix:`, `refactor:`, `docs:`).
@@ -16,8 +33,13 @@ This file provides guidance to AI coding assistants when working with code in th
 
 ## Pull Request Workflow (CRITICAL)
 
-When creating a Pull Request, you MUST use the `gh-create-pr` skill.
-If the skill is unavailable, directly read `.agents/skills/gh-create-pr/SKILL.md` and follow it manually.
+**Personal fork rule:** Never open a PR against `CherryHQ/cherry-studio` from this build.
+PRs, if any, stay on `Tsudrat/cherry-studio` and should target the fork’s `v1` base (or the
+personal long-lived branch)—not upstream.
+
+When creating a Pull Request *on this fork*, you MAY use the `gh-create-pr` skill for
+template compliance, but the base must remain personal (`v1` / my-classic-cherry), never
+`CherryHQ/cherry-studio`.
 
 ## Review Workflow
 
@@ -32,16 +54,15 @@ Only investigate CI failures by reading the logs, not by re-running checks local
 
 ## Issue Workflow
 
-When creating an Issue, you MUST use the `gh-create-issue` skill.
-If the skill is unavailable, directly read `.agents/skills/gh-create-issue/SKILL.md` and follow it manually.
+Do **not** open issues on `CherryHQ/cherry-studio` for this personal build.
+Local notes / fork-only issues are fine if the owner wants them.
 
-### Branch Strategy (Effective April 3, 2026)
+### Branch Strategy (my-classic-cherry)
 
-> **IMPORTANT**: The `main` branch is now under **code freeze**. Only critical bug fixes submitted via `hotfix/*` branches are accepted. Fix PRs must be minimal in scope and must not include any refactoring code.
->
-> All new features, refactoring, and optimizations should be developed on the **`v2` branch**. We welcome every developer to actively participate in v2 development!
->
-> The `v2` branch will only accept new feature submissions after all current features have been fully refactored.
+- Product line: Cherry Studio **v1** tip + personal patches (`cursor/my-classic-cherry-*`).
+- Fork `main` may track upstream v2 for reference; do not merge my-classic-cherry into it
+  unless the owner explicitly asks.
+- Do not contribute this branch’s changes upstream.
 
 ## Development Commands
 

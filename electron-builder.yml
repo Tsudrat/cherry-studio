@@ -132,9 +132,7 @@ rpm:
   # Workaround for electron build issue on rpm package:
   # https://github.com/electron/forge/issues/3594
   fpm: ["--rpm-rpmbuild-define=_build_id_links none"]
-publish:
-  provider: generic
-  url: https://releases.cherry-ai.com
+publish: null
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
 beforePack: scripts/before-pack.js
@@ -144,42 +142,15 @@ artifactBuildCompleted: scripts/artifact-build-completed.js
 releaseInfo:
   releaseNotes: |
     <!--LANG:en-->
-    Cherry Studio 1.9.13 - Agent, Model, and Reliability Updates
+    my-classic-cherry 1.9.13-my-classic-cherry.1 — personal Classic Cherry build.
 
-    ✨ New Features
-    - [Claude Code] Let Windows agents fall back to PowerShell when Git Bash is unavailable.
-    - [Models] Add Doubao Seed 2.1 Pro, Doubao Seed 2.1 Turbo, and Doubao Seed Evolving with adjustable thinking levels.
-    - [Models] Add LongCat 2.0 as the default LongCat model and support toggling thinking mode.
-
-    🐛 Bug Fixes
-    - [Copilot] Fix device-code authorization when custom headers are configured.
-    - [Agent] Make Ctrl/Cmd+F open in-chat search in Agent sessions.
-    - [Chat] Load more history automatically when the initial message list does not fill the viewport.
-    - [Web Search] Fix query rewriting so conversation context is handled correctly.
-    - [CherryIN] Update website and OAuth links to open.cherryin.net.
-    - [Providers] Fix NewAPI Gemini requests using the wrong endpoint.
-    - [AI Diagnosis] Improve diagnosis of rate limits, quota errors, regional restrictions, content filters, and feature-specific timeouts.
-
-    ⚡ Performance
-    - [Chat] Reduce memory usage during large code-block streaming while preserving the complete generated content.
-
+    - Restore streaming fenced-code rendering (revert official large-code placeholder).
+    - Hide Agents / Store / Mini Apps / Code Tools / OpenClaw sidebar entries.
+    - Disable official auto-update checks. Shares official appId/data directory.
     <!--LANG:zh-CN-->
-    Cherry Studio 1.9.13 - 智能体、模型与稳定性更新
+    my-classic-cherry 1.9.13-my-classic-cherry.1 — 个人 Classic Cherry 构建。
 
-    ✨ 新功能
-    - [Claude Code] Windows 环境未安装 Git Bash 时，智能体可自动使用 PowerShell。
-    - [模型] 新增豆包 Seed 2.1 Pro、Seed 2.1 Turbo 和 Seed Evolving，并支持调节思考强度。
-    - [模型] 将 LongCat 2.0 设为默认 LongCat 模型，并支持开关思考模式。
-
-    🐛 问题修复
-    - [Copilot] 修复配置自定义请求头后设备授权可能失败的问题。
-    - [智能体] 修复智能体会话中 Ctrl/Cmd+F 无法打开聊天内容搜索的问题。
-    - [聊天] 修复首屏消息未填满窗口时无法继续加载历史消息的问题。
-    - [联网搜索] 修复查询改写未正确处理对话上下文的问题。
-    - [CherryIN] 将网站及 OAuth 链接更新至 open.cherryin.net。
-    - [提供商] 修复 NewAPI Gemini 请求使用错误接口版本的问题。
-    - [AI 诊断] 改进限流、额度不足、地区限制、内容过滤和功能超时等错误的诊断准确性。
-
-    ⚡ 性能优化
-    - [聊天] 降低大型代码块生成过程中的内存占用，并保留完整生成内容。
+    - 恢复代码块流式渲染（回退官方大代码占位逻辑）。
+    - 隐藏侧边栏：智能体 / 商店 / 小程序 / 代码工具 / OpenClaw。
+    - 关闭官方自动更新检查。与官方包共用 appId 与数据目录。
     <!--LANG:END-->

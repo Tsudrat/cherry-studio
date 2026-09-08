@@ -1,5 +1,4 @@
 import { loggerService } from '@logger'
-import i18n from '@renderer/i18n'
 import { WEB_SEARCH_SOURCE } from '@renderer/types'
 import type { ProviderMetadata } from '@renderer/types/chunk'
 import type { CitationMessageBlock, MessageBlock } from '@renderer/types/newMessage'
@@ -7,7 +6,6 @@ import { MessageBlockStatus, MessageBlockType } from '@renderer/types/newMessage
 import { createMainTextBlock } from '@renderer/utils/messageUtils/create'
 
 import type { BlockManager } from '../BlockManager'
-import { createStreamingTextProjection } from '../streamingTextProjection'
 
 const logger = loggerService.withContext('TextCallbacks')
 
@@ -32,17 +30,11 @@ export const createTextCallbacks = (deps: TextCallbacksDependencies) => {
 
   // 内部维护的状态
   let mainTextBlockId: string | null = null
-  let lastFullText = ''
   // Track thoughtSignature for Gemini thought signature persistence
   let currentThoughtSignature: string | undefined
 
   return {
     getCurrentMainTextBlockId: () => mainTextBlockId,
-    flushPendingText: async () => {
-      if (!mainTextBlockId || !lastFullText) return
-
-      blockManager.smartBlockUpdate(mainTextBlockId, { content: lastFullText }, MessageBlockType.MAIN_TEXT, true)
-    },
     onTextStart: async () => {
       if (blockManager.hasInitialPlaceholder) {
         const changes = {
@@ -67,15 +59,8 @@ export const createTextCallbacks = (deps: TextCallbacksDependencies) => {
         ? (getState().messageBlocks.entities[citationBlockId] as CitationMessageBlock).response?.source
         : WEB_SEARCH_SOURCE.WEBSEARCH
       if (text) {
-        lastFullText = text
         const blockChanges: Partial<MessageBlock> = {
-          content: createStreamingTextProjection(text, ({ language, lineCount, charCount }) => {
-            return i18n.t('html_artifacts.code_block_progress', {
-              language,
-              lines: lineCount.toLocaleString(),
-              characters: charCount.toLocaleString()
-            })
-          }),
+          content: text,
           status: MessageBlockStatus.STREAMING,
           citationReferences: citationBlockId ? [{ citationBlockId, citationBlockSource }] : []
         }
@@ -101,7 +86,6 @@ export const createTextCallbacks = (deps: TextCallbacksDependencies) => {
         if (handleCompactTextComplete) {
           await handleCompactTextComplete(finalText, mainTextBlockId)
         }
-        lastFullText = ''
         // Clear thoughtSignature after block is complete
         currentThoughtSignature = undefined
         mainTextBlockId = null

@@ -11,7 +11,6 @@ import type { AppUpdater as _AppUpdater, Logger, NsisUpdater, UpdateCheckResult 
 import { autoUpdater } from 'electron-updater'
 import path from 'path'
 
-import { analyticsService } from './AnalyticsService'
 import { configManager } from './ConfigManager'
 import { windowService } from './WindowService'
 
@@ -107,7 +106,13 @@ export default class AppUpdater {
     this.autoUpdater.disableDifferentialDownload = true
   }
 
-  private async _configureUpdaterForCheck() {
+  /**
+   * Configures managed update feed headers/channel.
+   * Personal my-classic-cherry builds do not call this from checkForUpdates
+   * (checks are hard-disabled), but the helper stays for unit coverage and
+   * one-line re-enable. Public so TypeScript does not treat it as unused.
+   */
+  public async _configureUpdaterForCheck() {
     const currentVersion = app.getVersion()
     const testPlan = configManager.getTestPlan()
     const requestedChannel = testPlan ? this._getSelectedTestChannel() : UpgradeChannel.LATEST
@@ -136,40 +141,11 @@ export default class AppUpdater {
   }
 
   public async checkForUpdates() {
-    void analyticsService.trackAppUpdate()
-
-    if (isWin && 'PORTABLE_EXECUTABLE_DIR' in process.env) {
-      return {
-        currentVersion: app.getVersion(),
-        updateInfo: null
-      }
-    }
-
-    try {
-      await this._configureUpdaterForCheck()
-
-      this.updateCheckResult = await this.autoUpdater.checkForUpdates()
-      logger.info(
-        `update check result: ${this.updateCheckResult?.isUpdateAvailable}, channel: ${this.autoUpdater.channel}, currentVersion: ${this.autoUpdater.currentVersion}`
-      )
-
-      if (this.updateCheckResult?.isUpdateAvailable && !this.autoUpdater.autoDownload) {
-        // 如果 autoDownload 为 false，则需要再调用下面的函数触发下
-        // do not use await, because it will block the return of this function
-        logger.info('downloadUpdate manual by check for updates', this.cancellationToken)
-        void this.autoUpdater.downloadUpdate(this.cancellationToken)
-      }
-
-      return {
-        currentVersion: this.autoUpdater.currentVersion,
-        updateInfo: this.updateCheckResult?.isUpdateAvailable ? this.updateCheckResult?.updateInfo : null
-      }
-    } catch (error) {
-      logger.error('Failed to check for update:', error as Error)
-      return {
-        currentVersion: app.getVersion(),
-        updateInfo: null
-      }
+    // my-classic-cherry personal build: never query official update feeds.
+    logger.info('Update checks are disabled for my-classic-cherry')
+    return {
+      currentVersion: app.getVersion(),
+      updateInfo: null
     }
   }
 
