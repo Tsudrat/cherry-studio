@@ -49,9 +49,7 @@ describe('resolveReasoningDialectExtractors', () => {
   })
 
   it('maps seed-oss-36b to <seed:think>', () => {
-    expect(resolveReasoningDialectExtractors('seed-oss-36b')).toEqual([
-      { kind: 'xml-tag', tagName: 'seed:think' }
-    ])
+    expect(resolveReasoningDialectExtractors('seed-oss-36b')).toEqual([{ kind: 'xml-tag', tagName: 'seed:think' }])
   })
 
   it('defaults to <think>', () => {

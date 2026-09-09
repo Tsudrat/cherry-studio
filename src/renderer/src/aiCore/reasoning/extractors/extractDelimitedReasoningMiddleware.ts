@@ -133,9 +133,7 @@ export function extractDelimitedReasoningMiddleware({
                 if (text.length > 0) {
                   const prefix =
                     activeExtraction.afterSwitch &&
-                    (activeExtraction.isReasoning
-                      ? !activeExtraction.isFirstReasoning
-                      : !activeExtraction.isFirstText)
+                    (activeExtraction.isReasoning ? !activeExtraction.isFirstReasoning : !activeExtraction.isFirstText)
                       ? separator
                       : ''
 
