@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   cleanup-artifacts:
+    if: github.repository == 'CherryHQ/cherry-studio'
     runs-on: ubuntu-latest
     steps:
       - name: Delete old artifacts
@@ -30,6 +31,7 @@ jobs:
           done
 
   check-repository:
+    if: github.repository == 'CherryHQ/cherry-studio'
     runs-on: ubuntu-latest
     outputs:
       should_run: ${{ github.repository == 'CherryHQ/cherry-studio' }}
@@ -41,7 +43,7 @@ jobs:
 
   nightly-build:
     needs: check-repository
-    if: needs.check-repository.outputs.should_run == 'true'
+    if: github.repository == 'CherryHQ/cherry-studio' && needs.check-repository.outputs.should_run == 'true'
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -216,7 +218,7 @@ jobs:
 
   Build-Summary:
     needs: nightly-build
-    if: always()
+    if: always() && github.repository == 'CherryHQ/cherry-studio'
     runs-on: ubuntu-latest
     steps:
       - name: Get date tag

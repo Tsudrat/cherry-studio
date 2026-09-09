@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   check-repository:
+    if: github.repository == 'CherryHQ/cherry-studio'
     runs-on: ubuntu-latest
     outputs:
       should_run: ${{ github.repository == 'CherryHQ/cherry-studio' }}

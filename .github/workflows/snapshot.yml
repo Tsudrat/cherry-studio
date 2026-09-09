@@ -15,6 +15,7 @@ permissions:
 jobs:
   snapshot:
     name: Snapshot Release
+    if: github.repository == 'CherryHQ/cherry-studio'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo

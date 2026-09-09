@@ -28,11 +28,14 @@ permissions:
 
 jobs:
   release:
-    # Only run for tag push, workflow_dispatch, or PR from release branches
+    # Only run on upstream; tag push, workflow_dispatch, or PR from release branches
     if: |
-      github.event_name == 'push' ||
-      github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request_target' && github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.event.pull_request.head.ref, 'release/v'))
+      github.repository == 'CherryHQ/cherry-studio' &&
+      (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'pull_request_target' && github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.event.pull_request.head.ref, 'release/v'))
+      )
     runs-on: ${{ matrix.os }}
 
     strategy:

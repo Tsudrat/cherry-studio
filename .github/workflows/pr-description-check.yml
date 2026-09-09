@@ -15,7 +15,7 @@ on:
 jobs:
   check-description:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
+    if: github.repository == 'CherryHQ/cherry-studio' && github.event.pull_request.draft == false
     steps:
       - name: Check PR description
         uses: actions/github-script@v8
@@ -115,7 +115,7 @@ jobs:
 
   notify-sync:
     runs-on: ubuntu-latest
-    if: github.event.action == 'synchronize' && github.event.pull_request.draft == false
+    if: github.repository == 'CherryHQ/cherry-studio' && github.event.action == 'synchronize' && github.event.pull_request.draft == false
     steps:
       - name: Remind to review description
         uses: actions/github-script@v8

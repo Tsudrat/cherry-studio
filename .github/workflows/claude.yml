@@ -13,6 +13,8 @@ on:
 jobs:
   claude:
     if: |
+      github.repository == 'CherryHQ/cherry-studio' &&
+      (
       (github.event_name == 'issue_comment'
         && contains(github.event.comment.body, '@claude')
         && contains(fromJSON('["COLLABORATOR","MEMBER","OWNER"]'), github.event.comment.author_association))
@@ -28,6 +30,7 @@ jobs:
       (github.event_name == 'issues'
         && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude'))
         && contains(fromJSON('["COLLABORATOR","MEMBER","OWNER"]'), github.event.issue.author_association))
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: read
