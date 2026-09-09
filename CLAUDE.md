@@ -1,23 +1,23 @@
 # AI Assistant Guide
 
-> **my-classic-cherry (personal fork)**
+> **Oh My Classic Cherry / my-classic-cherry (personal fork)**
 >
-> This checkout is a **private personal build** of Cherry Studio’s v1 lineage
-> (`my-classic-cherry`), not an upstream contribution branch.
+> Personal Classic Cherry Studio build on the **v1** lineage. Not an upstream
+> contribution branch.
 >
-> - **Do not** open pull requests, issues, or review requests against
->   `CherryHQ/cherry-studio`.
-> - Prefer working on `cursor/my-classic-cherry-*` (or a local `v1`-based branch).
->   Do not treat fork `main` (often synced to upstream v2) as the product line for
->   this build.
-> - Keep the official `appId` (`com.kangfenmao.CherryStudio`) so the install shares
->   the user’s existing data directory. Auto-update toward official feeds must stay
->   disabled.
-> - Product focus: keep classic chat UX (including streaming fenced-code rendering),
->   update model/provider compatibility on the Vercel AI SDK stack, and keep
->   unwanted sidebar entries hidden—not a general upstream feature fork.
+> - **Never** open PRs, issues, or review requests against `CherryHQ/cherry-studio`.
+> - Short-term product line: `v1` (+ `cursor/*` feature branches). Fork `main` may
+>   track upstream v2 for reference only — do not treat it as the shipping line
+>   unless the owner explicitly switches.
+> - Keep official `appId` (`com.kangfenmao.CherryStudio`) so installs share the
+>   existing data directory. Official auto-update feeds must stay disabled.
+> - Focus: classic chat UX (incl. streaming fenced-code), model/provider updates on
+>   the Vercel AI SDK stack, hide unwanted sidebar entries — not a general upstream
+>   feature fork.
+>
+> `AGENTS.md` is a symlink to this file.
 
-This file provides guidance to AI coding assistants when working with code in this repository. Adherence to these guidelines is crucial for maintaining code quality and consistency.
+This file guides AI coding assistants in this repository.
 
 ## Guiding Principles (MUST FOLLOW)
 
@@ -26,72 +26,47 @@ This file provides guidance to AI coding assistants when working with code in th
 - **Search smart**: Prefer `ast-grep` for semantic queries; fall back to `rg`/`grep` when needed.
 - **Log centrally**: Route all logging through `loggerService` with the right context—no `console.log`.
 - **Research via subagent**: Lean on `subagent` for external docs, APIs, and references.
-- **Always propose before executing**: Before making any changes, clearly explain your planned approach and wait for explicit user approval to ensure alignment and prevent unwanted modifications.
-- **Lint, test, and format before completion**: Coding tasks are only complete after running `pnpm lint`, `pnpm test`, and `pnpm format` successfully.
-- **Write conventional commits**: Commit small, focused changes using Conventional Commit messages (e.g., `feat:`, `fix:`, `refactor:`, `docs:`).
-- **Sign commits**: Use `git commit --signoff` as required by contributor guidelines.
+- **Always propose before executing**: Before making any changes, clearly explain the planned approach and wait for explicit user approval.
+- **Check what you changed**: Run lint / format / tests that cover the touched area (e.g. `pnpm lint` when broad, or targeted `vitest` / `pnpm test:renderer`). Full `pnpm test` only when the change is wide or risk is unclear.
+- **Write conventional commits**: Small, focused Conventional Commit messages (e.g. `feat(models):`, `fix(chat):`). Scope should be a specific kebab-case module when practical.
+  - Upstream Cherry Studio additionally expects cryptographically signed commits and DCO (`git commit -S --signoff`). This personal fork only requires conventional commits; use `-S` / `--signoff` only if the owner asks.
 
-## Pull Request Workflow (CRITICAL)
+## Pull Requests (this fork only)
 
-**Personal fork rule:** Never open a PR against `CherryHQ/cherry-studio` from this build.
-PRs, if any, stay on `Tsudrat/cherry-studio` and should target the fork’s `v1` base (or the
-personal long-lived branch)—not upstream.
-
-When creating a Pull Request *on this fork*, you MAY use the `gh-create-pr` skill for
-template compliance, but the base must remain personal (`v1` / my-classic-cherry), never
-`CherryHQ/cherry-studio`.
+- Never target `CherryHQ/cherry-studio`.
+- PRs stay on `Tsudrat/cherry-studio` (or the current fork remote), base = `v1` (or the active personal long-lived branch).
+- Prefer feature branches + PR over committing straight to `v1` when the change is non-trivial.
 
 ## Review Workflow
 
-When reviewing a Pull Request, do NOT run `pnpm lint`, `pnpm test`, or `pnpm format` locally.
-Instead, check CI status directly using GitHub CLI:
+When reviewing a Pull Request, do **not** re-run `pnpm lint` / `pnpm test` / `pnpm format` locally — use CI via GitHub CLI:
 
-- **Check CI status**: `gh pr checks <PR_NUMBER>` - View all CI check results for the PR
-- **Check PR details**: `gh pr view <PR_NUMBER>` - View PR status, reviews, and merge readiness
-- **View failed logs**: `gh run view <RUN_ID> --log-failed` - Inspect logs for failed CI runs
+- `gh pr checks <PR_NUMBER>`
+- `gh pr view <PR_NUMBER>`
+- `gh run view <RUN_ID> --log-failed`
 
-Only investigate CI failures by reading the logs, not by re-running checks locally.
+Investigate failures from logs, not by blindly re-running the full suite locally.
 
-## Issue Workflow
+## Issues
 
-Do **not** open issues on `CherryHQ/cherry-studio` for this personal build.
-Local notes / fork-only issues are fine if the owner wants them.
+Do not open issues on `CherryHQ/cherry-studio`. Fork-only notes/issues are fine if wanted.
 
-### Branch Strategy (my-classic-cherry)
+## Branch & upstream sync
 
-- Product line: Cherry Studio **v1** tip + personal patches (`cursor/my-classic-cherry-*`).
-- Fork `main` may track upstream v2 for reference; do not merge my-classic-cherry into it
-  unless the owner explicitly asks.
-- Do not contribute this branch’s changes upstream.
+- **Shipping line (near term):** `v1` + personal patches. That may change later; until then, do not productize on fork `main` / upstream `v2` without an explicit decision.
+- **Upstream remote:** keep `upstream` → `CherryHQ/cherry-studio` for occasional security / critical fixes.
+- **Do not blind-sync.** Prefer fetch + selective cherry-pick / careful merge of specific commits. Personalized files (this guide, OMCC workflows, app branding/version) will conflict or diverge — resolve deliberately.
+- Do not push personal product changes upstream.
 
 ## Development Commands
 
-- **Install**: `pnpm install` — Install all project dependencies (requires Node ≥22, pnpm 10.27.0)
-- **Development**: `pnpm dev` — Runs Electron app in development mode with hot reload
-- **Debug**: `pnpm debug` — Starts with debugging; attach via `chrome://inspect` on port 9222
-- **Build Check**: `pnpm build:check` — **REQUIRED** before commits (`pnpm lint && pnpm test`)
-  - If having i18n sort issues, run `pnpm i18n:sync` first
-  - If having formatting issues, run `pnpm format` first
-- **Full Build**: `pnpm build` — TypeScript typecheck + electron-vite build
-- **Test**: `pnpm test` — Run all Vitest tests (main + renderer + aiCore + shared + scripts)
-  - `pnpm test:main` — Main process tests only (Node environment)
-  - `pnpm test:renderer` — Renderer process tests only (jsdom environment)
-  - `pnpm test:aicore` — aiCore package tests only
-  - `pnpm test:watch` — Watch mode
-  - `pnpm test:coverage` — With v8 coverage report
-  - `pnpm test:e2e` — Playwright end-to-end tests
-- **Lint**: `pnpm lint` — oxlint + eslint fix + TypeScript typecheck + i18n check + format check
-- **Format**: `pnpm format` — Biome format + lint (write mode)
-- **Typecheck**: `pnpm typecheck` — Concurrent node + web TypeScript checks using `tsgo`
-- **i18n**:
-  - `pnpm i18n:sync` — Sync i18n template keys
-  - `pnpm i18n:translate` — Auto-translate missing keys
-  - `pnpm i18n:check` — Validate i18n completeness
-- **Bundle Analysis**: `pnpm analyze:renderer` / `pnpm analyze:main` — Visualize bundle sizes
-- **Agents DB**:
-  - `pnpm agents:generate` — Generate Drizzle migrations
-  - `pnpm agents:push` — Push schema to SQLite DB
-  - `pnpm agents:studio` — Open Drizzle Studio
+- **Install**: `pnpm install` (Node / pnpm versions pinned in `package.json`)
+- **Dev**: `pnpm dev` · **Debug**: `pnpm debug` (CDP `9222`)
+- **Build**: `pnpm build` · local Mac arm64: `pnpm build:mac:arm64` · OMCC Release workflow: manual Actions only
+- **Lint / format / typecheck**: `pnpm lint` · `pnpm format` · `pnpm typecheck`
+- **Test**: `pnpm test` · `pnpm test:main` · `pnpm test:renderer` · `pnpm test:aicore` · `pnpm test:watch`
+- **i18n**: `pnpm i18n:sync` · `pnpm i18n:check` · `pnpm i18n:translate`
+- **Bundle**: `pnpm analyze:renderer` · `pnpm analyze:main`
 
 ## Project Architecture
 
@@ -99,15 +74,15 @@ Local notes / fork-only issues are fine if the owner wants them.
 
 ```
 src/
-  main/          # Node.js backend (Electron main process)
-  renderer/      # React UI (Electron renderer process)
-  preload/       # Secure IPC bridge (contextBridge)
+  main/          # Electron main (Node)
+  renderer/      # React UI
+  preload/       # contextBridge IPC
 packages/
-  aiCore/        # @cherrystudio/ai-core — AI SDK middleware & provider abstraction
-  shared/        # Cross-process types, constants, IPC channel definitions
-  mcp-trace/     # OpenTelemetry tracing for MCP operations
-  ai-sdk-provider/  # Custom AI SDK provider implementations
-  extension-table-plus/  # TipTap table extension
+  aiCore/        # @cherrystudio/ai-core
+  shared/        # cross-process types / IPC channels
+  mcp-trace/     # OpenTelemetry for MCP
+  ai-sdk-provider/
+  extension-table-plus/
 ```
 
 ### Key Path Aliases
@@ -118,232 +93,83 @@ packages/
 | `@renderer` | `src/renderer/src/` |
 | `@shared` | `packages/shared/` |
 | `@types` | `src/renderer/src/types/` |
-| `@logger` | `src/main/services/LoggerService` (main) / `src/renderer/src/services/LoggerService` (renderer) |
-| `@mcp-trace/trace-core` | `packages/mcp-trace/trace-core/` |
+| `@logger` | LoggerService (main or renderer) |
 | `@cherrystudio/ai-core` | `packages/aiCore/src/` |
 
 ### Main Process (`src/main/`)
 
-Node.js backend services. Key services:
+Notable services: `WindowService`, `MCPService`, `KnowledgeService`, `LoggerService`, `StoreSyncService`, `BackupManager`, `ApiServerService`, `AppUpdater` (disabled for official feeds in this fork), `ShortcutService`, `ThemeService`, `SelectionService`, `CopilotService`, `PythonService`, `NodeTraceService`.
 
-| Service | Responsibility |
-|---|---|
-| `WindowService` | Electron window lifecycle management |
-| `MCPService` | Model Context Protocol server management |
-| `KnowledgeService` | RAG / knowledge base (via `@cherrystudio/embedjs`) |
-| `AnthropicService` | Anthropic API integration |
-| `LoggerService` | Winston-based structured logging (daily rotate) |
-| `StoreSyncService` | Syncs Redux state to/from main process |
-| `BackupManager` | Data backup/restore (WebDAV, S3, Nutstore) |
-| `ApiServerService` | Express HTTP API server (Swagger docs at `/api-docs`) |
-| `AppUpdater` | electron-updater auto-update |
-| `ShortcutService` | Global keyboard shortcuts |
-| `ThemeService` | System theme detection/application |
-| `SelectionService` | Text selection toolbar feature |
-| `CopilotService` | GitHub Copilot OAuth integration |
-| `PythonService` | Pyodide WASM Python runtime |
-| `OvmsManager` | OpenVINO model server management |
-| `NodeTraceService` | OpenTelemetry trace export |
-
-Agents subsystem (`src/main/services/agents/`):
-- Drizzle ORM + LibSQL (SQLite) schema at `database/schema/index.ts`
-- Migrations in `resources/database/drizzle/`
-- **Currently undergoing v2 refactor** — only critical bug fixes accepted
+There is also an **Agents** subsystem under `src/main/services/agents/` (Drizzle / LibSQL). This personal build does not use it day-to-day; avoid expanding it unless asked. Prefer not to invest in Agents DB tooling.
 
 ### Renderer Process (`src/renderer/src/`)
 
-React 19 + Redux Toolkit SPA. Key structure:
-
 ```
-aiCore/          # Legacy middleware pipeline (deprecated, migrating to packages/aiCore)
-api/             # IPC call wrappers (typed electron API calls)
-components/      # Shared UI components (Ant Design 5 + styled-components + TailwindCSS v4)
-databases/       # Dexie (IndexedDB) — topics, files, message_blocks, etc.
-hooks/           # React hooks (useAssistant, useChatContext, useModel, etc.)
-pages/           # Route pages (home, settings, knowledge, paintings, notes, etc.)
-services/        # Frontend services (ApiService, ModelService, MemoryService, etc.)
-store/           # Redux Toolkit slices
-types/           # TypeScript type definitions
-workers/         # Web Workers
-windows/         # Multi-window entry points (mini, selection toolbar, trace)
+aiCore/       # legacy pipeline (prefer packages/aiCore)
+api/          # typed IPC wrappers
+components/   # Ant Design 5 + styled-components + Tailwind v4
+databases/    # Dexie (IndexedDB)
+hooks/ pages/ services/ store/ types/ workers/ windows/
 ```
 
-### Redux Store (`src/renderer/src/store/`)
+### Redux (`src/renderer/src/store/`)
 
-Slices (redux-persist enabled):
+Slices include `assistants`, `settings`, `llm`, `mcp`, `messageBlock`, `knowledge`, `paintings`, `memory`, `websearch`, `shortcuts`, `tabs` (redux-persist). Prefer not to add slices or reshape persisted state casually — migrations and upstream sync get harder.
 
-| Slice | State |
-|---|---|
-| `assistants` | AI assistant configurations |
-| `settings` | App-wide settings |
-| `llm` | LLM provider/model configs |
-| `mcp` | MCP server configs |
-| `messageBlock` | Message block rendering state |
-| `knowledge` | Knowledge base entries |
-| `paintings` | Image generation state |
-| `memory` | Memory system config |
-| `websearch` | Web search settings |
-| `shortcuts` | Keyboard shortcuts |
-| `tabs` | Tab management |
+### Database
 
-> **BLOCKED**: Do not add new Redux slices or change existing state shape until v2.0.0.
+- **IndexedDB (Dexie)** — topics, files, message_blocks, etc. Prefer additive, careful upgrades.
+- **SQLite (agents)** — present for Agents; unused for this product focus.
 
-### Database Layer
+### IPC
 
-- **IndexedDB** (Dexie): `src/renderer/src/databases/index.ts`
-  - Tables: `files`, `topics`, `settings`, `knowledge_notes`, `translate_history`, `quick_phrases`, `message_blocks`, `translate_languages`
-  - Schema versioned with upgrade functions (`upgradeToV5`, `upgradeToV7`, `upgradeToV8`)
-  - **BLOCKED**: Do not modify schema until v2.0.0.
-- **SQLite** (Drizzle ORM + LibSQL): `src/main/services/agents/`
-  - Used for the agents subsystem
-  - DB path: `{userData}/Data/agents.db` (e.g., on macOS: `~/Library/Application Support/CherryStudioDev/Data/agents.db` in dev, `~/Library/Application Support/CherryStudio/Data/agents.db` in prod)
-
-### IPC Communication
-
-- Channel constants defined in `packages/shared/IpcChannel.ts`
-- Renderer → Main: `ipcRenderer.invoke(IpcChannel.XXX, ...args)` via `api.*` wrappers in `src/preload/index.ts`
-- Main → Renderer: `webContents.send(channel, data)`
-- Tracing: `tracedInvoke()` in preload attaches OpenTelemetry span context to IPC calls
-- Typed API surface exposed via `contextBridge` as `window.api`
+- Channels: `packages/shared/IpcChannel.ts`
+- Renderer → Main: `window.api` / preload wrappers
+- Main → Renderer: `webContents.send`
+- Optional trace context via `tracedInvoke()`
 
 ### AI Core (`packages/aiCore/`)
 
-The `@cherrystudio/ai-core` package abstracts AI SDK providers:
+Vercel AI SDK–based provider hub (`HubProvider`), middleware, plugins, runtime, options. Model capability heuristics (vision, reasoning, logos) live largely under `src/renderer/src/config/models/`.
 
-```
-src/core/
-  providers/    # Provider registry (HubProvider, factory, registry)
-  middleware/   # LanguageModelV2Middleware pipeline (manager, wrapper)
-  plugins/      # Built-in plugins
-  runtime/      # Runtime execution
-  options/      # Request option preparation
-```
+### Multi-Window
 
-- Built on Vercel AI SDK v5 (`ai` package) with `LanguageModelV2Middleware`
-- `HubProvider` aggregates multiple provider backends
-- Supports: OpenAI, Anthropic, Google, Azure, Mistral, Bedrock, Vertex, Ollama, Perplexity, xAI, HuggingFace, Cerebras, OpenRouter, Copilot, and more
-- Custom fork of openai package: `@cherrystudio/openai`
-
-### Multi-Window Architecture
-
-The renderer builds multiple HTML entry points:
-- `index.html` — Main application window
-- `miniWindow.html` — Compact floating window (`src/renderer/src/windows/mini/`)
-- `selectionToolbar.html` — Text selection action toolbar
-- `selectionAction.html` — Selection action popup
-- `traceWindow.html` — MCP trace viewer
+Entry HTML: `index.html`, `miniWindow.html`, `selectionToolbar.html`, `selectionAction.html`, `traceWindow.html`.
 
 ### Logging
 
 ```typescript
 import { loggerService } from "@logger";
 const logger = loggerService.withContext("moduleName");
-// Renderer only: loggerService.initWindowSource('windowName') first
+// Renderer: loggerService.initWindowSource('windowName') first
 logger.info("message", CONTEXT);
-logger.warn("message");
 logger.error("message", error);
 ```
 
-- Backend: Winston with daily log rotation
-- Log files in `userData/logs/`
-- Never use `console.log` — always use `loggerService`
+Never `console.log` for app logging.
 
-### Tracing (OpenTelemetry)
+## Tech Stack (summary)
 
-- `packages/mcp-trace/` provides trace-core and trace-node/trace-web adapters
-- `NodeTraceService` exports spans via OTLP HTTP
-- `SpanCacheService` caches span entities for the trace viewer window
-- IPC calls can carry span context via `tracedInvoke()`
-
-## Tech Stack
-
-| Layer | Technologies |
-|---|---|
-| Runtime | Electron 38, Node ≥22 |
-| Frontend | React 19, TypeScript ~5.8 |
-| UI | Ant Design 5.27, styled-components 6, TailwindCSS v4 |
-| State | Redux Toolkit, redux-persist, Dexie (IndexedDB) |
-| Rich Text | TipTap 3.2 (with Yjs collaboration) |
-| AI SDK | Vercel AI SDK v5 (`ai`), `@cherrystudio/ai-core` |
-| Build | electron-vite 5 with rolldown-vite 7 (experimental) |
-| Test | Vitest 3 (unit), Playwright (e2e) |
-| Lint/Format | ESLint 9, oxlint, Biome 2 |
-| DB (main) | Drizzle ORM + LibSQL (SQLite) |
-| DB (renderer) | Dexie (IndexedDB) |
-| Logging | Winston + winston-daily-rotate-file |
-| Tracing | OpenTelemetry |
-| i18n | i18next + react-i18next |
+Electron · React 19 · TypeScript · Ant Design 5 · Redux Toolkit · Dexie · Vercel AI SDK (`ai` + `@cherrystudio/ai-core`) · electron-vite · Vitest · ESLint / oxlint / Biome · i18next
 
 ## Conventions
 
-### TypeScript
+- **TypeScript**: strict; `tsgo`; `tsconfig.node.json` / `tsconfig.web.json`
+- **Style**: Biome (2-space, single quotes); oxlint + ESLint; `simple-import-sort`
+- **Files**: components `PascalCase.tsx`; utils/hooks `camelCase.ts`; tests `*.test.ts` / `*.spec.ts`
+- **i18n**: no hardcoded UI strings; locales under `src/renderer/src/i18n/`
+- **Patches**: check `patches/` before upgrading listed dependencies
 
-- Strict mode enabled; use `tsgo` (native TypeScript compiler preview) for typechecking
-- Separate configs: `tsconfig.node.json` (main), `tsconfig.web.json` (renderer)
-- Type definitions centralized in `src/renderer/src/types/` and `packages/shared/`
+## Testing
 
-### Code Style
+Vitest projects: main / renderer / aiCore / shared. Prefer tests that assert the contract for the change you made; skip behavior-pinning noise when editing a file. Broad new features should still get meaningful coverage when practical.
 
-- Biome handles formatting (2-space indent, single quotes, trailing commas)
-- oxlint + ESLint for linting; `simple-import-sort` enforces import order
-- React hooks: `eslint-plugin-react-hooks` enforced
-- No unused imports: `eslint-plugin-unused-imports`
+## Upstream / v2 notes
 
-### File Naming
+Upstream has a large v2 refactor; many files carry `@deprecated` / “V2 DATA&UI REFACTORING / BLOCKED” headers. On this fork’s **v1** line: fix bugs and ship personal product changes carefully; do not blindly apply upstream “move everything to v2” process. When cherry-picking from upstream, read those markers and prefer security / model-compat fixes over drive-by refactors.
 
-- React components: `PascalCase.tsx`
-- Services, hooks, utilities: `camelCase.ts`
-- Test files: `*.test.ts` or `*.spec.ts` alongside source or in `__tests__/` subdirectory
+## Security
 
-### i18n
-
-- All user-visible strings must use `i18next` — never hardcode UI strings
-- Run `pnpm i18n:check` to validate; `pnpm i18n:sync` to add missing keys
-- Locale files in `src/renderer/src/i18n/`
-
-### Packages with Custom Patches
-
-Several dependencies have patches in `patches/` — be careful when upgrading:
-- `antd`, `@ai-sdk/google`, `@ai-sdk/openai`, `@anthropic-ai/vertex-sdk`
-- `@google/genai`, `@langchain/core`, `@langchain/openai`
-- `ollama-ai-provider-v2`, `electron-updater`, `epub`, `tesseract.js`
-- `@anthropic-ai/claude-agent-sdk`
-
-## Testing Guidelines
-
-- Tests use Vitest 3 with project-based configuration
-- Main process tests: Node environment, `tests/main.setup.ts`
-- Renderer tests: jsdom environment, `tests/renderer.setup.ts`, `@testing-library/react`
-- aiCore tests: separate `packages/aiCore/vitest.config.ts`
-- All tests run without CI dependency (fully local)
-- Coverage via v8 provider (`pnpm test:coverage`)
-- **Features without tests are not considered complete**
-
-## Important Notes
-
-### V2 Refactoring in Progress
-
-The `main` branch is under code freeze. All development has moved to the `v2` branch.
-
-- **`main` branch**: Only accepts critical bug fixes via `hotfix/*` branches. Minimal changes, no refactoring.
-- **`v2` branch**: All new features, refactoring, and optimizations go here.
-
-Files marked with the following header are **blocked for feature changes**:
-
-```typescript
-/**
- * @deprecated Scheduled for removal in v2.0.0
- * ⚠️ NOTICE: V2 DATA&UI REFACTORING
- * STOP: Feature PRs affecting this file are currently BLOCKED.
- */
-```
-
-Do not introduce new features to these files. Bug fixes only.
-
-### Security
-
-- Never expose Node.js APIs directly to renderer; use `contextBridge` in preload
-- Validate all IPC inputs in main process handlers
-- URL sanitization via `strict-url-sanitise`
-- IP validation via `ipaddr.js` (API server)
-- `express-validator` for API server request validation
+- No Node APIs in renderer — only `contextBridge` / preload
+- Validate IPC inputs in main
+- Keep URL / IP sanitization patterns for API server paths
