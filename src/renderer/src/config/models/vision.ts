@@ -46,6 +46,7 @@ const visionAllowedModels = [
   'o3(?:-[\\w-]+)?',
   'o4(?:-[\\w-]+)?',
   'deepseek-vl(?:[\\w-]+)?',
+  'deepseek-v4\\.1-flash(?:-[\\w-]+)?',
   'deepseek-v4-flash-vision-exp',
   'glm-5[.-]3-flash(?:-[\\w-]+)?',
   'kimi-k(?:2\\.[5-9]\\d*|[3-9]\\d*(?:[.-]\\d+)?)(?:-[\\w-]+)?',

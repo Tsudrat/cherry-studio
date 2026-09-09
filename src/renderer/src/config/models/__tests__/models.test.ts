@@ -52,6 +52,7 @@ beforeEach(() => {
 
 describe('Built-in model catalog', () => {
   test('includes the v1-compatible DeepSeek and GLM vision models', () => {
+    expect(SYSTEM_MODELS.deepseek.some((model) => model.id === 'deepseek-v4.1-flash')).toBe(true)
     expect(SYSTEM_MODELS.deepseek.some((model) => model.id === 'deepseek-v4-flash-vision-exp')).toBe(true)
     expect(SYSTEM_MODELS.zhipu.some((model) => model.id === 'glm-5.3-flash')).toBe(true)
     expect(SYSTEM_MODELS.zai.some((model) => model.id === 'glm-5.3-flash')).toBe(true)

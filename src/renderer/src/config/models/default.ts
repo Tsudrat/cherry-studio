@@ -434,6 +434,13 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
   ],
   deepseek: [
     {
+      id: 'deepseek-v4.1-flash',
+      provider: 'deepseek',
+      name: 'deepseek-v4.1-flash',
+      group: 'DeepSeek',
+      capabilities: [{ type: 'text' }, { type: 'vision' }, { type: 'function_calling' }]
+    },
+    {
       id: 'deepseek-v4-flash-vision-exp',
       provider: 'deepseek',
       name: 'deepseek-v4-flash-vision-exp',

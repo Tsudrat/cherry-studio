@@ -388,7 +388,10 @@ describe('isVisionModel', () => {
   })
 
   describe('DeepSeek and GLM vision models', () => {
-    it('recognizes only the multimodal DeepSeek V4 variant', () => {
+    it('recognizes multimodal DeepSeek V4.1 Flash and the V4 vision-exp variant', () => {
+      expect(isVisionModel(createModel({ id: 'deepseek-v4.1-flash' }))).toBe(true)
+      expect(isVisionModel(createModel({ id: 'deepseek/deepseek-v4.1-flash' }))).toBe(true)
+      expect(isVisionModel(createModel({ id: 'deepseek-ai/DeepSeek-V4.1-Flash' }))).toBe(true)
       expect(isVisionModel(createModel({ id: 'deepseek-v4-flash-vision-exp' }))).toBe(true)
       expect(isVisionModel(createModel({ id: 'deepseek-v4-flash' }))).toBe(false)
       expect(isVisionModel(createModel({ id: 'deepseek-v4-pro' }))).toBe(false)
