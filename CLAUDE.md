@@ -87,14 +87,14 @@ packages/
 
 ### Key Path Aliases
 
-| Alias | Resolves To |
-|---|---|
-| `@main` | `src/main/` |
-| `@renderer` | `src/renderer/src/` |
-| `@shared` | `packages/shared/` |
-| `@types` | `src/renderer/src/types/` |
-| `@logger` | LoggerService (main or renderer) |
-| `@cherrystudio/ai-core` | `packages/aiCore/src/` |
+| Alias                   | Resolves To                      |
+| ----------------------- | -------------------------------- |
+| `@main`                 | `src/main/`                      |
+| `@renderer`             | `src/renderer/src/`              |
+| `@shared`               | `packages/shared/`               |
+| `@types`                | `src/renderer/src/types/`        |
+| `@logger`               | LoggerService (main or renderer) |
+| `@cherrystudio/ai-core` | `packages/aiCore/src/`           |
 
 ### Main Process (`src/main/`)
 
@@ -173,3 +173,29 @@ Upstream has a large v2 refactor; many files carry `@deprecated` / “V2 DATA&UI
 - No Node APIs in renderer — only `contextBridge` / preload
 - Validate IPC inputs in main
 - Keep URL / IP sanitization patterns for API server paths
+
+## Cursor Cloud specific instructions
+
+For running this Electron app headlessly in a Cursor Cloud Agent VM (Ubuntu 24.04). Assumes you can fill in standard details.
+
+- **Node**: needs `>=24.11.1` (`.nvmrc`), but the VM's default `node` is older and wins on PATH. Prepend nvm's: `export PATH="$HOME/.nvm/versions/node/v24.11.1/bin:$PATH"` (install once with `nvm install 24.11.1`). pnpm 10.27.0 already matches.
+
+- **System libs (once)**: install Electron's GUI deps + `xvfb` + native-build headers, e.g.:
+  `sudo apt-get install -y xvfb imagemagick libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libgbm1 libgtk-3-0t64 libasound2t64 libxshmfence1 libxdamage1 libxrandr2 libxcomposite1 libxfixes3 libxkbcommon0 libpango-1.0-0 libcairo2 libatspi2.0-0t64 fonts-noto-cjk libxtst-dev libx11-dev libxext-dev libxi-dev libevdev-dev build-essential`
+  (The `-dev` headers are required to compile the `selection-hook` native module.)
+
+- **Install**: run a full `pnpm install` — do NOT use `--ignore-scripts` (it skips Electron's postinstall, leaving `node_modules/electron/dist/` unextracted → `pnpm dev` fails with "Electron uninstall"). In interactive pods the `prepare`/`prek` hook fails because Cursor manages `core.hooksPath`; don't unset it — just tolerate that one failure:
+
+  ```bash
+  pnpm install 2>&1 | tee /tmp/i.log; code=${PIPESTATUS[0]}
+  if [ "$code" -ne 0 ] && ! grep -q "Cowardly refusing to install hooks" /tmp/i.log; then exit "$code"; fi
+  test -x node_modules/electron/dist/electron
+  ```
+
+- **Run**: `cp .env.example .env` (dev uses dotenv), start a virtual display, then launch:
+  ```bash
+  export DISPLAY=:99 ELECTRON_DISABLE_SANDBOX=1
+  DISPLAY=:99 xdpyinfo >/dev/null 2>&1 || setsid Xvfb :99 -screen 0 1600x1000x24 -ac >/tmp/xvfb.log 2>&1 &
+  sleep 3; pnpm dev
+  ```
+  Screenshot: `DISPLAY=:99 import -window root /tmp/cherry.png`. D-Bus/GPU/MemoryService warnings on first run are benign.
