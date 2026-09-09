@@ -18,8 +18,8 @@ import {
   isVertexProvider
 } from '@renderer/utils/provider'
 
+import { resolveReasoningStreamPolicy } from '../reasoning/resolveStreamPolicy'
 import type { AiSdkMiddlewareConfig } from '../types/middlewareConfig'
-import { getReasoningTagName } from '../utils/reasoning'
 import { createAnthropicCachePlugin } from './anthropicCachePlugin'
 import { createDeepseekDsmlParserPlugin } from './deepseekDsmlParserPlugin'
 import { createNoThinkPlugin } from './noThinkPlugin'
@@ -84,16 +84,11 @@ export function buildPlugins({ provider, model, config }: BuildPluginsContext): 
   // 这样反转后 extractReasoning 在外层，其 wrapStream（状态机）
   // 能处理 simulateStreaming 生成的模拟流中的未闭合 <think> 标签。
 
-  // 0.1 Reasoning extraction for OpenAI/Azure providers
-  const providerType = provider.type
-  if (
-    providerType === 'openai' ||
-    providerType === 'azure-openai' ||
-    model.endpoint_type === 'openai' ||
-    isOllamaProvider(provider)
-  ) {
-    const tagName = getReasoningTagName(model.id.toLowerCase())
-    plugins.push(createReasoningExtractionPlugin({ tagName }))
+  // 0.1 Reasoning extraction for OpenAI/Azure/Ollama text dumps (XML tags / Gemma channels)
+  // Native Gemini/Anthropic/etc. rely on SDK reasoning parts (empty extractors → skip).
+  const reasoningStreamPolicy = resolveReasoningStreamPolicy(model, provider)
+  if (reasoningStreamPolicy.extractors.length > 0) {
+    plugins.push(createReasoningExtractionPlugin(reasoningStreamPolicy))
   }
 
   // 0.2 Simulate streaming for non-streaming requests (must be AFTER reasoning extraction in array)
