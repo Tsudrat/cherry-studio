@@ -18,6 +18,9 @@ async function collectStream(parts: LanguageModelV3StreamPart[]): Promise<Langua
 
   const { stream } = await middleware.wrapStream!({
     doStream: async () => ({ stream: input }),
+    doGenerate: async () => {
+      throw new Error('doGenerate is not used in stream tests')
+    },
     params: {} as never,
     model: {} as never
   })
@@ -36,14 +39,21 @@ describe('createGemmaChannelReasoningMiddleware', () => {
   it('extracts channel thought from a complete text part on generate', async () => {
     const middleware = createGemmaChannelReasoningMiddleware()
     const result = await middleware.wrapGenerate!({
-      doGenerate: async () => ({
-        content: [
-          {
-            type: 'text',
-            text: `${GEMMA_CHANNEL_OPEN}step by step${GEMMA_CHANNEL_CLOSE}Final answer`
-          }
-        ]
-      }),
+      doGenerate: async () =>
+        ({
+          content: [
+            {
+              type: 'text',
+              text: `${GEMMA_CHANNEL_OPEN}step by step${GEMMA_CHANNEL_CLOSE}Final answer`
+            }
+          ],
+          finishReason: 'stop',
+          usage: { inputTokens: 0, outputTokens: 0 },
+          warnings: []
+        }) as never,
+      doStream: async () => {
+        throw new Error('doStream is not used in generate tests')
+      },
       params: {} as never,
       model: {} as never
     })
