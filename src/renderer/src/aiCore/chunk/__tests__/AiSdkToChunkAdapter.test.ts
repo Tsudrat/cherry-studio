@@ -99,3 +99,50 @@ describe('AiSdkToChunkAdapter finish reason handling (#16072)', () => {
     expect(chunks.some((c) => c.type === ChunkType.LLM_RESPONSE_COMPLETE)).toBe(false)
   })
 })
+
+describe('AiSdkToChunkAdapter reasoning mapping', () => {
+  it('maps reasoning-start/delta/end to THINKING_* chunks', async () => {
+    const chunks = await run([
+      { type: 'reasoning-start', id: 'r1' } as Part,
+      { type: 'reasoning-delta', id: 'r1', text: 'Let me think' } as Part,
+      { type: 'reasoning-delta', id: 'r1', text: ' more' } as Part,
+      { type: 'reasoning-end', id: 'r1' } as Part,
+      { type: 'text-start', id: 't1' } as Part,
+      { type: 'text-delta', id: 't1', text: 'Answer' } as Part,
+      { type: 'text-end', id: 't1' } as Part,
+      finish('stop')
+    ])
+
+    expect(chunks.map((c) => c.type)).toEqual(
+      expect.arrayContaining([
+        ChunkType.THINKING_START,
+        ChunkType.THINKING_DELTA,
+        ChunkType.THINKING_COMPLETE,
+        ChunkType.TEXT_START,
+        ChunkType.TEXT_DELTA,
+        ChunkType.TEXT_COMPLETE
+      ])
+    )
+
+    const deltas = chunks.filter((c) => c.type === ChunkType.THINKING_DELTA) as Array<{ text: string }>
+    expect(deltas.at(-1)?.text).toBe('Let me think more')
+
+    const complete = chunks.find((c) => c.type === ChunkType.THINKING_COMPLETE) as { text: string }
+    expect(complete.text).toBe('Let me think more')
+  })
+
+  it('emits THINKING_COMPLETE on text-start when reasoning-end was missing', async () => {
+    const chunks = await run([
+      { type: 'reasoning-start', id: 'r1' } as Part,
+      { type: 'reasoning-delta', id: 'r1', text: 'partial' } as Part,
+      { type: 'text-start', id: 't1' } as Part,
+      { type: 'text-delta', id: 't1', text: 'body' } as Part,
+      finish('stop')
+    ])
+
+    const thinkingCompleteIdx = chunks.findIndex((c) => c.type === ChunkType.THINKING_COMPLETE)
+    const textStartIdx = chunks.findIndex((c) => c.type === ChunkType.TEXT_START)
+    expect(thinkingCompleteIdx).toBeGreaterThanOrEqual(0)
+    expect(thinkingCompleteIdx).toBeLessThan(textStartIdx)
+  })
+})

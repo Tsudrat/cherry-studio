@@ -62,6 +62,9 @@ import { isSupportEnableThinkingProvider } from '@renderer/utils/provider'
 import { toInteger } from 'lodash'
 import type { OllamaProviderOptions } from 'ollama-ai-provider-v2'
 
+import { resolveGoogleIncludeThoughts } from '../reasoning/googleIncludeThoughts'
+import { resolveReasoningDialectExtractors } from '../reasoning/resolveStreamPolicy'
+
 const logger = loggerService.withContext('reasoning')
 
 function getEffortRatio(reasoningEffort: string | undefined): number {
@@ -231,7 +234,8 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
           extra_body: {
             google: {
               thinking_config: {
-                thinking_budget: 0
+                thinking_budget: 0,
+                include_thoughts: resolveGoogleIncludeThoughts(model, reasoningEffort)
               }
             }
           }
@@ -668,13 +672,14 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
         reasoningEffort
       }
     }
+    const includeThoughts = resolveGoogleIncludeThoughts(model, reasoningEffort)
     if (reasoningEffort === 'auto') {
       return {
         extra_body: {
           google: {
             thinking_config: {
               thinking_budget: -1,
-              include_thoughts: true
+              include_thoughts: includeThoughts
             }
           }
         }
@@ -685,7 +690,7 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
         google: {
           thinking_config: {
             thinking_budget: budgetTokens ?? -1,
-            include_thoughts: true
+            include_thoughts: includeThoughts
           }
         }
       }
@@ -1047,7 +1052,7 @@ export function getGeminiReasoningParams(
   }
 
   let thinkingLevel: GoogleThinkingLevel | null = null
-  const includeThoughts = reasoningEffort !== 'none'
+  const includeThoughts = resolveGoogleIncludeThoughts(model, reasoningEffort)
 
   if (isHostedGemma4ThinkingModel(model)) {
     // Hosted Gemma 4 does not expose a distinct hard-off mode on the Gemini API.
@@ -1058,7 +1063,7 @@ export function getGeminiReasoningParams(
 
     return {
       thinkingConfig: {
-        includeThoughts: isHighThinking,
+        includeThoughts,
         thinkingLevel
       }
     }
@@ -1298,19 +1303,10 @@ export function getCustomParameters(assistant: Assistant): Record<string, any> {
 }
 
 /**
- * Get reasoning tag name based on model ID
- * Used for extractReasoningMiddleware configuration
+ * @deprecated Prefer `resolveReasoningStreamPolicy` / `resolveReasoningDialectExtractors`.
+ * Kept as a thin wrapper for callers that only need the primary XML tag name.
  */
 export function getReasoningTagName(modelId: string | undefined): string {
-  const tagName = {
-    reasoning: 'reasoning',
-    think: 'think',
-    thought: 'thought',
-    seedThink: 'seed:think'
-  }
-
-  if (modelId?.includes('gpt-oss')) return tagName.reasoning
-  if (modelId?.includes('gemini')) return tagName.thought
-  if (modelId?.includes('seed-oss-36b')) return tagName.seedThink
-  return tagName.think
+  const xml = resolveReasoningDialectExtractors(modelId).find((e) => e.kind === 'xml-tag')
+  return xml && xml.kind === 'xml-tag' ? xml.tagName : 'think'
 }

@@ -427,7 +427,8 @@ describe('reasoning utils', () => {
         extra_body: {
           google: {
             thinking_config: {
-              thinking_budget: 0
+              thinking_budget: 0,
+              include_thoughts: false
             }
           }
         }
