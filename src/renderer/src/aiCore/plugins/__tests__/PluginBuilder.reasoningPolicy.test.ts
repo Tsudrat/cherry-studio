@@ -39,7 +39,7 @@ describe('buildPlugins reasoning stream policy', () => {
     expect(resolveReasoningStreamPolicy(model, provider).extractors).toEqual([{ kind: 'xml-tag', tagName: 'think' }])
   })
 
-  it('uses thought + gemma-channel for Gemma on OpenAI-compat gateways', () => {
+  it('uses thought + gemma-channel for Gemma on OpenAI-compat gateways', async () => {
     const provider = {
       id: 'cloudflare',
       type: 'openai',
@@ -66,7 +66,7 @@ describe('buildPlugins reasoning stream policy', () => {
     expect(policy.extractors).toEqual([{ kind: 'xml-tag', tagName: 'thought' }, { kind: 'gemma-channel' }])
 
     const context = { middlewares: [] as unknown[] }
-    createReasoningExtractionPlugin(policy).configureContext?.(context as never)
+    await createReasoningExtractionPlugin(policy).configureContext?.(context as never)
     expect(context.middlewares).toHaveLength(2)
   })
 

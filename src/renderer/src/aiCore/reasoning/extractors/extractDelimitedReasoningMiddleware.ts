@@ -176,7 +176,7 @@ export function extractDelimitedReasoningMiddleware({
                 }
               }
 
-              do {
+              for (;;) {
                 const nextTag = activeExtraction.isReasoning ? closingDelimiter : openingDelimiter
                 const startIndex = getPotentialStartIndex(activeExtraction.buffer, nextTag)
 
@@ -212,7 +212,7 @@ export function extractDelimitedReasoningMiddleware({
                   activeExtraction.buffer = activeExtraction.buffer.slice(startIndex)
                   break
                 }
-              } while (true)
+              }
             }
           })
         ),
