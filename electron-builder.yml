@@ -142,13 +142,13 @@ artifactBuildCompleted: scripts/artifact-build-completed.js
 releaseInfo:
   releaseNotes: |
     <!--LANG:en-->
-    my-classic-cherry 1.9.13-my-classic-cherry.1 — personal Classic Cherry build.
+    Oh My Classic Cherry 1.9.12-omcc.1 — personal Classic Cherry build.
 
     - Restore streaming fenced-code rendering (revert official large-code placeholder).
     - Hide Agents / Store / Mini Apps / Code Tools / OpenClaw sidebar entries.
     - Disable official auto-update checks. Shares official appId/data directory.
     <!--LANG:zh-CN-->
-    my-classic-cherry 1.9.13-my-classic-cherry.1 — 个人 Classic Cherry 构建。
+    Oh My Classic Cherry 1.9.12-omcc.1 — 个人 Classic Cherry 构建。
 
     - 恢复代码块流式渲染（回退官方大代码占位逻辑）。
     - 隐藏侧边栏：智能体 / 商店 / 小程序 / 代码工具 / OpenClaw。

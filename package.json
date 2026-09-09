@@ -1,8 +1,8 @@
 {
   "name": "CherryStudio",
-  "version": "1.9.13-my-classic-cherry.1",
+  "version": "1.9.12-omcc.1",
   "private": true,
-  "description": "my-classic-cherry — personal Classic Cherry Studio build (v1 lineage).",
+  "description": "Oh My Classic Cherry (omcc) — personal Classic Cherry Studio build (v1 lineage).",
   "desktopName": "CherryStudio.desktop",
   "main": "./out/main/index.js",
   "author": "support@cherry-ai.com",
