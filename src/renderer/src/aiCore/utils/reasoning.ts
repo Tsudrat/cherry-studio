@@ -11,6 +11,7 @@ import {
   GEMINI_FLASH_MODEL_REGEX,
   getModelSupportedReasoningEffortOptions,
   isClaude46SeriesModel,
+  isClaudeAlwaysOnAdaptiveThinkingModel,
   isDeepSeekHybridInferenceModel,
   isDeepSeekV4PlusModel,
   isDoubaoSeed18Model,
@@ -20,7 +21,7 @@ import {
   isGLM52Model,
   isGLM53Model,
   isGrok4FastReasoningModel,
-  isGrok46Model,
+  isGrok46OrNewerModel,
   isHostedGemma4ThinkingModel,
   isKimiK3FastModel,
   isKimiK3Model,
@@ -865,10 +866,10 @@ function getFallbackBudgetTokens(reasoningEffort: string | undefined): number {
  * Extracted from AnthropicAPIClient logic.
  *
  * Returns different parameter shapes depending on the model:
- * - **Claude Opus 4.7+**: `{ thinking: { type: 'adaptive', display: 'summarized' }, effort?: 'low' | 'medium' | 'high' | 'xhigh' }`
- *   Uses the new adaptive thinking API with effort-based control.
+ * - **Claude Opus 4.7+ / Fable 5+ / Sonnet 5+**: `{ thinking: { type: 'adaptive', display: 'summarized' }, effort?: 'low' | 'medium' | 'high' | 'xhigh' | 'max' }`
+ *   Uses the adaptive thinking API with native effort levels (Fable 5+ / Opus 5.5+ cannot disable thinking).
  * - **Claude 4.6**: `{ thinking: { type: 'adaptive' }, effort: 'low' | 'medium' | 'high' | 'max' }`
- *   Uses the new adaptive thinking API with effort-based control.
+ *   Uses the adaptive thinking API; UI `xhigh` is mapped to API `max`.
  * - **Other Claude models** (4.0, 4.1, 4.5, etc.): `{ thinking: { type: 'enabled', budgetTokens: number } }`
  *   Uses the classic thinking API with explicit token budget.
  * - **Non-Anthropic models served via the Claude-compatible endpoint** (Kimi, MiniMax,
@@ -898,6 +899,8 @@ export function getAnthropicReasoningParams(
     // kimi-k2.7-code is always-think: cannot be disabled, so skip the generic
     // {type:'disabled'} early-return and let the default-on branch below handle it.
     if (isKimiK27CodeModel(model)) return {}
+    // Claude Fable 5+ / Opus 5.5+: adaptive thinking is always on; disabling → 400.
+    if (isClaudeAlwaysOnAdaptiveThinkingModel(model)) return {}
     return {
       thinking: {
         type: 'disabled'
@@ -907,9 +910,9 @@ export function getAnthropicReasoningParams(
 
   // Claude reasoning parameters
   if (isSupportedThinkingTokenClaudeModel(model)) {
-    // Claude Opus 4.7+: adaptive thinking + native 'xhigh' effort.
-    // Also requires thinking.display: 'summarized' — API defaults to 'omitted'
-    // (no reasoning text in response), which would break Cherry's thinking UI.
+    // Claude Opus 4.7+ / Fable 5+ / Sonnet 5+: adaptive thinking + native effort
+    // (low|medium|high|xhigh|max). Also requires thinking.display: 'summarized' —
+    // API defaults to 'omitted' (no reasoning text), which would break Cherry's UI.
     if (isSupportAdaptiveThinkingClaudeModel(model)) {
       const effort47Map = {
         default: undefined,
@@ -919,7 +922,7 @@ export function getAnthropicReasoningParams(
         medium: 'medium',
         high: 'high',
         xhigh: 'xhigh',
-        max: 'xhigh'
+        max: 'max'
       } as const satisfies Record<Exclude<ReasoningEffortOption, 'none'>, AnthropicProviderOptions['effort']>
       const effort = effort47Map[reasoningEffort]
       const thinking = { type: 'adaptive', display: 'summarized' } as const
@@ -929,7 +932,7 @@ export function getAnthropicReasoningParams(
     // Claude 4.6 uses adaptive thinking + effort parameters
     // Map reasoningEffort to Claude 4.6 supported effort values
     if (isClaude46SeriesModel(model)) {
-      // Claude 4.6 supports: low, medium, high, max
+      // Claude 4.6 supports: low, medium, high, max (not xhigh)
       // Mapping rules: default/none -> no effort (uses default high)
       //                minimal/low -> low
       //                medium -> medium
@@ -1132,9 +1135,9 @@ export function getXAIReasoningParams(
 ): Pick<XaiResponsesProviderOptions, 'reasoningEffort'> {
   const isGrok43 =
     getLowerBaseModelName(model.id).includes('grok-4.3') && !getLowerBaseModelName(model.id).includes('non-reasoning')
-  const isGrok46 = isGrok46Model(model)
+  const isGrok46Plus = isGrok46OrNewerModel(model)
 
-  if (!isSupportedReasoningEffortGrokModel(model) && !isGrok43 && !isGrok46) {
+  if (!isSupportedReasoningEffortGrokModel(model) && !isGrok43 && !isGrok46Plus) {
     return {}
   }
 
@@ -1153,7 +1156,7 @@ export function getXAIReasoningParams(
     }
   }
 
-  if (isGrok46) {
+  if (isGrok46Plus) {
     switch (reasoningEffort) {
       case 'low':
       case 'medium':
@@ -1200,6 +1203,10 @@ export function getBedrockReasoningParams(
   }
 
   if (reasoningEffort === 'none') {
+    // Always-on adaptive Claude models reject thinking.type === 'disabled'
+    if (isClaudeAlwaysOnAdaptiveThinkingModel(model)) {
+      return {}
+    }
     return {
       reasoningConfig: {
         type: 'disabled'
@@ -1212,9 +1219,8 @@ export function getBedrockReasoningParams(
     return {}
   }
 
-  // Claude 4.6 / Opus 4.7+ use adaptive thinking + maxReasoningEffort.
-  // Bedrock's maxReasoningEffort enum doesn't yet include 'xhigh', so Opus 4.7+ xhigh
-  // falls back to 'max' here (matches the 4.6 mapping).
+  // Claude 4.6 / Opus 4.7+ / Sonnet 5+ / Fable use adaptive thinking + maxReasoningEffort.
+  // Bedrock's maxReasoningEffort enum doesn't yet include 'xhigh', so xhigh falls back to 'max'.
   if (isClaude46SeriesModel(model) || isSupportAdaptiveThinkingClaudeModel(model)) {
     const effortMap = {
       auto: undefined,

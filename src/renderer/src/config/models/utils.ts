@@ -437,68 +437,95 @@ export function isClaude46SeriesModel(model: Model | undefined | null): boolean 
   return regex.test(modelId)
 }
 
+type ClaudeAdaptiveFamily = 'opus' | 'fable' | 'sonnet'
+
 /**
- * Detect the Claude version boundary shared by several behavior checks (adaptive thinking
- * support, and rejection of temperature / top-p / top-k sampling). It is the single source
- * of truth for "Opus 4.7+ or Fable 5+", so each consumer can diverge from it later if a
- * specific API rule changes.
+ * Parse Claude family + major.minor from common id shapes.
  *
- * Recognizes the usual id shapes:
- * - Direct API:  claude-opus-4-7, claude-opus-4.7, claude-opus-5, claude-fable-5
+ * Recognizes:
+ * - Direct API:  claude-opus-4-7, claude-opus-4.7, claude-opus-5, claude-fable-5, claude-sonnet-5
  * - AWS Bedrock: anthropic.claude-opus-4-7-v1, anthropic.claude-fable-5-v1
  * - Provider / Vertex prefixes: anthropic/claude-opus-4-7
- *
- * Version rules (a missing minor counts as 0, so `claude-opus-5` is treated as 5.0):
- * - Opus qualifies when major.minor >= 4.7 — i.e. 4.7+, every 5.x, and any later major.
- * - Fable qualifies for every version: the Fable line started at 5 with the newer behavior.
  *
  * Date-stamped base ids such as `claude-opus-4-20250514` must NOT be read as 4.<date>.
  * A minor is therefore capped at two digits, letting the date fall through to the
  * trailing-suffix group instead of being parsed as the minor version.
- *
- * @param model - The model to check
- * @returns true if the model is Claude Opus 4.7+ or Fable 5+
  */
-function isClaudeOpus47OrNewerModel(model: Model | undefined | null): boolean {
+function parseClaudeAdaptiveFamilyVersion(
+  model: Model | undefined | null
+): { family: ClaudeAdaptiveFamily; major: number; minor: number } | null {
   if (!model) {
-    return false
+    return null
   }
   const modelId = getLowerBaseModelName(model.id, '/')
-  // major is required; minor is optional and capped at two digits so date suffixes
-  // (e.g. -20250514) fall into the trailing-suffix group rather than being read as a minor.
-  const match = modelId.match(/^(?:anthropic\.)?claude-(opus|fable)-(\d+)(?:[.-](\d{1,2}))?(?:[@\-:][\w\-:]+)?$/i)
+  const match = modelId.match(
+    /^(?:anthropic\.)?claude-(opus|fable|sonnet)-(\d+)(?:[.-](\d{1,2}))?(?:[@\-:][\w\-:]+)?$/i
+  )
   if (!match) {
-    return false
+    return null
   }
-  const family = match[1].toLowerCase()
-  const major = Number(match[2])
-  const minor = match[3] ? Number(match[3]) : 0
-  if (family === 'fable') {
-    return major >= 5
+  return {
+    family: match[1].toLowerCase() as ClaudeAdaptiveFamily,
+    major: Number(match[2]),
+    minor: match[3] ? Number(match[3]) : 0
   }
-  // Opus: major.minor must be >= 4.7
-  return major > 4 || (major === 4 && minor >= 7)
+}
+
+function isAtLeastVersion(major: number, minor: number, minMajor: number, minMinor: number): boolean {
+  return major > minMajor || (major === minMajor && minor >= minMinor)
 }
 
 /**
- * Check if the Claude model uses adaptive thinking rather than budget-token thinking.
+ * Claude models that use adaptive thinking (effort) rather than budget-token thinking.
+ *
+ * Per Anthropic docs: Opus 4.7+, Fable 5+, Sonnet 5+.
  */
 export function isSupportAdaptiveThinkingClaudeModel(model: Model | undefined | null): boolean {
-  return isClaudeOpus47OrNewerModel(model)
+  const parsed = parseClaudeAdaptiveFamilyVersion(model)
+  if (!parsed) {
+    return false
+  }
+  if (parsed.family === 'fable') {
+    return parsed.major >= 5
+  }
+  if (parsed.family === 'opus') {
+    return isAtLeastVersion(parsed.major, parsed.minor, 4, 7)
+  }
+  // Sonnet 5+: adaptive thinking is on by default; manual budget_tokens returns 400.
+  return parsed.family === 'sonnet' && parsed.major >= 5
+}
+
+/**
+ * Adaptive thinking that cannot be turned off (`thinking: { type: "disabled" }` → 400).
+ * Fable 5+ and Opus 5.5+ per Anthropic model overviews.
+ */
+export function isClaudeAlwaysOnAdaptiveThinkingModel(model: Model | undefined | null): boolean {
+  const parsed = parseClaudeAdaptiveFamilyVersion(model)
+  if (!parsed) {
+    return false
+  }
+  if (parsed.family === 'fable') {
+    return parsed.major >= 5
+  }
+  if (parsed.family === 'opus') {
+    return isAtLeastVersion(parsed.major, parsed.minor, 5, 5)
+  }
+  return false
 }
 
 /**
  * Claude sampling-parameter rejection predicates intentionally stay separate from
  * adaptive-thinking support so each API rule can diverge independently later.
+ * Sonnet 5+ also rejects non-default temperature / top_p / top_k.
  */
 export function isClaudeModelRejectsTemperature(model: Model | undefined | null): boolean {
-  return isClaudeOpus47OrNewerModel(model)
+  return isSupportAdaptiveThinkingClaudeModel(model)
 }
 
 export function isClaudeModelRejectsTopP(model: Model | undefined | null): boolean {
-  return isClaudeOpus47OrNewerModel(model)
+  return isSupportAdaptiveThinkingClaudeModel(model)
 }
 
 export function isClaudeModelRejectsTopK(model: Model | undefined | null): boolean {
-  return isClaudeOpus47OrNewerModel(model)
+  return isSupportAdaptiveThinkingClaudeModel(model)
 }

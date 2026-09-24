@@ -110,6 +110,9 @@ const ThinkModelTypes = [
   'gpt56pro',
   'gpt5pro',
   'gpt52pro',
+  // GPT-6 Sol / Luna (and other non-Astra GPT-6 SKUs that allow disabling reasoning)
+  'gpt6',
+  // GPT-6 Astra — reasoning cannot be disabled
   'gpt6_astra',
   'gpt_oss',
   'grok',
@@ -161,6 +164,10 @@ const ThinkModelTypes = [
   'zhipu_glm_latest_openrouter',
   'claude',
   'claude46',
+  // Claude Opus 4.7+ / Sonnet 5 / Opus 5 — adaptive effort with native xhigh + max; thinking can be disabled
+  'claude5',
+  // Claude Fable 5+ / Opus 5.5+ — same effort ladder, but adaptive thinking is always on (no `none`)
+  'claude5_always',
   'mistral'
 ] as const
 

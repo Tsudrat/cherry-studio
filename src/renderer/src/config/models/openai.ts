@@ -103,7 +103,7 @@ export const isGPT56ProModel = (model: Model) => {
 }
 
 /**
- * GPT-6 family. Currently only Astra is released; keep the matcher open for later SKUs.
+ * GPT-6 family (Astra / Sol / Luna and later SKUs).
  */
 export const isGPT6FamilyModel = (model: Model) => {
   const modelId = normalizeOpenAIGptModelId(model.id)
@@ -113,6 +113,18 @@ export const isGPT6FamilyModel = (model: Model) => {
 export const isGPT6AstraModel = (model: Model) => {
   const modelId = normalizeOpenAIGptModelId(model.id)
   return /(?:^|[-_.])gpt-6-astra(?:$|[-_.])/.test(modelId)
+}
+
+/** GPT-6 Sol — coding / agentic workflows; effort includes `none`. */
+export const isGPT6SolModel = (model: Model) => {
+  const modelId = normalizeOpenAIGptModelId(model.id)
+  return /(?:^|[-_.])gpt-6-sol(?:$|[-_.])/.test(modelId)
+}
+
+/** GPT-6 Luna — efficient high-volume; effort includes `none`. */
+export const isGPT6LunaModel = (model: Model) => {
+  const modelId = normalizeOpenAIGptModelId(model.id)
+  return /(?:^|[-_.])gpt-6-luna(?:$|[-_.])/.test(modelId)
 }
 
 export const isGPT6AstraProModel = (model: Model) => {
@@ -160,9 +172,12 @@ export const isSupportVerbosityModel = (model: Model) => {
  */
 export function isSupportNoneReasoningEffortModel(model: Model): boolean {
   const modelId = normalizeOpenAIGptModelId(model.id)
-  // GPT-6 Astra rejects `none` (HTTP 400). Other GPT-6 SKUs may restore it later.
+  // GPT-6 Astra rejects `none` (HTTP 400). Sol / Luna (and other non-Astra GPT-6) allow it.
   if (isGPT6AstraModel(model)) {
     return false
+  }
+  if (isGPT6FamilyModel(model)) {
+    return true
   }
   const isCodex = modelId.includes('codex')
   const isOldCodex = isCodex && (isGPT51SeriesModel(model) || isGPT52SeriesModel(model))

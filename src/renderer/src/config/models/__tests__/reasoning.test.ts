@@ -346,6 +346,9 @@ describe('Claude & regional providers', () => {
     expect(isClaudeReasoningModel(createModel({ id: 'anthropic.claude-fable-5-v1:0' }))).toBe(true)
     // Not pinned to major 5 — future Fable releases stay covered.
     expect(isClaudeReasoningModel(createModel({ id: 'claude-fable-6' }))).toBe(true)
+    expect(isClaudeReasoningModel(createModel({ id: 'claude-opus-5' }))).toBe(true)
+    expect(isClaudeReasoningModel(createModel({ id: 'claude-opus-5-5' }))).toBe(true)
+    expect(isClaudeReasoningModel(createModel({ id: 'claude-sonnet-5' }))).toBe(true)
   })
 
   it('covers hunyuan reasoning heuristics', () => {
@@ -455,6 +458,8 @@ describe('DeepSeek V4+ Models', () => {
     it('matches V4 model IDs with and without suffixes', () => {
       expect(isDeepSeekV4PlusModel(createModel({ id: 'deepseek-v4' }))).toBe(true)
       expect(isDeepSeekV4PlusModel(createModel({ id: 'deepseek-v4-flash' }))).toBe(true)
+      expect(isDeepSeekV4PlusModel(createModel({ id: 'deepseek-flash' }))).toBe(true)
+      expect(isDeepSeekV4PlusModel(createModel({ id: 'deepseek/deepseek-flash' }))).toBe(true)
       expect(isDeepSeekV4PlusModel(createModel({ id: 'deepseek-v4-pro' }))).toBe(true)
       expect(isDeepSeekV4PlusModel(createModel({ id: 'deepseek-v4.1' }))).toBe(true)
       expect(isDeepSeekV4PlusModel(createModel({ id: 'deepseek-v4-pro-preview' }))).toBe(true)
@@ -521,6 +526,7 @@ describe('DeepSeek V4+ Models', () => {
     it('returns deepseek_v4 for V4+ models', () => {
       expect(getThinkModelType(createModel({ id: 'deepseek-v4' }))).toBe('deepseek_v4')
       expect(getThinkModelType(createModel({ id: 'deepseek-v4-flash' }))).toBe('deepseek_v4')
+      expect(getThinkModelType(createModel({ id: 'deepseek-flash' }))).toBe('deepseek_v4')
       expect(getThinkModelType(createModel({ id: 'deepseek-v4-pro' }))).toBe('deepseek_v4')
       expect(getThinkModelType(createModel({ id: 'deepseek/deepseek-v4-flash:deepseek' }))).toBe('deepseek_v4')
       expect(getThinkModelType(createModel({ id: 'deepseek/deepseek-v4-pro:fireworks' }))).toBe('deepseek_v4')
@@ -556,6 +562,9 @@ describe('DeepSeek V4+ Models', () => {
       )
       expect(
         getModelSupportedReasoningEffortOptions(createModel({ id: 'deepseek-v4-flash', provider: 'deepseek' }))
+      ).toEqual(['default', 'none', 'low', 'high', 'max'])
+      expect(
+        getModelSupportedReasoningEffortOptions(createModel({ id: 'deepseek-flash', provider: 'deepseek' }))
       ).toEqual(['default', 'none', 'low', 'high', 'max'])
       expect(
         getModelSupportedReasoningEffortOptions(createModel({ id: 'deepseek-v4-pro', provider: 'openrouter' }))
@@ -894,10 +903,12 @@ describe('isReasoningModel', () => {
   it.each([
     ['gemini-3.7-flash', undefined, ['default', 'low', 'medium', 'high']],
     ['grok-4.6', undefined, ['default', 'low', 'medium', 'high', 'xhigh']],
+    ['grok-4.7', undefined, ['default', 'low', 'medium', 'high', 'xhigh']],
     ['qwen3.8-2.4t-a95b', undefined, ['default', 'low', 'medium', 'xhigh']],
     ['qwen3.8-27b', undefined, ['default', 'none', 'low', 'medium', 'xhigh']],
     ['qwen/qwen3.8-27b', 'openrouter', ['default', 'low', 'medium', 'xhigh']],
-    ['qwen3.8-flash', undefined, ['default', 'none', 'auto']],
+    ['qwen3.8-flash', undefined, ['default', 'none', 'low', 'medium', 'xhigh']],
+    ['qwen3.8-flash-next', undefined, ['default', 'none', 'low', 'medium', 'xhigh']],
     ['qwen3.8-max', 'dashscope', ['default', 'none', 'low', 'medium', 'xhigh']],
     ['qwen3.8-max-preview', 'dashscope', ['default', 'low', 'medium', 'xhigh']],
     ['qwen/qwen3.8-max', 'openrouter', ['default', 'minimal', 'low', 'medium', 'high', 'xhigh']],
@@ -911,6 +922,7 @@ describe('isReasoningModel', () => {
 
   it.each([
     ['qwen/qwen3.8-flash', 'openrouter'],
+    ['qwen/qwen3.8-flash-next', 'openrouter'],
     ['qwen3.8-max-preview', 'gateway'],
     ['liquid/lfm-2.5-2.6b:free', 'openrouter'],
     ['meta/muse-spark-1.2', 'gateway'],
@@ -1065,6 +1077,26 @@ describe('getThinkModelType - Comprehensive Coverage', () => {
     })
   })
 
+  describe('GPT-6 Sol / Luna models', () => {
+    it('should return gpt6 for Sol and Luna ids', () => {
+      expect(getThinkModelType(createModel({ id: 'gpt-6-sol' }))).toBe('gpt6')
+      expect(getThinkModelType(createModel({ id: 'gpt-6-luna' }))).toBe('gpt6')
+      expect(getThinkModelType(createModel({ id: 'gpt-6-sol-2026-09-01' }))).toBe('gpt6')
+      expect(getThinkModelType(createModel({ id: 'openai/gpt-6-luna' }))).toBe('gpt6')
+    })
+
+    it('should expose Sol / Luna efforts including none', () => {
+      const expected = ['default', 'none', 'low', 'medium', 'high', 'xhigh', 'max']
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'gpt-6-sol' }))).toEqual(expected)
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'gpt-6-luna' }))).toEqual(expected)
+    })
+
+    it('should not confuse GPT-5.6 Sol / Luna with GPT-6', () => {
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-sol' }))).toBe('gpt5_6')
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-luna' }))).toBe('gpt5_6')
+    })
+  })
+
   describe('GPT-5.x future sub-version fallback', () => {
     it('should return gpt5_2 for future GPT-5.x models', () => {
       expect(getThinkModelType(createModel({ id: 'gpt-5.3' }))).toBe('gpt5_2')
@@ -1205,9 +1237,11 @@ describe('getThinkModelType - Comprehensive Coverage', () => {
   })
 
   describe('MiMo models', () => {
-    it('should return mimo for V2.5 thinking models', () => {
+    it('should return mimo for V2.5 / V2.6 thinking models', () => {
       expect(getThinkModelType(createModel({ id: 'mimo-v2.5' }))).toBe('mimo')
       expect(getThinkModelType(createModel({ id: 'mimo-v2.5-pro' }))).toBe('mimo')
+      expect(getThinkModelType(createModel({ id: 'mimo-v2.6-pro' }))).toBe('mimo')
+      expect(getThinkModelType(createModel({ id: 'mimo-v2.6-flash' }))).toBe('mimo')
     })
   })
 
@@ -2778,6 +2812,8 @@ describe('isInterleavedThinkingModel', () => {
     it('should support thinking control for V2.5 models only on chat models', () => {
       expect(isSupportedThinkingTokenMiMoModel(createModel({ id: 'mimo-v2.5' }))).toBe(true)
       expect(isSupportedThinkingTokenMiMoModel(createModel({ id: 'mimo-v2.5-pro' }))).toBe(true)
+      expect(isSupportedThinkingTokenMiMoModel(createModel({ id: 'mimo-v2.6-pro' }))).toBe(true)
+      expect(isSupportedThinkingTokenMiMoModel(createModel({ id: 'mimo-v2.6-flash' }))).toBe(true)
       expect(isSupportedThinkingTokenMiMoModel(createModel({ id: 'mimo-v2.5-tts' }))).toBe(false)
       expect(isSupportedThinkingTokenMiMoModel(createModel({ id: 'mimo-v2.5-tts-voiceclone' }))).toBe(false)
     })
@@ -2918,21 +2954,26 @@ describe('Claude Models', () => {
       expect(getThinkModelType(createModel({ id: 'anthropic.claude-opus-4-6-v1' }))).toBe('claude46')
     })
 
-    it('should return claude46 for Claude Opus 4.7 and newer models', () => {
-      expect(getThinkModelType(createModel({ id: 'claude-opus-4-7' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'claude-opus-4-8' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'anthropic.claude-opus-4-8-v1:0' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'claude-opus-4-10' }))).toBe('claude46')
+    it('should return claude5 for Claude Opus 4.7+ and Sonnet/Opus 5 (disableable adaptive)', () => {
+      expect(getThinkModelType(createModel({ id: 'claude-opus-4-7' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'claude-opus-4-8' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'anthropic.claude-opus-4-8-v1:0' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'claude-opus-4-10' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'claude-opus-5' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'claude-sonnet-5' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'claude-sonnet-5-1' }))).toBe('claude5')
     })
 
-    it('should return claude46 for the whole Claude Fable line (shares the 4.6 effort list)', () => {
-      expect(getThinkModelType(createModel({ id: 'claude-fable-5' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'claude-fable-5-7' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'claude-fable-5.7' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'anthropic.claude-fable-5-v1:0' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'claude-fable-5-20260101' }))).toBe('claude46')
-      // Future Fable majors must keep working too (no hardcoded -5 anywhere in the chain).
-      expect(getThinkModelType(createModel({ id: 'claude-fable-6' }))).toBe('claude46')
+    it('should return claude5_always for Claude Fable 5+ and Opus 5.5+', () => {
+      expect(getThinkModelType(createModel({ id: 'claude-fable-5' }))).toBe('claude5_always')
+      expect(getThinkModelType(createModel({ id: 'claude-fable-5-1' }))).toBe('claude5_always')
+      expect(getThinkModelType(createModel({ id: 'claude-fable-5-7' }))).toBe('claude5_always')
+      expect(getThinkModelType(createModel({ id: 'claude-fable-5.7' }))).toBe('claude5_always')
+      expect(getThinkModelType(createModel({ id: 'anthropic.claude-fable-5-v1:0' }))).toBe('claude5_always')
+      expect(getThinkModelType(createModel({ id: 'claude-fable-5-20260101' }))).toBe('claude5_always')
+      expect(getThinkModelType(createModel({ id: 'claude-fable-6' }))).toBe('claude5_always')
+      expect(getThinkModelType(createModel({ id: 'claude-opus-5-5' }))).toBe('claude5_always')
+      expect(getThinkModelType(createModel({ id: 'claude-opus-5.5' }))).toBe('claude5_always')
     })
 
     it('should return default for non-reasoning Claude models', () => {
@@ -2950,6 +2991,14 @@ describe('Claude Models', () => {
     it('should have correct options for claude46', () => {
       expect(MODEL_SUPPORTED_OPTIONS.claude46).toEqual(['default', 'none', 'low', 'medium', 'high', 'xhigh'])
     })
+
+    it('should have correct options for claude5', () => {
+      expect(MODEL_SUPPORTED_OPTIONS.claude5).toEqual(['default', 'none', 'low', 'medium', 'high', 'xhigh', 'max'])
+    })
+
+    it('should have correct options for claude5_always (no none)', () => {
+      expect(MODEL_SUPPORTED_OPTIONS.claude5_always).toEqual(['default', 'low', 'medium', 'high', 'xhigh', 'max'])
+    })
   })
 
   describe('MODEL_SUPPORTED_REASONING_EFFORT for Claude', () => {
@@ -2959,6 +3008,11 @@ describe('Claude Models', () => {
 
     it('should have correct effort levels for claude46', () => {
       expect(MODEL_SUPPORTED_REASONING_EFFORT.claude46).toEqual(['low', 'medium', 'high', 'xhigh'])
+    })
+
+    it('should have correct effort levels for claude5 / claude5_always', () => {
+      expect(MODEL_SUPPORTED_REASONING_EFFORT.claude5).toEqual(['low', 'medium', 'high', 'xhigh', 'max'])
+      expect(MODEL_SUPPORTED_REASONING_EFFORT.claude5_always).toEqual(['low', 'medium', 'high', 'xhigh', 'max'])
     })
   })
 
@@ -2975,6 +3029,20 @@ describe('Claude Models', () => {
       const expected = ['default', 'none', 'low', 'medium', 'high', 'xhigh']
       expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'claude-opus-4-6' }))).toEqual(expected)
       expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'claude-sonnet-4-6' }))).toEqual(expected)
+    })
+
+    it('should return claude5 options for Opus 4.7+ / Sonnet 5 / Opus 5', () => {
+      const expected = ['default', 'none', 'low', 'medium', 'high', 'xhigh', 'max']
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'claude-opus-4-7' }))).toEqual(expected)
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'claude-sonnet-5' }))).toEqual(expected)
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'claude-opus-5' }))).toEqual(expected)
+    })
+
+    it('should omit none for always-on Fable 5+ / Opus 5.5+', () => {
+      const expected = ['default', 'low', 'medium', 'high', 'xhigh', 'max']
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'claude-fable-5' }))).toEqual(expected)
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'claude-fable-5-1' }))).toEqual(expected)
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'claude-opus-5-5' }))).toEqual(expected)
     })
   })
 
@@ -3003,11 +3071,11 @@ describe('Claude Models', () => {
   })
 
   describe('Claude Opus 4.7+ thinking model type and token limits', () => {
-    it('routes Opus 4.7+ through the claude46 thinking type', () => {
-      expect(getThinkModelType(createModel({ id: 'claude-opus-4-7' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'anthropic.claude-opus-4-7-v1' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'claude-opus-4-8' }))).toBe('claude46')
-      expect(getThinkModelType(createModel({ id: 'claude-opus-4-10' }))).toBe('claude46')
+    it('routes Opus 4.7+ through the claude5 thinking type', () => {
+      expect(getThinkModelType(createModel({ id: 'claude-opus-4-7' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'anthropic.claude-opus-4-7-v1' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'claude-opus-4-8' }))).toBe('claude5')
+      expect(getThinkModelType(createModel({ id: 'claude-opus-4-10' }))).toBe('claude5')
     })
 
     it('returns 128K max tokens for Opus 4.7+ models', () => {

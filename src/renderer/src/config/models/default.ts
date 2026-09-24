@@ -317,6 +317,8 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
   alayanew: [],
   openai: [
     { id: 'gpt-6-astra', provider: 'openai', name: ' GPT 6 Astra', group: 'gpt-6' },
+    { id: 'gpt-6-sol', provider: 'openai', name: ' GPT 6 Sol', group: 'gpt-6' },
+    { id: 'gpt-6-luna', provider: 'openai', name: ' GPT 6 Luna', group: 'gpt-6' },
     { id: 'gpt-5.6-sol', provider: 'openai', name: ' GPT 5.6 Sol', group: 'gpt-5.6' },
     { id: 'gpt-5.6-terra', provider: 'openai', name: ' GPT 5.6 Terra', group: 'gpt-5.6' },
     { id: 'gpt-5.6-luna', provider: 'openai', name: ' GPT 5.6 Luna', group: 'gpt-5.6' },
@@ -396,6 +398,36 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
   ],
   anthropic: [
     {
+      id: 'claude-fable-5-1',
+      provider: 'anthropic',
+      name: 'Claude Fable 5.1',
+      group: 'Claude Fable'
+    },
+    {
+      id: 'claude-opus-5-5',
+      provider: 'anthropic',
+      name: 'Claude Opus 5.5',
+      group: 'Claude 5'
+    },
+    {
+      id: 'claude-opus-5',
+      provider: 'anthropic',
+      name: 'Claude Opus 5',
+      group: 'Claude 5'
+    },
+    {
+      id: 'claude-sonnet-5',
+      provider: 'anthropic',
+      name: 'Claude Sonnet 5',
+      group: 'Claude 5'
+    },
+    {
+      id: 'claude-fable-5',
+      provider: 'anthropic',
+      name: 'Claude Fable 5',
+      group: 'Claude Fable'
+    },
+    {
       id: 'claude-opus-4-7',
       provider: 'anthropic',
       name: 'Claude Opus 4.7',
@@ -433,6 +465,13 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     }
   ],
   deepseek: [
+    {
+      id: 'deepseek-flash',
+      provider: 'deepseek',
+      name: 'deepseek-flash',
+      group: 'DeepSeek',
+      capabilities: [{ type: 'text' }, { type: 'vision' }, { type: 'function_calling' }]
+    },
     {
       id: 'deepseek-v4.1-flash',
       provider: 'deepseek',
@@ -890,6 +929,8 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     { id: 'qwen-image-3.0-pro', name: 'Qwen Image 3.0 Pro', provider: 'dashscope', group: 'Qwen Image' },
     { id: 'qwen3.8-max', name: 'Qwen3.8 Max', provider: 'dashscope', group: 'Qwen' },
     { id: 'qwen3.8-max-preview', name: 'Qwen3.8 Max Preview', provider: 'dashscope', group: 'Qwen' },
+    { id: 'qwen3.8-flash', name: 'Qwen3.8 Flash', provider: 'dashscope', group: 'Qwen' },
+    { id: 'qwen3.8-flash-next', name: 'Qwen3.8 Flash Next', provider: 'dashscope', group: 'Qwen' },
     { id: 'qwen3.5-plus', name: 'Qwen3.5-Plus', provider: 'dashscope', group: 'Qwen' },
     { id: 'qwen3.5-flash', name: 'Qwen3.5-Flash', provider: 'dashscope', group: 'Qwen' },
     { id: 'qwen3-max', name: 'Qwen3-Max', provider: 'dashscope', group: 'Qwen' },
@@ -1155,6 +1196,12 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     }
   ],
   grok: [
+    {
+      id: 'grok-4.7',
+      provider: 'grok',
+      name: 'Grok 4.7',
+      group: 'Grok'
+    },
     {
       id: 'grok-4.6',
       provider: 'grok',
@@ -2018,6 +2065,18 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     }
   ],
   mimo: [
+    {
+      id: 'mimo-v2.6-pro',
+      name: 'Mimo V2.6 Pro',
+      provider: 'mimo',
+      group: 'mimo'
+    },
+    {
+      id: 'mimo-v2.6-flash',
+      name: 'Mimo V2.6 Flash',
+      provider: 'mimo',
+      group: 'mimo'
+    },
     {
       id: 'mimo-v2.5',
       name: 'Mimo V2.5',
