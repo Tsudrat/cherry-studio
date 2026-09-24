@@ -476,24 +476,6 @@ function isAtLeastVersion(major: number, minor: number, minMajor: number, minMin
 }
 
 /**
- * Opus 4.7+ or Fable 5+ — shared by older adaptive-thinking call sites.
- * Prefer {@link isSupportAdaptiveThinkingClaudeModel} for new code (also covers Sonnet 5+).
- */
-function isClaudeOpus47OrNewerModel(model: Model | undefined | null): boolean {
-  const parsed = parseClaudeAdaptiveFamilyVersion(model)
-  if (!parsed) {
-    return false
-  }
-  if (parsed.family === 'fable') {
-    return parsed.major >= 5
-  }
-  if (parsed.family === 'opus') {
-    return isAtLeastVersion(parsed.major, parsed.minor, 4, 7)
-  }
-  return false
-}
-
-/**
  * Claude models that use adaptive thinking (effort) rather than budget-token thinking.
  *
  * Per Anthropic docs: Opus 4.7+, Fable 5+, Sonnet 5+.
