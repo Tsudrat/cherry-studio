@@ -2993,26 +2993,11 @@ describe('Claude Models', () => {
     })
 
     it('should have correct options for claude5', () => {
-      expect(MODEL_SUPPORTED_OPTIONS.claude5).toEqual([
-        'default',
-        'none',
-        'low',
-        'medium',
-        'high',
-        'xhigh',
-        'max'
-      ])
+      expect(MODEL_SUPPORTED_OPTIONS.claude5).toEqual(['default', 'none', 'low', 'medium', 'high', 'xhigh', 'max'])
     })
 
     it('should have correct options for claude5_always (no none)', () => {
-      expect(MODEL_SUPPORTED_OPTIONS.claude5_always).toEqual([
-        'default',
-        'low',
-        'medium',
-        'high',
-        'xhigh',
-        'max'
-      ])
+      expect(MODEL_SUPPORTED_OPTIONS.claude5_always).toEqual(['default', 'low', 'medium', 'high', 'xhigh', 'max'])
     })
   })
 

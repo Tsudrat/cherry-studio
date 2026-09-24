@@ -613,8 +613,7 @@ export function isGrok46Model(model?: Model): boolean {
 /** Grok 4.6 and later (4.7, 4.8, …) share the same reasoning_effort contract. */
 export function isGrok46OrNewerModel(model?: Model): boolean {
   if (!model) return false
-  const matches = (candidate: Model) =>
-    /^grok-4[.-]([6-9]|\d{2,})(?:-|$)/.test(getLowerBaseModelName(candidate.id))
+  const matches = (candidate: Model) => /^grok-4[.-]([6-9]|\d{2,})(?:-|$)/.test(getLowerBaseModelName(candidate.id))
   const { idResult, nameResult } = withModelIdAndNameAsId(model, matches)
   return idResult || nameResult
 }
@@ -764,10 +763,7 @@ export function isQwen38EffortModel(model?: Model): boolean {
   if (!model) return false
   const type = getCurrentCatalogThinkingType(model)
   return (
-    type === 'qwen3_8_large' ||
-    type === 'qwen3_8_hybrid' ||
-    type === 'qwen3_8_flash' ||
-    type === 'qwen3_8_max_preview'
+    type === 'qwen3_8_large' || type === 'qwen3_8_hybrid' || type === 'qwen3_8_flash' || type === 'qwen3_8_max_preview'
   )
 }
 
