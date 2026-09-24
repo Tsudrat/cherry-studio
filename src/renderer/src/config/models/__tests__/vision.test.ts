@@ -392,6 +392,8 @@ describe('isVisionModel', () => {
       expect(isVisionModel(createModel({ id: 'deepseek-v4.1-flash' }))).toBe(true)
       expect(isVisionModel(createModel({ id: 'deepseek/deepseek-v4.1-flash' }))).toBe(true)
       expect(isVisionModel(createModel({ id: 'deepseek-ai/DeepSeek-V4.1-Flash' }))).toBe(true)
+      expect(isVisionModel(createModel({ id: 'deepseek-flash' }))).toBe(true)
+      expect(isVisionModel(createModel({ id: 'deepseek/deepseek-flash' }))).toBe(true)
       expect(isVisionModel(createModel({ id: 'deepseek-v4-flash-vision-exp' }))).toBe(true)
       expect(isVisionModel(createModel({ id: 'deepseek-v4-flash' }))).toBe(false)
       expect(isVisionModel(createModel({ id: 'deepseek-v4-pro' }))).toBe(false)

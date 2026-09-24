@@ -1397,6 +1397,54 @@ describe('reasoning utils', () => {
       }
     )
 
+    it('should use adaptive thinking with native max effort for Claude Opus 4.7+', async () => {
+      const { isReasoningModel, isSupportedThinkingTokenClaudeModel } = await import('@renderer/config/models')
+
+      vi.mocked(isReasoningModel).mockReturnValue(true)
+      vi.mocked(isSupportedThinkingTokenClaudeModel).mockReturnValue(true)
+
+      const model: Model = {
+        id: 'claude-opus-4-7',
+        name: 'Claude Opus 4.7',
+        provider: SystemProviderIds.anthropic
+      } as Model
+
+      const assistant: Assistant = {
+        id: 'test',
+        name: 'Test',
+        settings: { reasoning_effort: 'max' }
+      } as Assistant
+
+      const result = getAnthropicReasoningParams(assistant, model)
+      expect(result).toEqual({
+        thinking: { type: 'adaptive', display: 'summarized' },
+        effort: 'max'
+      })
+    })
+
+    it('should not disable thinking for always-on Claude Fable / Opus 5.5', async () => {
+      const { isReasoningModel, isSupportedThinkingTokenClaudeModel } = await import('@renderer/config/models')
+
+      vi.mocked(isReasoningModel).mockReturnValue(true)
+      vi.mocked(isSupportedThinkingTokenClaudeModel).mockReturnValue(true)
+
+      for (const id of ['claude-fable-5-1', 'claude-opus-5-5'] as const) {
+        const model: Model = {
+          id,
+          name: id,
+          provider: SystemProviderIds.anthropic
+        } as Model
+
+        const assistant: Assistant = {
+          id: 'test',
+          name: 'Test',
+          settings: { reasoning_effort: 'none' }
+        } as Assistant
+
+        expect(getAnthropicReasoningParams(assistant, model)).toEqual({})
+      }
+    })
+
     it('should use adaptive thinking for future Claude Opus 4 minor versions by default', async () => {
       const { isReasoningModel, isSupportedThinkingTokenClaudeModel } = await import('@renderer/config/models')
 

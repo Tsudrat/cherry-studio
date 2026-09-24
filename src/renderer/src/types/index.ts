@@ -161,6 +161,10 @@ const ThinkModelTypes = [
   'zhipu_glm_latest_openrouter',
   'claude',
   'claude46',
+  // Claude Opus 4.7+ / Sonnet 5 / Opus 5 — adaptive effort with native xhigh + max; thinking can be disabled
+  'claude5',
+  // Claude Fable 5+ / Opus 5.5+ — same effort ladder, but adaptive thinking is always on (no `none`)
+  'claude5_always',
   'mistral'
 ] as const
 

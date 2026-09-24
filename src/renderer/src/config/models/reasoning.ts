@@ -26,6 +26,7 @@ import {
 import {
   GEMINI_FLASH_MODEL_REGEX,
   isClaude46SeriesModel,
+  isClaudeAlwaysOnAdaptiveThinkingModel,
   isGemini3FlashModel,
   isGemini3ProModel,
   isGemini31FlashImageModel,
@@ -75,6 +76,7 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   grok: ['low', 'high'] as const,
   grok4_fast: ['auto'] as const,
   grok_4_3: ['none', 'low', 'medium', 'high'] as const,
+  // Grok 4.6+ (incl. 4.7): low/medium/high/xhigh; reasoning cannot be disabled
   grok_4_6: ['low', 'medium', 'high', 'xhigh'] as const,
   gemini2_flash: ['low', 'medium', 'high', 'auto'] as const,
   gemini2_pro: ['low', 'medium', 'high', 'auto'] as const,
@@ -91,8 +93,9 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   qwen: ['low', 'medium', 'high'] as const,
   qwen_thinking: ['low', 'medium', 'high'] as const,
   qwen3_8_large: ['low', 'medium', 'xhigh'] as const,
+  // Qwen3.8 Max / 27B / Flash(+Next): low | medium | xhigh (high/max map upstream to xhigh)
   qwen3_8_hybrid: ['none', 'low', 'medium', 'xhigh'] as const,
-  qwen3_8_flash: ['auto'] as const,
+  qwen3_8_flash: ['none', 'low', 'medium', 'xhigh'] as const,
   qwen3_8_max_preview: ['low', 'medium', 'xhigh'] as const,
   qwen3_8_openrouter_max: ['minimal', 'low', 'medium', 'high', 'xhigh'] as const,
   doubao: ['auto', 'high'] as const,
@@ -125,8 +128,12 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   zhipu_glm_latest_openrouter: ['low', 'high', 'max'] as const,
   // Claude 3.7, 4.0, 4.5 reasoning models
   claude: ['low', 'medium', 'high'] as const,
-  // Claude 4.6 supports low, medium, high, xhigh (xhigh is mapped to max in API)
+  // Claude 4.6 supports low, medium, high, max; UI keeps xhigh and maps it to max at the API
   claude46: ['low', 'medium', 'high', 'xhigh'] as const,
+  // Claude Opus 4.7+ / Sonnet 5 / Opus 5: native low/medium/high/xhigh/max
+  claude5: ['low', 'medium', 'high', 'xhigh', 'max'] as const,
+  // Claude Fable 5+ / Opus 5.5+: same ladder, thinking always on
+  claude5_always: ['low', 'medium', 'high', 'xhigh', 'max'] as const,
   mistral: ['high'] as const
 } as const satisfies ReasoningEffortConfig
 
@@ -164,7 +171,7 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   qwen_thinking: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen_thinking] as const,
   qwen3_8_large: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen3_8_large] as const,
   qwen3_8_hybrid: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen3_8_hybrid] as const,
-  qwen3_8_flash: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen3_8_flash] as const,
+  qwen3_8_flash: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen3_8_flash] as const,
   qwen3_8_max_preview: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen3_8_max_preview] as const,
   qwen3_8_openrouter_max: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen3_8_openrouter_max] as const,
   doubao: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.doubao] as const,
@@ -197,6 +204,8 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   zhipu_glm_latest_openrouter: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.zhipu_glm_latest_openrouter] as const,
   claude: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.claude] as const,
   claude46: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.claude46] as const,
+  claude5: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.claude5] as const,
+  claude5_always: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.claude5_always] as const,
   mistral: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.mistral] as const
 } as const
 
@@ -205,13 +214,17 @@ function getCurrentCatalogThinkingType(model: Model): ThinkingModelType | undefi
   const providerId = model.provider?.toLowerCase()
 
   if (/^gemini-3[.-]7-flash(?:-|$)/.test(modelId)) return 'gemini3_7_flash'
-  if (/^grok-4[.-]6(?:-|$)/.test(modelId)) return 'grok_4_6'
+  // Grok 4.6+ share the same effort ladder (low/medium/high/xhigh, no none)
+  if (/^grok-4[.-]([6-9]|\d{2,})(?:-|$)/.test(modelId)) return 'grok_4_6'
 
   if (/^qwen3[.-]8-2[.-]4t-a95b(?:-|$)/.test(modelId)) return 'qwen3_8_large'
   if (/^qwen3[.-]8-27b(?:-|$)/.test(modelId)) {
     return providerId === 'openrouter' ? 'qwen3_8_large' : 'qwen3_8_hybrid'
   }
-  if (/^qwen3[.-]8-flash(?:-|$)/.test(modelId) && providerId !== 'openrouter') return 'qwen3_8_flash'
+  // Flash / Flash-Next: official effort is low|medium|xhigh with enable_thinking toggle
+  if (/^qwen3[.-]8-flash(?:-next)?(?:-|$)/.test(modelId) && providerId !== 'openrouter') {
+    return 'qwen3_8_flash'
+  }
   if (/^qwen3[.-]8-max-preview(?:-|$)/.test(modelId) && providerId === 'dashscope') {
     return 'qwen3_8_max_preview'
   }
@@ -238,7 +251,7 @@ function isCurrentCatalogFixedReasoningModel(model: Model): boolean {
 
   return (
     /^lfm-2[.-]5-2[.-]6b(?:-|$)/.test(modelId) ||
-    (/^qwen3[.-]8-flash(?:-|$)/.test(modelId) && providerId === 'openrouter') ||
+    (/^qwen3[.-]8-flash(?:-next)?(?:-|$)/.test(modelId) && providerId === 'openrouter') ||
     (/^qwen3[.-]8-max-preview(?:-|$)/.test(modelId) && providerId !== 'dashscope') ||
     (/^muse-spark(?:-|$)/.test(modelId) && !['openrouter', 'opencode'].includes(providerId)) ||
     (/^(?:sakana-)?namazu(?:-|$)/.test(modelId) && providerId !== 'openrouter') ||
@@ -256,10 +269,15 @@ const _getThinkModelType = (model: Model): ThinkingModelType => {
     thinkingModelType = currentCatalogType
   } else if (isClaudeReasoningModel(model)) {
     thinkingModelType = 'claude'
-    // Opus 4.7+ reuses the 4.6 effort list (low/medium/high/xhigh); provider-level
-    // mapping still distinguishes them (Opus 4.7+ sends native 'xhigh', 4.6 sends 'max').
-    if (isClaude46SeriesModel(model) || isSupportAdaptiveThinkingClaudeModel(model)) {
+    // Claude 4.6: effort UI uses xhigh → API max
+    if (isClaude46SeriesModel(model)) {
       thinkingModelType = 'claude46'
+    } else if (isClaudeAlwaysOnAdaptiveThinkingModel(model)) {
+      // Fable 5+ / Opus 5.5+: adaptive always on; omit `none`
+      thinkingModelType = 'claude5_always'
+    } else if (isSupportAdaptiveThinkingClaudeModel(model)) {
+      // Opus 4.7+ / Sonnet 5 / Opus 5: native xhigh + max; thinking disableable
+      thinkingModelType = 'claude5'
     }
   } else if (solarProType) {
     thinkingModelType = solarProType
@@ -521,7 +539,7 @@ export function isSupportedReasoningEffortGrokModel(model?: Model): boolean {
     return false
   }
 
-  if (isGrok43Model(model) || isGrok46Model(model)) {
+  if (isGrok43Model(model) || isGrok46OrNewerModel(model)) {
     return true
   }
 
@@ -584,6 +602,15 @@ export function isGrok43Model(model?: Model): boolean {
 export function isGrok46Model(model?: Model): boolean {
   if (!model) return false
   const matches = (candidate: Model) => /^grok-4[.-]6(?:-|$)/.test(getLowerBaseModelName(candidate.id))
+  const { idResult, nameResult } = withModelIdAndNameAsId(model, matches)
+  return idResult || nameResult
+}
+
+/** Grok 4.6 and later (4.7, 4.8, …) share the same reasoning_effort contract. */
+export function isGrok46OrNewerModel(model?: Model): boolean {
+  if (!model) return false
+  const matches = (candidate: Model) =>
+    /^grok-4[.-]([6-9]|\d{2,})(?:-|$)/.test(getLowerBaseModelName(candidate.id))
   const { idResult, nameResult } = withModelIdAndNameAsId(model, matches)
   return idResult || nameResult
 }
@@ -732,7 +759,12 @@ export function isSupportedThinkingTokenQwenModel(model?: Model): boolean {
 export function isQwen38EffortModel(model?: Model): boolean {
   if (!model) return false
   const type = getCurrentCatalogThinkingType(model)
-  return type === 'qwen3_8_large' || type === 'qwen3_8_hybrid' || type === 'qwen3_8_max_preview'
+  return (
+    type === 'qwen3_8_large' ||
+    type === 'qwen3_8_hybrid' ||
+    type === 'qwen3_8_flash' ||
+    type === 'qwen3_8_max_preview'
+  )
 }
 
 /** 是否为不支持思考控制的Qwen推理模型 */
@@ -809,7 +841,10 @@ export function isClaudeReasoningModel(model?: Model): boolean {
     modelId.includes('claude-sonnet-4') ||
     modelId.includes('claude-opus-4') ||
     modelId.includes('claude-haiku-4') ||
-    modelId.includes('claude-fable')
+    modelId.includes('claude-fable') ||
+    // Claude 5+ families (opus / sonnet / haiku) — adaptive or extended thinking
+    /claude-(?:sonnet|opus|haiku)-[5-9]/.test(modelId) ||
+    isSupportAdaptiveThinkingClaudeModel(model)
   )
 }
 
@@ -882,7 +917,22 @@ export const isGLM52Model = (model: Model): boolean => {
 
 export const isSupportedThinkingTokenMiMoModel = (model: Model): boolean => {
   const modelId = getLowerBaseModelName(model.id, '/')
-  return ['mimo-v2-flash', 'mimo-v2-pro', 'mimo-v2-omni', 'mimo-v2.5', 'mimo-v2.5-pro'].includes(modelId)
+  // Chat Completions: thinking.type enabled|disabled (default enabled).
+  // Responses API: reasoning.effort none|low|medium|high (non-none === enabled).
+  // UI ladder stays on/off (`auto` / `none`) until Xiaomi exposes real effort tiers.
+  return (
+    [
+      'mimo-v2-flash',
+      'mimo-v2-pro',
+      'mimo-v2-omni',
+      'mimo-v2.5',
+      'mimo-v2.5-pro',
+      'mimo-v2.6',
+      'mimo-v2.6-pro',
+      'mimo-v2.6-flash',
+      'mimo-v2.6-pro-ultraspeed'
+    ].includes(modelId) || /^mimo-v2\.6(?:-[\w-]+)?$/.test(modelId)
+  )
 }
 
 /**
@@ -955,13 +1005,20 @@ export const isSupportedThinkingTokenLongCatModel = (model?: Model): boolean => 
 }
 
 /**
- * Matches DeepSeek V4+ models (e.g., deepseek-v4-flash, deepseek-v4-pro, deepseek-v5-xxx).
+ * Matches DeepSeek V4+ models (e.g., deepseek-v4-flash, deepseek-v4-pro, deepseek-v5-xxx)
+ * and the floating official alias `deepseek-flash` (currently routes to V4.1-Flash).
  * V4+ models default to thinking enabled and support reasoning_effort: "low" | "high" | "max".
  */
 export const isDeepSeekV4PlusModel = (model: Model) => {
   const { idResult, nameResult } = withModelIdAndNameAsId(model, (model) => {
     // Ignore routed provider suffix chains like :deepseek or :deepseek:together.
     const modelId = getLowerBaseModelName(model.id).split(':', 1)[0]
+    // Official floating alias for the latest Flash SKU (currently V4.1-Flash).
+    // Accepts bare `deepseek-flash` and provider-prefixed forms like `deepseek/deepseek-flash`.
+    const flashAlias = modelId.includes('/') ? modelId.split('/').pop()! : modelId
+    if (flashAlias === 'deepseek-flash' || flashAlias.startsWith('deepseek-flash-')) {
+      return true
+    }
     // Match deepseek-v{N} where N >= 4, with any optional suffix
     return /(\w+-)?deepseek-v([4-9]|\d{2,})([.-]\w+)*$/.test(modelId)
   })

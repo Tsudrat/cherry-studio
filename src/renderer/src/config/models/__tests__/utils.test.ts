@@ -10,6 +10,7 @@ import {
   groupQwenModels,
   isAnthropicModel,
   isClaude46SeriesModel,
+  isClaudeAlwaysOnAdaptiveThinkingModel,
   isClaudeModelRejectsTemperature,
   isClaudeModelRejectsTopK,
   isClaudeModelRejectsTopP,
@@ -860,8 +861,8 @@ describe('model utils', () => {
         expect(isSupportAdaptiveThinkingClaudeModel(createModel({ id: 'claude-opus-4-20250514' }))).toBe(false)
         expect(isSupportAdaptiveThinkingClaudeModel(createModel({ id: 'claude-sonnet-4-7' }))).toBe(false)
         expect(isSupportAdaptiveThinkingClaudeModel(createModel({ id: 'claude-haiku-4-7' }))).toBe(false)
-        // Only Opus and Fable qualify — Sonnet/Haiku never do, regardless of version.
-        expect(isSupportAdaptiveThinkingClaudeModel(createModel({ id: 'claude-sonnet-5' }))).toBe(false)
+        // Sonnet 5+ uses adaptive thinking; Haiku 5 does not (still extended / budget).
+        expect(isSupportAdaptiveThinkingClaudeModel(createModel({ id: 'claude-sonnet-5' }))).toBe(true)
         expect(isSupportAdaptiveThinkingClaudeModel(createModel({ id: 'claude-haiku-5' }))).toBe(false)
         // Fable only qualifies from major 5 onward.
         expect(isSupportAdaptiveThinkingClaudeModel(createModel({ id: 'claude-fable-4' }))).toBe(false)
@@ -877,25 +878,59 @@ describe('model utils', () => {
         const opus48 = createModel({ id: 'claude-opus-4-8' })
         const opus5 = createModel({ id: 'claude-opus-5' })
         const fable5 = createModel({ id: 'claude-fable-5' })
+        const sonnet5 = createModel({ id: 'claude-sonnet-5' })
         const opus46 = createModel({ id: 'claude-opus-4-6' })
 
         expect(isClaudeModelRejectsTemperature(opus47)).toBe(true)
         expect(isClaudeModelRejectsTemperature(opus48)).toBe(true)
         expect(isClaudeModelRejectsTemperature(opus5)).toBe(true)
         expect(isClaudeModelRejectsTemperature(fable5)).toBe(true)
+        expect(isClaudeModelRejectsTemperature(sonnet5)).toBe(true)
         expect(isClaudeModelRejectsTemperature(opus46)).toBe(false)
 
         expect(isClaudeModelRejectsTopP(opus47)).toBe(true)
         expect(isClaudeModelRejectsTopP(opus48)).toBe(true)
         expect(isClaudeModelRejectsTopP(opus5)).toBe(true)
         expect(isClaudeModelRejectsTopP(fable5)).toBe(true)
+        expect(isClaudeModelRejectsTopP(sonnet5)).toBe(true)
         expect(isClaudeModelRejectsTopP(opus46)).toBe(false)
 
         expect(isClaudeModelRejectsTopK(opus47)).toBe(true)
         expect(isClaudeModelRejectsTopK(opus48)).toBe(true)
         expect(isClaudeModelRejectsTopK(opus5)).toBe(true)
         expect(isClaudeModelRejectsTopK(fable5)).toBe(true)
+        expect(isClaudeModelRejectsTopK(sonnet5)).toBe(true)
         expect(isClaudeModelRejectsTopK(opus46)).toBe(false)
+      })
+    })
+
+    describe('isClaudeAlwaysOnAdaptiveThinkingModel', () => {
+      it('detects Fable 5+ as always-on adaptive thinking', () => {
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-fable-5' }))).toBe(true)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-fable-5-1' }))).toBe(true)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-fable-5.7' }))).toBe(true)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'anthropic.claude-fable-5-v1:0' }))).toBe(true)
+      })
+
+      it('detects Opus 5.5+ as always-on adaptive thinking', () => {
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-opus-5-5' }))).toBe(true)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-opus-5.5' }))).toBe(true)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-opus-5-6' }))).toBe(true)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-opus-6' }))).toBe(true)
+      })
+
+      it('returns false for adaptive models that still allow disabling thinking', () => {
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-opus-4-7' }))).toBe(false)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-opus-5' }))).toBe(false)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-opus-5-0' }))).toBe(false)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-opus-5-4' }))).toBe(false)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-sonnet-5' }))).toBe(false)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(createModel({ id: 'claude-fable-4' }))).toBe(false)
+      })
+
+      it('returns false for undefined and null', () => {
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(undefined as unknown as Model)).toBe(false)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(null as unknown as Model)).toBe(false)
       })
     })
   })
