@@ -1077,6 +1077,26 @@ describe('getThinkModelType - Comprehensive Coverage', () => {
     })
   })
 
+  describe('GPT-6 Sol / Luna models', () => {
+    it('should return gpt6 for Sol and Luna ids', () => {
+      expect(getThinkModelType(createModel({ id: 'gpt-6-sol' }))).toBe('gpt6')
+      expect(getThinkModelType(createModel({ id: 'gpt-6-luna' }))).toBe('gpt6')
+      expect(getThinkModelType(createModel({ id: 'gpt-6-sol-2026-09-01' }))).toBe('gpt6')
+      expect(getThinkModelType(createModel({ id: 'openai/gpt-6-luna' }))).toBe('gpt6')
+    })
+
+    it('should expose Sol / Luna efforts including none', () => {
+      const expected = ['default', 'none', 'low', 'medium', 'high', 'xhigh', 'max']
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'gpt-6-sol' }))).toEqual(expected)
+      expect(getModelSupportedReasoningEffortOptions(createModel({ id: 'gpt-6-luna' }))).toEqual(expected)
+    })
+
+    it('should not confuse GPT-5.6 Sol / Luna with GPT-6', () => {
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-sol' }))).toBe('gpt5_6')
+      expect(getThinkModelType(createModel({ id: 'gpt-5.6-luna' }))).toBe('gpt5_6')
+    })
+  })
+
   describe('GPT-5.x future sub-version fallback', () => {
     it('should return gpt5_2 for future GPT-5.x models', () => {
       expect(getThinkModelType(createModel({ id: 'gpt-5.3' }))).toBe('gpt5_2')

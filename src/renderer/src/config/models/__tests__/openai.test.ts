@@ -8,6 +8,8 @@ import {
   isGPT5SeriesReasoningModel,
   isGPT6AstraModel,
   isGPT6FamilyModel,
+  isGPT6LunaModel,
+  isGPT6SolModel,
   isGPT51SeriesModel,
   isGPT56ProModel,
   isGPT56SeriesModel,
@@ -360,21 +362,33 @@ describe('OpenAI Model Detection', () => {
       expect(isGPT56ProModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(false)
     })
 
-    it('detects GPT-6 Astra and family', () => {
+    it('detects GPT-6 Astra / Sol / Luna and family', () => {
       expect(isGPT6AstraModel(createModel({ id: 'gpt-6-astra' }))).toBe(true)
+      expect(isGPT6SolModel(createModel({ id: 'gpt-6-sol' }))).toBe(true)
+      expect(isGPT6LunaModel(createModel({ id: 'gpt-6-luna' }))).toBe(true)
       expect(isGPT6FamilyModel(createModel({ id: 'gpt-6-astra-pro' }))).toBe(true)
+      expect(isGPT6FamilyModel(createModel({ id: 'gpt-6-sol' }))).toBe(true)
+      expect(isGPT6FamilyModel(createModel({ id: 'gpt-6-luna' }))).toBe(true)
       expect(isGPT6FamilyModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(false)
+      expect(isGPT6SolModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(false)
+      expect(isGPT6LunaModel(createModel({ id: 'gpt-5.6-luna' }))).toBe(false)
     })
 
-    it('marks GPT-6 Astra as reasoning-effort capable without none', () => {
+    it('marks GPT-6 Astra without none; Sol / Luna with none', () => {
       expect(isSupportedReasoningEffortOpenAIModel(createModel({ id: 'gpt-6-astra' }))).toBe(true)
+      expect(isSupportedReasoningEffortOpenAIModel(createModel({ id: 'gpt-6-sol' }))).toBe(true)
+      expect(isSupportedReasoningEffortOpenAIModel(createModel({ id: 'gpt-6-luna' }))).toBe(true)
       expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-6-astra' }))).toBe(false)
+      expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-6-sol' }))).toBe(true)
+      expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-6-luna' }))).toBe(true)
       expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(true)
     })
 
-    it('supports reasoning.mode on standard GPT-5.6 / GPT-6 Astra ids but not dedicated Pro SKUs', () => {
+    it('supports reasoning.mode on standard GPT-5.6 / GPT-6 ids but not dedicated Pro SKUs', () => {
       expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(true)
       expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-6-astra' }))).toBe(true)
+      expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-6-sol' }))).toBe(true)
+      expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-6-luna' }))).toBe(true)
       expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-5.6-sol-pro' }))).toBe(false)
       expect(isSupportOpenAIReasoningModeModel(createModel({ id: 'gpt-6-astra-pro' }))).toBe(false)
     })

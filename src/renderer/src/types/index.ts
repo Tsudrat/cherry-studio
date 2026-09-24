@@ -110,6 +110,9 @@ const ThinkModelTypes = [
   'gpt56pro',
   'gpt5pro',
   'gpt52pro',
+  // GPT-6 Sol / Luna (and other non-Astra GPT-6 SKUs that allow disabling reasoning)
+  'gpt6',
+  // GPT-6 Astra — reasoning cannot be disabled
   'gpt6_astra',
   'gpt_oss',
   'grok',

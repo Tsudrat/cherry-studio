@@ -12,6 +12,7 @@ import {
   isGPT5FamilyModel,
   isGPT5ProModel,
   isGPT5SeriesModel,
+  isGPT6AstraModel,
   isGPT6FamilyModel,
   isGPT51CodexMaxModel,
   isGPT51SeriesModel,
@@ -70,6 +71,8 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   gpt52pro: ['medium', 'high', 'xhigh'] as const,
   // GPT-5.6 dedicated Pro SKUs (no `none`)
   gpt56pro: ['medium', 'high', 'xhigh', 'max'] as const,
+  // GPT-6 Sol / Luna — none|low|medium|high|xhigh|max (medium default per OpenAI docs)
+  gpt6: ['none', 'low', 'medium', 'high', 'xhigh', 'max'] as const,
   // GPT-6 Astra — does not support `none`
   gpt6_astra: ['low', 'medium', 'high', 'xhigh', 'max'] as const,
   gpt_oss: ['low', 'medium', 'high'] as const,
@@ -153,6 +156,7 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   gpt5_1_codex_max: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt5_1_codex_max] as const,
   gpt52pro: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt52pro] as const,
   gpt56pro: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt56pro] as const,
+  gpt6: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt6] as const,
   gpt6_astra: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt6_astra] as const,
   gpt_oss: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt_oss] as const,
   grok: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.grok] as const,
@@ -284,8 +288,8 @@ const _getThinkModelType = (model: Model): ThinkingModelType => {
   } else if (isOpenAIDeepResearchModel(model)) {
     return 'openai_deep_research'
   } else if (isGPT6FamilyModel(model)) {
-    // Currently only Astra; keep a single type until more GPT-6 SKUs need distinct ladders.
-    thinkingModelType = 'gpt6_astra'
+    // Astra rejects `none`; Sol / Luna (and other non-Astra GPT-6) keep the full ladder.
+    thinkingModelType = isGPT6AstraModel(model) ? 'gpt6_astra' : 'gpt6'
   } else if (isGPT56SeriesModel(model)) {
     thinkingModelType = isGPT56ProModel(model) ? 'gpt56pro' : 'gpt5_6'
   } else if (isGPT5FamilyModel(model)) {
