@@ -86,3 +86,6 @@ allowBuilds:
   sharp: true
   tesseract.js: true
   zipfile: true
+
+minimumReleaseAgeExclude:
+  - '@ai-sdk/google@3.0.146'
