@@ -3,7 +3,7 @@ import App from '@renderer/components/MinApp/MinApp'
 import { useMinapps } from '@renderer/hooks/useMinapps'
 import { useRuntime } from '@renderer/hooks/useRuntime'
 import { useSettings } from '@renderer/hooks/useSettings'
-import { Code, FileSearch, Folder, Languages, LayoutGrid, NotepadText, Palette, Sparkle } from 'lucide-react'
+import { FileSearch, Folder, Languages, LayoutGrid, NotepadText, Palette } from 'lucide-react'
 import type { FC } from 'react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -37,12 +37,6 @@ const LaunchpadPage: FC = () => {
       bgColor: 'linear-gradient(135deg, #EC4899, #F472B6)' // 绘画：活力粉色，代表创造力和艺术
     },
     {
-      icon: <Sparkle size={32} className="icon" />,
-      text: t('title.store'),
-      path: '/store',
-      bgColor: 'linear-gradient(135deg, #6366F1, #4F46E5)' // AI助手：靛蓝渐变，代表智能和科技
-    },
-    {
       icon: <Languages size={32} className="icon" />,
       text: t('title.translate'),
       path: '/translate',
@@ -53,12 +47,6 @@ const LaunchpadPage: FC = () => {
       text: t('title.files'),
       path: '/files',
       bgColor: 'linear-gradient(135deg, #F59E0B, #FBBF24)' // 文件：金色，代表资源和重要性
-    },
-    {
-      icon: <Code size={32} className="icon" />,
-      text: t('title.code'),
-      path: '/code',
-      bgColor: 'linear-gradient(135deg, #1F2937, #374151)' // Code CLI：高级暗黑色，代表专业和技术
     },
     {
       icon: <OpenClawIcon className="icon" />,
