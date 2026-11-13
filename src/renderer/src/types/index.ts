@@ -114,6 +114,8 @@ const ThinkModelTypes = [
   'gpt6',
   // GPT-6 Astra — reasoning cannot be disabled
   'gpt6_astra',
+  // GPT-6.1 Sol — reasoning cannot be disabled (Terra keeps `none`, falls under `gpt6`)
+  'gpt6_1',
   'gpt_oss',
   'grok',
   'grok4_fast',
@@ -126,6 +128,10 @@ const ThinkModelTypes = [
   'gemini3_1_pro',
   'gemini3_7_flash',
   'gemini3_image',
+  // Gemini 4 Argon / Carbon — thinking_level only (low|medium|high); cannot be disabled
+  'gemini4',
+  // Gemini 4 Hydrogen — same ladder plus `xhigh`
+  'gemini4_hydrogen',
   'gemma4_hosted',
   'qwen',
   'qwen_thinking',
@@ -140,6 +146,8 @@ const ThinkModelTypes = [
   'minimax_m3',
   'mimo',
   'hunyuan',
+  // Tencent Hy4 / Hy4-preview — thinking on (high) or off (none)
+  'hy4',
   'zhipu',
   'zhipu_glm_5_2',
   'zhipu_glm_5_2_openrouter',
@@ -149,6 +157,8 @@ const ThinkModelTypes = [
   'deepseek_v4',
   'kimi_k2_5',
   'kimi_k3',
+  // Kimi K3.1 Pro — thinking always on, effort low|high|max
+  'kimi_k3_1',
   'kimi_k3_openrouter',
   'kimi_k3_dashscope',
   'kimi_k3_fast',
@@ -160,6 +170,13 @@ const ThinkModelTypes = [
   'muse_glimmer',
   'muse_glimmer_openrouter',
   'muse_spark_openrouter',
+  // Meta API Muse models (Wonder / Ember / Spark) — minimal..max
+  'muse',
+  'muse_openrouter',
+  // Thinking Machines Lab Inkling — reasoning mandatory, none allowed on Tinker
+  'inkling',
+  // Reflection AI Beam — always-on reasoning, low..max
+  'beam',
   'namazu_openrouter',
   'zhipu_glm_latest_openrouter',
   'claude',

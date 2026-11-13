@@ -497,13 +497,20 @@ export type ReplaceSessionRequest = z.infer<typeof ReplaceSessionRequestSchema>
 
 const AgentEffortSchema = z.enum(['low', 'medium', 'high', 'xhigh', 'max'])
 
-const AgentThinkingConfigSchema = z.discriminatedUnion('type', [
+const AgentThinkingBlockBindingSchema = z.object({
+  prefixMismatchBehavior: z.enum(['error', 'drop_block'])
+})
+
+const AgentThinkingConfigSchema = z.union([
   z.object({ type: z.literal('enabled'), budgetTokens: z.number().optional() }),
   z.object({ type: z.literal('disabled') }),
+  z.object({ type: z.literal('between_tools') }),
   z.object({
     type: z.literal('adaptive'),
-    display: z.enum(['omitted', 'summarized']).optional()
-  })
+    display: z.enum(['omitted', 'summarized', 'updates']).optional(),
+    blockBinding: AgentThinkingBlockBindingSchema.optional()
+  }),
+  z.object({ blockBinding: AgentThinkingBlockBindingSchema })
 ])
 
 export type AgentEffort = z.infer<typeof AgentEffortSchema>

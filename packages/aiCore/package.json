@@ -41,7 +41,7 @@
     "@ai-sdk/deepseek": "^2.0.57",
     "@ai-sdk/openai-compatible": "^2.0.37",
     "@ai-sdk/provider": "^3.0.8",
-    "@ai-sdk/provider-utils": "^4.0.23",
+    "@ai-sdk/provider-utils": "^4.0.66",
     "@ai-sdk/xai": "^3.0.83",
     "@cherrystudio/ai-sdk-provider": "workspace:*",
     "@openrouter/ai-sdk-provider": "^2.3.3",

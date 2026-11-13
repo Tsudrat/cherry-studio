@@ -316,6 +316,8 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
   ],
   alayanew: [],
   openai: [
+    { id: 'gpt-6.1-sol', provider: 'openai', name: ' GPT 6.1 Sol', group: 'gpt-6.1' },
+    { id: 'gpt-6.1-terra', provider: 'openai', name: ' GPT 6.1 Terra', group: 'gpt-6.1' },
     { id: 'gpt-6-astra', provider: 'openai', name: ' GPT 6 Astra', group: 'gpt-6' },
     { id: 'gpt-6-sol', provider: 'openai', name: ' GPT 6 Sol', group: 'gpt-6' },
     { id: 'gpt-6-luna', provider: 'openai', name: ' GPT 6 Luna', group: 'gpt-6' },
@@ -347,6 +349,24 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     }
   ],
   gemini: [
+    {
+      id: 'gemini-4-hydrogen',
+      provider: 'gemini',
+      name: 'Gemini 4 Hydrogen',
+      group: 'Gemini 4'
+    },
+    {
+      id: 'gemini-4-carbon',
+      provider: 'gemini',
+      name: 'Gemini 4 Carbon',
+      group: 'Gemini 4'
+    },
+    {
+      id: 'gemini-4-argon',
+      provider: 'gemini',
+      name: 'Gemini 4 Argon',
+      group: 'Gemini 4'
+    },
     {
       id: 'gemini-3.7-flash',
       provider: 'gemini',
@@ -397,6 +417,24 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     }
   ],
   anthropic: [
+    {
+      id: 'claude-fable-5-2',
+      provider: 'anthropic',
+      name: 'Claude Fable 5.2',
+      group: 'Claude Fable'
+    },
+    {
+      id: 'claude-sonnet-5-5',
+      provider: 'anthropic',
+      name: 'Claude Sonnet 5.5',
+      group: 'Claude 5'
+    },
+    {
+      id: 'claude-haiku-5-5',
+      provider: 'anthropic',
+      name: 'Claude Haiku 5.5',
+      group: 'Claude 5'
+    },
     {
       id: 'claude-fable-5-1',
       provider: 'anthropic',
@@ -803,6 +841,22 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     }
   ],
   moonshot: [
+    {
+      id: 'kimi-k3.1-pro',
+      provider: 'moonshot',
+      name: 'Kimi K3.1 Pro',
+      group: 'Kimi K3.1',
+      owned_by: 'moonshot',
+      capabilities: [{ type: 'text' }, { type: 'vision' }, { type: 'function_calling' }]
+    },
+    {
+      id: 'kimi-k3.1-pro-highspeed',
+      provider: 'moonshot',
+      name: 'Kimi K3.1 Pro Highspeed',
+      group: 'Kimi K3.1',
+      owned_by: 'moonshot',
+      capabilities: [{ type: 'text' }, { type: 'vision' }, { type: 'function_calling' }]
+    },
     {
       id: 'kimi-k3',
       provider: 'moonshot',
@@ -1367,6 +1421,18 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
   ],
   hunyuan: [
     {
+      id: 'hy4',
+      provider: 'hunyuan',
+      name: 'Hy4',
+      group: 'Hy4'
+    },
+    {
+      id: 'hy4-preview',
+      provider: 'hunyuan',
+      name: 'Hy4 Preview',
+      group: 'Hy4'
+    },
+    {
       id: 'hunyuan-pro',
       provider: 'hunyuan',
       name: 'hunyuan-pro',
@@ -1428,6 +1494,24 @@ export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> =
     }
   ],
   nvidia: [
+    {
+      id: 'nvidia/nemotron-3-ultra-550b-a55b',
+      provider: 'nvidia',
+      name: 'Nemotron 3 Ultra',
+      group: 'Nemotron'
+    },
+    {
+      id: 'nvidia/nemotron-3.5-super-vl-120b-a12b',
+      provider: 'nvidia',
+      name: 'Nemotron 3.5 Super VL',
+      group: 'Nemotron'
+    },
+    {
+      id: 'nvidia/nemotron-3.5-lightning-30b-a3b',
+      provider: 'nvidia',
+      name: 'Nemotron 3.5 Lightning',
+      group: 'Nemotron'
+    },
     {
       id: '01-ai/yi-large',
       provider: 'nvidia',

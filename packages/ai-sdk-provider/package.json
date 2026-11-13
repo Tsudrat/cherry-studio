@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@ai-sdk/provider": "^3.0.8",
-    "@ai-sdk/provider-utils": "^4.0.23"
+    "@ai-sdk/provider-utils": "^4.0.66"
   },
   "devDependencies": {
     "tsdown": "^0.20.3",

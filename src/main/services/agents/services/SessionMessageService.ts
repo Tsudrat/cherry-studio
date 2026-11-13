@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto'
 
+import type { ThinkingConfig } from '@anthropic-ai/claude-agent-sdk'
 import { loggerService } from '@logger'
 import type {
   AgentPersistedMessage,
@@ -191,7 +192,10 @@ export class SessionMessageService extends BaseService {
       agentSessionId,
       {
         effort: req.effort,
-        thinking: req.thinking
+        // claude-agent-sdk's ThinkingConfig is narrower than the AI-SDK thinking union;
+        // the extra variants (between_tools, blockBinding) are never emitted by
+        // getAnthropicReasoningParams.
+        thinking: req.thinking as ThinkingConfig | undefined
       },
       undefined
     )

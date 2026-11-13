@@ -876,7 +876,15 @@ describe('isReasoningModel', () => {
     'nemotron-3-5-lightning',
     'nemotron-3-super-120b-a12b',
     'nemotron-3-ultra-550b-a55b',
+    'nvidia/nemotron-3.5-super-vl-120b-a12b',
+    'nvidia/nemotron-3.5-lightning-30b-a3b',
+    'nvidia/nemotron-3.5-bolt-74b-a9b',
     'muse-glimmer-30b',
+    'muse-wonder-1.0',
+    'muse-ember-1.0',
+    'thinkingmachines/inkling',
+    'thinkingmachines/inkling-2-small',
+    'reflection/beam-1.0-501b-a23b',
     'solar-pro2',
     'solar-pro-3',
     'solar-pro4'
@@ -914,6 +922,23 @@ describe('isReasoningModel', () => {
     ['qwen/qwen3.8-max', 'openrouter', ['default', 'minimal', 'low', 'medium', 'high', 'xhigh']],
     ['meta/muse-glimmer-30b', 'openrouter', ['default', 'low', 'medium', 'high', 'xhigh']],
     ['meta/muse-spark-1.2', 'openrouter', ['default', 'minimal', 'low', 'medium', 'high', 'xhigh']],
+    ['meta/muse-spark-1.2', 'gateway', ['default', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']],
+    ['muse-spark-1.3', 'meta', ['default', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']],
+    ['muse-wonder-1.0', 'meta', ['default', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']],
+    ['muse-ember-1.0', 'meta', ['default', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max']],
+    ['thinkingmachines/inkling', 'openrouter', ['default', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh']],
+    ['inkling-2-small', undefined, ['default', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh']],
+    ['reflection/beam-1.0-501b-a23b', 'openrouter', ['default', 'low', 'medium', 'high', 'xhigh', 'max']],
+    ['Beam-1.0-501B-A23B', 'reflection', ['default', 'low', 'medium', 'high', 'xhigh', 'max']],
+    ['gemini-4-argon', undefined, ['default', 'low', 'medium', 'high']],
+    ['gemini-4-carbon', undefined, ['default', 'low', 'medium', 'high']],
+    ['gemini-4-hydrogen', undefined, ['default', 'low', 'medium', 'high', 'xhigh']],
+    ['gemini-4-hydrogen-cyber-permissive', undefined, ['default', 'low', 'medium', 'high', 'xhigh']],
+    ['hy4', undefined, ['default', 'none', 'high']],
+    ['hy4-preview', undefined, ['default', 'none', 'high']],
+    ['tencent/hy4', 'openrouter', ['default', 'none', 'high']],
+    ['kimi-k3.1-pro', undefined, ['default', 'low', 'high', 'max']],
+    ['moonshotai/kimi-k3.1-pro', 'openrouter', ['default', 'low', 'high', 'max']],
     ['sakana/sakana-namazu', 'openrouter', ['default', 'none', 'high']],
     ['~z-ai/glm-latest', 'openrouter', ['default', 'low', 'high', 'max']]
   ])('uses the current provider contract for %s on %s', (id, provider, expected) => {
@@ -925,7 +950,6 @@ describe('isReasoningModel', () => {
     ['qwen/qwen3.8-flash-next', 'openrouter'],
     ['qwen3.8-max-preview', 'gateway'],
     ['liquid/lfm-2.5-2.6b:free', 'openrouter'],
-    ['meta/muse-spark-1.2', 'gateway'],
     ['sakana/namazu', 'gateway'],
     ['glm-latest', 'zhipu'],
     ['meta/muse-glimmer-30b', 'nvidia']
@@ -935,6 +959,39 @@ describe('isReasoningModel', () => {
     expect(getModelSupportedReasoningEffortOptions(model)).toBeUndefined()
     expect(isFixedReasoningModel(model)).toBe(true)
   })
+
+  it.each([
+    ['gpt-6-astra', undefined, 'gpt6_astra'],
+    ['gpt-6-sol', undefined, 'gpt6'],
+    ['gpt-6-luna', undefined, 'gpt6'],
+    ['gpt-6.1-sol', undefined, 'gpt6_1'],
+    ['gpt-6.1-terra', undefined, 'gpt6'],
+    ['gemini-4-argon', undefined, 'gemini4'],
+    ['gemini-4-hydrogen', undefined, 'gemini4_hydrogen'],
+    ['gemini-4-carbon', undefined, 'gemini4'],
+    ['claude-fable-5-2', undefined, 'claude5_always'],
+    ['claude-sonnet-5-5', undefined, 'claude5'],
+    ['claude-haiku-5-5', undefined, 'claude5'],
+    ['global.anthropic.claude-fable-5-2', undefined, 'claude5_always'],
+    ['kimi-k3.1-pro', undefined, 'kimi_k3_1'],
+    ['kimi-k3.1-pro-highspeed', undefined, 'kimi_k3_1'],
+    ['hy4', undefined, 'hy4'],
+    ['hy4-preview', undefined, 'hy4'],
+    ['muse-wonder-1.0', 'meta', 'muse'],
+    ['muse-ember-1.0', 'meta', 'muse'],
+    ['thinkingmachines/inkling', 'openrouter', 'inkling'],
+    ['inkling-2-small', undefined, 'inkling'],
+    ['reflection/beam-1.0-501b-a23b', 'openrouter', 'beam']
+  ])('maps %s on %s to thinking type %s', (id, provider, expected) => {
+    expect(getThinkModelType(createModel({ id, provider }))).toBe(expected)
+  })
+
+  it.each(['gpt-6-sol', 'gpt-6-astra', 'gpt-6.1-sol', 'gpt-6.1-terra', 'hy4', 'hy4-preview'])(
+    'recognizes %s as a reasoning model',
+    (id) => {
+      expect(isReasoningModel(createModel({ id }))).toBe(true)
+    }
+  )
 
   it('excludes non-fixed reasoning models from isFixedReasoningModel', () => {
     // Models that support thinking tokens or reasoning effort should NOT be fixed reasoning models

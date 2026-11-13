@@ -1,0 +1,52 @@
+diff --git a/dist/index.js b/dist/index.js
+index 06b36c7486ee0236fcb861ad4d16e172c6554b4d..4708d596ead0a02222f63ded1c621907b1025bcc 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1490,7 +1490,7 @@ async function downloadToolResultFiles(prompt, {
+ 
+ // src/get-model-path.ts
+ function getModelPath(modelId) {
+-  return modelId.includes("/") ? modelId : `models/${modelId}`;
++  return modelId.includes("models/") ? modelId : `models/${modelId}`;
+ }
+ 
+ // src/google-generative-ai-options.ts
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 13e3fb42d9bdfbbca564a068740bff1faa5d3448..bca443f8e954674ea645c117586fe9f9c930305b 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1523,7 +1523,7 @@ async function downloadToolResultFiles(prompt, {
+ 
+ // src/get-model-path.ts
+ function getModelPath(modelId) {
+-  return modelId.includes("/") ? modelId : `models/${modelId}`;
++  return modelId.includes("models/") ? modelId : `models/${modelId}`;
+ }
+ 
+ // src/google-generative-ai-options.ts
+diff --git a/dist/internal/index.js b/dist/internal/index.js
+index 1dc5d421dcb3d1cab9e715e6d25744adfbd4a363..cece6472530c81161c71bf1b5091ada16072b7be 100644
+--- a/dist/internal/index.js
++++ b/dist/internal/index.js
+@@ -1019,7 +1019,7 @@ async function downloadToolResultFiles(prompt, {
+ 
+ // src/get-model-path.ts
+ function getModelPath(modelId) {
+-  return modelId.includes("/") ? modelId : `models/${modelId}`;
++  return modelId.includes("models/") ? modelId : `models/${modelId}`;
+ }
+ 
+ // src/google-error.ts
+diff --git a/dist/internal/index.mjs b/dist/internal/index.mjs
+index 2bc79ffb339a9f2961d80a868d46184a070cd727..935c0eba68d8f410fa9738aee7a50addd0bd9cd8 100644
+--- a/dist/internal/index.mjs
++++ b/dist/internal/index.mjs
+@@ -1014,7 +1014,7 @@ async function downloadToolResultFiles(prompt, {
+ 
+ // src/get-model-path.ts
+ function getModelPath(modelId) {
+-  return modelId.includes("/") ? modelId : `models/${modelId}`;
++  return modelId.includes("models/") ? modelId : `models/${modelId}`;
+ }
+ 
+ // src/google-error.ts

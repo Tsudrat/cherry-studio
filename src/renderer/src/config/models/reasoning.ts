@@ -19,6 +19,7 @@ import {
   isGPT52SeriesModel,
   isGPT56ProModel,
   isGPT56SeriesModel,
+  isGPT61SolModel,
   isOpenAIDeepResearchModel,
   isOpenAIOpenWeightModel,
   isOpenAIReasoningModel,
@@ -30,6 +31,8 @@ import {
   isClaudeAlwaysOnAdaptiveThinkingModel,
   isGemini3FlashModel,
   isGemini3ProModel,
+  isGemini4HydrogenModel,
+  isGemini4Model,
   isGemini31FlashImageModel,
   isGemini31FlashLiteModel,
   isGemini31ProModel,
@@ -75,6 +78,8 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   gpt6: ['none', 'low', 'medium', 'high', 'xhigh', 'max'] as const,
   // GPT-6 Astra — does not support `none`
   gpt6_astra: ['low', 'medium', 'high', 'xhigh', 'max'] as const,
+  // GPT-6.1 Sol — does not support `none`/`minimal` (Terra supports `none`, uses `gpt6`)
+  gpt6_1: ['low', 'medium', 'high', 'xhigh', 'max'] as const,
   gpt_oss: ['low', 'medium', 'high'] as const,
   grok: ['low', 'high'] as const,
   grok4_fast: ['auto'] as const,
@@ -89,6 +94,11 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   gemini3_1_pro: ['low', 'medium', 'high'] as const,
   gemini3_7_flash: ['low', 'medium', 'high'] as const,
   gemini3_image: ['minimal', 'high'] as const,
+  // Gemini 4 Argon / Carbon: thinking_level low|medium|high only; `minimal` and
+  // thinking_budget both return HTTP 400. Thinking cannot be disabled.
+  gemini4: ['low', 'medium', 'high'] as const,
+  // Gemini 4 Hydrogen additionally supports `xhigh` (default `high`).
+  gemini4_hydrogen: ['low', 'medium', 'high', 'xhigh'] as const,
   // Google-hosted Gemma 4 documents `minimal` as the closest supported near-off
   // setting for most requests, but does not guarantee thinking is fully disabled.
   // Keep the formal UI options aligned with the API guarantee and omit `none`.
@@ -106,6 +116,8 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   doubao_after_251015: ['minimal', 'low', 'medium', 'high'] as const,
   minimax_m3: ['auto'] as const,
   hunyuan: ['auto'] as const,
+  // Tencent Hy4 / Hy4-preview: thinking.type enabled|disabled; effort only `high`.
+  hy4: ['high'] as const,
   mimo: ['auto'] as const,
   zhipu: ['auto'] as const,
   zhipu_glm_5_2: ['high', 'max'] as const,
@@ -116,6 +128,8 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   deepseek_v4: ['low', 'high', 'max'] as const,
   kimi_k2_5: ['none', 'auto'] as const,
   kimi_k3: ['low', 'high', 'max'] as const,
+  // Kimi K3.1 Pro: thinking always on; reasoning_effort low|high|max (default max)
+  kimi_k3_1: ['low', 'high', 'max'] as const,
   kimi_k3_openrouter: ['low', 'high', 'max'] as const,
   kimi_k3_dashscope: ['max'] as const,
   kimi_k3_fast: ['low', 'high', 'max'] as const,
@@ -127,6 +141,13 @@ export const MODEL_SUPPORTED_REASONING_EFFORT = {
   muse_glimmer: ['none', 'minimal', 'low', 'medium', 'high', 'max'] as const,
   muse_glimmer_openrouter: ['low', 'medium', 'high', 'xhigh'] as const,
   muse_spark_openrouter: ['minimal', 'low', 'medium', 'high', 'xhigh'] as const,
+  // Meta API Muse models (Wonder / Ember / Spark): reasoning_effort minimal..max.
+  muse: ['minimal', 'low', 'medium', 'high', 'xhigh', 'max'] as const,
+  muse_openrouter: ['minimal', 'low', 'medium', 'high', 'xhigh'] as const,
+  // Thinking Machines Inkling (Tinker): none|minimal|low|medium|high|xhigh
+  inkling: ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'] as const,
+  // Reflection AI Beam: always-on reasoning, low..max (default max)
+  beam: ['low', 'medium', 'high', 'xhigh', 'max'] as const,
   namazu_openrouter: ['none', 'high'] as const,
   zhipu_glm_latest_openrouter: ['low', 'high', 'max'] as const,
   // Claude 3.7, 4.0, 4.5 reasoning models
@@ -158,6 +179,7 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   gpt56pro: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt56pro] as const,
   gpt6: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt6] as const,
   gpt6_astra: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt6_astra] as const,
+  gpt6_1: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt6_1] as const,
   gpt_oss: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gpt_oss] as const,
   grok: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.grok] as const,
   grok4_fast: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.grok4_fast] as const,
@@ -170,6 +192,8 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   gemini3_1_pro: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gemini3_1_pro] as const,
   gemini3_7_flash: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gemini3_7_flash] as const,
   gemini3_image: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gemini3_image] as const,
+  gemini4: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gemini4] as const,
+  gemini4_hydrogen: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gemini4_hydrogen] as const,
   gemma4_hosted: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.gemma4_hosted] as const,
   qwen: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen] as const,
   qwen_thinking: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.qwen_thinking] as const,
@@ -184,6 +208,7 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   minimax_m3: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.minimax_m3] as const,
   mimo: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.mimo] as const,
   hunyuan: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.hunyuan] as const,
+  hy4: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.hy4] as const,
   zhipu: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.zhipu] as const,
   zhipu_glm_5_2: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.zhipu_glm_5_2] as const,
   zhipu_glm_5_2_openrouter: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.zhipu_glm_5_2_openrouter] as const,
@@ -193,6 +218,7 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   deepseek_v4: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.deepseek_v4] as const,
   kimi_k2_5: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.kimi_k2_5] as const,
   kimi_k3: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.kimi_k3] as const,
+  kimi_k3_1: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.kimi_k3_1] as const,
   kimi_k3_openrouter: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.kimi_k3_openrouter] as const,
   kimi_k3_dashscope: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.kimi_k3_dashscope] as const,
   kimi_k3_fast: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.kimi_k3_fast] as const,
@@ -204,6 +230,10 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   muse_glimmer: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.muse_glimmer] as const,
   muse_glimmer_openrouter: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.muse_glimmer_openrouter] as const,
   muse_spark_openrouter: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.muse_spark_openrouter] as const,
+  muse: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.muse] as const,
+  muse_openrouter: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.muse_openrouter] as const,
+  inkling: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.inkling] as const,
+  beam: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.beam] as const,
   namazu_openrouter: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.namazu_openrouter] as const,
   zhipu_glm_latest_openrouter: ['default', ...MODEL_SUPPORTED_REASONING_EFFORT.zhipu_glm_latest_openrouter] as const,
   claude: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.claude] as const,
@@ -213,7 +243,7 @@ export const MODEL_SUPPORTED_OPTIONS: ThinkingOptionConfig = {
   mistral: ['default', 'none', ...MODEL_SUPPORTED_REASONING_EFFORT.mistral] as const
 } as const
 
-function getCurrentCatalogThinkingType(model: Model): ThinkingModelType | undefined {
+export function getCurrentCatalogThinkingType(model: Model): ThinkingModelType | undefined {
   const modelId = getLowerBaseModelName(model.id)
   const providerId = model.provider?.toLowerCase()
 
@@ -240,9 +270,20 @@ function getCurrentCatalogThinkingType(model: Model): ThinkingModelType | undefi
     if (providerId === 'nvidia') return undefined
     return providerId === 'openrouter' ? 'muse_glimmer_openrouter' : 'muse_glimmer'
   }
-  if (/^muse-spark(?:-|$)/.test(modelId) && ['openrouter', 'opencode'].includes(providerId)) {
-    return 'muse_spark_openrouter'
+  // Meta API Muse models (Wonder / Ember / Spark): reasoning_effort minimal..max.
+  // OpenRouter-hosted variants don't expose `max` upstream.
+  if (/^muse-(?:wonder|ember)(?:-|$)/.test(modelId)) {
+    return providerId === 'openrouter' ? 'muse_openrouter' : 'muse'
   }
+  if (/^muse-spark(?:-|$)/.test(modelId)) {
+    return ['openrouter', 'opencode'].includes(providerId) ? 'muse_spark_openrouter' : 'muse'
+  }
+  // Thinking Machines Inkling (Tinker / OpenRouter / hosted providers)
+  if (/^inkling(?:-[\w-]+)?$/i.test(modelId)) return 'inkling'
+  // Reflection AI Beam (`Beam-1.0-501B-A23B`, `reflection/beam-1.0-501b-a23b`)
+  if (/^beam(?:-[\w.-]+)?$/i.test(modelId)) return 'beam'
+  // Tencent Hy4 / Hy4-preview (TokenHub `hy4`, `hy4-preview`; OpenRouter `tencent/hy4`)
+  if (/^hy[34](?:-[\w-]+)?$/i.test(modelId)) return 'hy4'
   if (/^(?:sakana-)?namazu(?:-|$)/.test(modelId) && providerId === 'openrouter') return 'namazu_openrouter'
   if (modelId === 'glm-latest' && providerId === 'openrouter') return 'zhipu_glm_latest_openrouter'
 
@@ -257,7 +298,6 @@ function isCurrentCatalogFixedReasoningModel(model: Model): boolean {
     /^lfm-2[.-]5-2[.-]6b(?:-|$)/.test(modelId) ||
     (/^qwen3[.-]8-flash(?:-next)?(?:-|$)/.test(modelId) && providerId === 'openrouter') ||
     (/^qwen3[.-]8-max-preview(?:-|$)/.test(modelId) && providerId !== 'dashscope') ||
-    (/^muse-spark(?:-|$)/.test(modelId) && !['openrouter', 'opencode'].includes(providerId)) ||
     (/^(?:sakana-)?namazu(?:-|$)/.test(modelId) && providerId !== 'openrouter') ||
     (modelId === 'glm-latest' && providerId !== 'openrouter')
   )
@@ -288,8 +328,8 @@ const _getThinkModelType = (model: Model): ThinkingModelType => {
   } else if (isOpenAIDeepResearchModel(model)) {
     return 'openai_deep_research'
   } else if (isGPT6FamilyModel(model)) {
-    // Astra rejects `none`; Sol / Luna (and other non-Astra GPT-6) keep the full ladder.
-    thinkingModelType = isGPT6AstraModel(model) ? 'gpt6_astra' : 'gpt6'
+    // Astra and 6.1 Sol reject `none`; Sol / Luna / Terra keep the full ladder.
+    thinkingModelType = isGPT6AstraModel(model) ? 'gpt6_astra' : isGPT61SolModel(model) ? 'gpt6_1' : 'gpt6'
   } else if (isGPT56SeriesModel(model)) {
     thinkingModelType = isGPT56ProModel(model) ? 'gpt56pro' : 'gpt5_6'
   } else if (isGPT5FamilyModel(model)) {
@@ -330,7 +370,9 @@ const _getThinkModelType = (model: Model): ThinkingModelType => {
   } else if (isGrok4FastReasoningModel(model)) {
     thinkingModelType = 'grok4_fast'
   } else if (isSupportedThinkingTokenGeminiModel(model)) {
-    if (isHostedGemma4ThinkingModel(model)) {
+    if (isGemini4Model(model)) {
+      thinkingModelType = isGemini4HydrogenModel(model) ? 'gemini4_hydrogen' : 'gemini4'
+    } else if (isHostedGemma4ThinkingModel(model)) {
       thinkingModelType = 'gemma4_hosted'
     } else if (isGemini31FlashImageModel(model)) {
       thinkingModelType = 'gemini3_image'
@@ -383,6 +425,8 @@ const _getThinkModelType = (model: Model): ThinkingModelType => {
   } else if (isSupportedThinkingTokenKimiModel(model)) {
     if (isKimiK3FastModel(model)) {
       thinkingModelType = 'kimi_k3_fast'
+    } else if (isKimiK31Model(model)) {
+      thinkingModelType = 'kimi_k3_1'
     } else if (isKimiK3Model(model)) {
       thinkingModelType =
         model.provider === 'openrouter'
@@ -530,7 +574,7 @@ function isSolarProReasoningEffortModel(model?: Model): boolean {
 function isProviderRegistryReasoningFamily(model: Model): boolean {
   const matches = (candidate: Model) => {
     const modelId = getLowerBaseModelName(candidate.id)
-    return /^(?:(?:llama-3-1-)?nemotron-(?:\d+(?:-\d+)*-)?(?:nano|super|ultra|lightning)|muse-glimmer|solar-pro-?[2-9])/.test(
+    return /^(?:(?:llama-3-1-)?nemotron-(?:\d+(?:[.-]\d+)*-)?(?:nano|super|ultra|lightning|bolt)|muse-(?:glimmer|spark|wonder|ember)|inkling(?:-[\w-]+)?|beam(?:-[\w.-]+)?|solar-pro-?[2-9])/.test(
       modelId
     )
   }
@@ -653,7 +697,7 @@ export function isGeminiReasoningModel(model?: Model): boolean {
 
 // Gemini 支持思考模式的模型正则
 export const GEMINI_THINKING_MODEL_REGEX =
-  /gemini-(?:2\.5.*(?:-latest)?|3(?:\.\d+)?-(?:flash|pro)(?:-preview)?|flash-latest|pro-latest|flash-lite-latest)(?:-[\w-]+)*$/i
+  /gemini-(?:2\.5.*(?:-latest)?|3(?:\.\d+)?-(?:flash|pro)(?:-preview)?|4(?:\.\d+)?-(?:argon|carbon|hydrogen)(?:-[\w-]+)*|flash-latest|pro-latest|flash-lite-latest)(?:-[\w-]+)*$/i
 
 export const isHostedGemma4ThinkingModel = (model?: Model): boolean => {
   if (!model) {
@@ -850,12 +894,25 @@ export function isClaudeReasoningModel(model?: Model): boolean {
 
 export const isSupportedThinkingTokenClaudeModel = isClaudeReasoningModel
 
+/**
+ * Tencent Hy4 generation: `hy4`, `hy4-preview`, `hy3` (TokenHub IDs;
+ * OpenRouter `tencent/hy4` strips to `hy4`). thinking.type enabled|disabled.
+ */
+export const isHy4Model = (model?: Model): boolean => {
+  if (!model) {
+    return false
+  }
+  const modelId = getLowerBaseModelName(model.id, '/')
+  return /^hy[34](?:-[\w-]+)?$/i.test(modelId)
+}
+
 export const isSupportedThinkingTokenHunyuanModel = (model?: Model): boolean => {
   if (!model) {
     return false
   }
   const modelId = getLowerBaseModelName(model.id, '/')
-  return modelId.includes('hunyuan-a13b')
+  // hunyuan-a13b (thinking toggle) and the Hy4 generation (`hy4`, `hy4-preview`, `hy3`)
+  return modelId.includes('hunyuan-a13b') || isHy4Model(model)
 }
 
 export const isHunyuanReasoningModel = (model?: Model): boolean => {
@@ -985,6 +1042,19 @@ export const isKimiK3Model = (model?: Model): boolean => {
   const { idResult, nameResult } = withModelIdAndNameAsId(model, (candidate) => {
     const modelId = getLowerBaseModelName(candidate.id, '/')
     return /^kimi-k3(?:[-:]|$)/i.test(modelId)
+  })
+  return idResult || nameResult
+}
+
+/**
+ * Kimi K3.1 Pro (`kimi-k3.1-pro`, `kimi-k3.1-pro-highspeed`).
+ * Thinking is always on; `reasoning_effort` accepts low|high|max only.
+ */
+export const isKimiK31Model = (model?: Model): boolean => {
+  if (!model) return false
+  const { idResult, nameResult } = withModelIdAndNameAsId(model, (candidate) => {
+    const modelId = getLowerBaseModelName(candidate.id, '/')
+    return /^kimi-k3\.1(?:-[\w-]+)?$/i.test(modelId)
   })
   return idResult || nameResult
 }

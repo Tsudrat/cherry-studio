@@ -134,6 +134,7 @@ import QwenModelLogo from '@renderer/assets/images/models/qwen.png'
 import QwenModelLogoDark from '@renderer/assets/images/models/qwen_dark.png'
 import RakutenaiModelLogo from '@renderer/assets/images/models/rakutenai.png'
 import RakutenaiModelLogoDark from '@renderer/assets/images/models/rakutenai_dark.png'
+import ReflectionModelLogo from '@renderer/assets/images/models/reflection.svg'
 import SparkDeskModelLogo from '@renderer/assets/images/models/sparkdesk.png'
 import SparkDeskModelLogoDark from '@renderer/assets/images/models/sparkdesk_dark.png'
 import StabilityModelLogo from '@renderer/assets/images/models/stability.png'
@@ -144,6 +145,7 @@ import SunoModelLogo from '@renderer/assets/images/models/suno.png'
 import SunoModelLogoDark from '@renderer/assets/images/models/suno_dark.png'
 import TeleModelLogo from '@renderer/assets/images/models/tele.png'
 import TeleModelLogoDark from '@renderer/assets/images/models/tele_dark.png'
+import ThinkingMachinesModelLogo from '@renderer/assets/images/models/thinkingmachines.svg'
 import TokenFluxModelLogo from '@renderer/assets/images/models/tokenflux.png'
 import TokenFluxModelLogoDark from '@renderer/assets/images/models/tokenflux_dark.png'
 import UpstageModelLogo from '@renderer/assets/images/models/upstage.png'
@@ -278,6 +280,7 @@ export function getModelLogoById(modelId: string): string | undefined {
     'jamba-': isLight ? Ai21ModelLogo : Ai21ModelLogoDark,
     mythomax: isLight ? GrypheModelLogo : GrypheModelLogoDark,
     nvidia: isLight ? NvidiaModelLogo : NvidiaModelLogoDark,
+    nemotron: isLight ? NvidiaModelLogo : NvidiaModelLogoDark,
     dianxin: isLight ? DianxinModelLogo : DianxinModelLogoDark,
     tele: isLight ? TeleModelLogo : TeleModelLogoDark,
     adept: isLight ? AdeptModelLogo : AdeptModelLogoDark,
@@ -304,6 +307,17 @@ export function getModelLogoById(modelId: string): string | undefined {
     zhipu: isLight ? ZhipuModelLogo : ZhipuModelLogoDark,
     longcat: LongCatAppLogo,
     bytedance: BytedanceModelLogo,
+    // Thinking Machines Inkling — must precede `ling` so `inkling` isn't shadowed.
+    inkling: ThinkingMachinesModelLogo,
+    thinkingmachines: ThinkingMachinesModelLogo,
+    tinker: ThinkingMachinesModelLogo,
+    // Reflection AI Beam
+    beam: ReflectionModelLogo,
+    reflection: ReflectionModelLogo,
+    // Meta Muse family
+    'muse-': isLight ? LlamaModelLogo : LlamaModelLogoDark,
+    // Tencent Hy4 generation shares the Hunyuan mark
+    'hy[34]': isLight ? HunyuanModelLogo : HunyuanModelLogoDark,
     ling: LingModelLogo,
     ring: LingModelLogo,
     '(V_1|V_1_TURBO|V_2|V_2A|V_2_TURBO|DESCRIBE|UPSCALE)': IdeogramModelLogo,
