@@ -121,6 +121,15 @@ export const isGPT6SolModel = (model: Model) => {
   return /(?:^|[-_.])gpt-6-sol(?:$|[-_.])/.test(modelId)
 }
 
+/**
+ * GPT-6.1 Sol — unlike gpt-6-sol and gpt-6.1-terra, it rejects `none`/`minimal`
+ * (low | medium | high | xhigh | max only, like Astra).
+ */
+export const isGPT61SolModel = (model: Model) => {
+  const modelId = normalizeOpenAIGptModelId(model.id)
+  return /(?:^|[-_.])gpt-6\.1-sol(?:$|[-_.])/.test(modelId)
+}
+
 /** GPT-6 Luna — efficient high-volume; effort includes `none`. */
 export const isGPT6LunaModel = (model: Model) => {
   const modelId = normalizeOpenAIGptModelId(model.id)
@@ -172,8 +181,8 @@ export const isSupportVerbosityModel = (model: Model) => {
  */
 export function isSupportNoneReasoningEffortModel(model: Model): boolean {
   const modelId = normalizeOpenAIGptModelId(model.id)
-  // GPT-6 Astra rejects `none` (HTTP 400). Sol / Luna (and other non-Astra GPT-6) allow it.
-  if (isGPT6AstraModel(model)) {
+  // GPT-6 Astra and GPT-6.1 Sol reject `none` (HTTP 400). Sol / Luna / Terra allow it.
+  if (isGPT6AstraModel(model) || isGPT61SolModel(model)) {
     return false
   }
   if (isGPT6FamilyModel(model)) {

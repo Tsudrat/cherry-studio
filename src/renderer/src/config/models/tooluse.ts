@@ -14,6 +14,7 @@ export const FUNCTION_CALLING_MODELS = [
   'gpt-4.5',
   'gpt-oss(?:-[\\w-]+)',
   'gpt-5(?:-[0-9-]+)?',
+  'gpt-6(?:-[\\w-]+)?',
   'o(1|3|4)(?:-[\\w-]+)?',
   'claude',
   'qwen',
@@ -46,9 +47,12 @@ export const FUNCTION_CALLING_MODELS = [
   'longcat-2\\.0(?:-[\\w-]+)?',
   'glm-5v-turbo',
   'lfm-2[.-]5-2[.-]6b(?:-[\\w-]+)?',
-  'muse-(?:glimmer|spark)(?:-[\\w-]+)?',
+  'muse-(?:glimmer|spark|wonder|ember)(?:-[\\w-]+)?',
+  'inkling(?:-[\\w-]+)?',
+  'beam(?:-[\\w.-]+)?',
+  'hy[34](?:-[\\w-]+)?',
   '(?:sakana-)?namazu(?:-[\\w-]+)?',
-  '(?:llama-3-1-)?nemotron-(?:\\d+(?:[.-]\\d+)*-)?(?:nano|super|ultra|lightning)(?:-[\\w-]+)?',
+  '(?:llama-3-1-)?nemotron-(?:\\d+(?:[.-]\\d+)*-)?(?:nano|super|ultra|lightning|bolt)(?:-[\\w-]+)?',
   'solar-pro-?[2-9](?:-[\\w-]+)?',
   'voxtral-small(?:-[\\w-]+)?'
 ] as const

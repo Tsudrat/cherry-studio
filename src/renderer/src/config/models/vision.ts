@@ -14,6 +14,7 @@ const visionAllowedModels = [
   'gemini-2\\.0',
   'gemini-2\\.5',
   'gemini-3(?:\\.\\d)?-(?:flash|pro)(?:-preview)?',
+  'gemini-4(?:\\.\\d+)?-(?:argon|carbon|hydrogen)(?:-[\\w-]+)?',
   'gemini-(flash|pro|flash-lite)-latest',
   'gemini-exp',
   'claude-3',
@@ -42,6 +43,7 @@ const visionAllowedModels = [
   'gpt-4o(?:-[\\w-]+)?',
   'gpt-4.5(?:-[\\w-]+)',
   'gpt-5(?:-[\\w-]+)?',
+  'gpt-6(?:-[\\w-]+)?',
   'chatgpt-4o(?:-[\\w-]+)?',
   'o1(?:-[\\w-]+)?',
   'o3(?:-[\\w-]+)?',
@@ -75,7 +77,12 @@ const visionAllowedModels = [
   'mimo-v2\\.6(?:-[\\w-]+)?',
   'mimo-v2-omni(?:-[\\w-]+)?',
   'glm-5v-turbo',
-  'muse-(?:glimmer|spark)(?:-[\\w-]+)?',
+  'muse-(?:glimmer|spark|wonder|ember)(?:-[\\w-]+)?',
+  'inkling(?:-[\\w-]+)?',
+  // Hy4 has image input; hy4-preview is text-only
+  'hy4(?!-preview)(?:-[\\w-]+)?',
+  // Nemotron 3.5 Super-VL and Bolt-74B are VLMs (Ultra/Lightning/Bolt-E4B are not)
+  'nemotron-(?:\\d+(?:[.-]\\d+)*-)?(?:super-vl|bolt-74b)(?:-[\\w-]+)?',
   '(?:sakana-)?namazu(?:-[\\w-]+)?'
 ]
 

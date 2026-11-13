@@ -9,6 +9,7 @@ import { DEFAULT_MAX_TOKENS } from '@renderer/config/constant'
 import {
   findTokenLimit,
   GEMINI_FLASH_MODEL_REGEX,
+  getCurrentCatalogThinkingType,
   getModelSupportedReasoningEffortOptions,
   isClaude46SeriesModel,
   isClaudeAlwaysOnAdaptiveThinkingModel,
@@ -18,14 +19,18 @@ import {
   isDoubaoSeedAfter251015,
   isDoubaoThinkingAutoModel,
   isGemini3ThinkingTokenModel,
+  isGemini4HydrogenModel,
+  isGemini4Model,
   isGLM52Model,
   isGLM53Model,
   isGrok4FastReasoningModel,
   isGrok46OrNewerModel,
   isHostedGemma4ThinkingModel,
+  isHy4Model,
   isKimiK3FastModel,
   isKimiK3Model,
   isKimiK27CodeModel,
+  isKimiK31Model,
   isMiniMaxM3Model,
   isMiniMaxReasoningModel,
   isOpenAIDeepResearchModel,
@@ -159,14 +164,29 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
     return { thinking: { type: reasoningEffort === 'none' ? 'disabled' : 'enabled' } }
   }
 
+  // Tencent Hy4 / Hy4-preview: official params are `thinking:{type:enabled|disabled}`
+  // (effort only `high`). OpenRouter instead normalizes `reasoning.effort`.
+  if (isHy4Model(model)) {
+    if (model.provider === SystemProviderIds.openrouter || provider.id === SystemProviderIds.openrouter) {
+      return { reasoning: { effort: reasoningEffort === 'none' ? 'none' : 'high' } }
+    }
+    return { thinking: { type: reasoningEffort === 'none' ? 'disabled' : 'enabled' } }
+  }
+
   // Handle 'none' reasoningEffort. It's explicitly off.
   if (reasoningEffort === 'none') {
     if (isKimiK3FastModel(model)) {
       return {}
     }
-    if (isKimiK3Model(model)) {
+    if (isKimiK3Model(model) || isKimiK31Model(model)) {
       if (provider.id === SystemProviderIds.openrouter) return {}
+      // kimi-k3.1 is always-on like kimi-k3-fast: never emit `reasoning_effort: 'none'`.
+      if (isKimiK31Model(model)) return {}
       if (provider.id !== SystemProviderIds.dashscope) return { reasoningEffort: 'none' }
+    }
+    // Inkling (Tinker / OpenAI-compatible endpoints) accepts `reasoning_effort: 'none'`.
+    if (getCurrentCatalogThinkingType(model) === 'inkling') {
+      return { reasoningEffort: 'none' }
     }
     if (isGLM52Model(model) && provider.id === SystemProviderIds.openrouter) {
       return {}
@@ -367,7 +387,7 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
 
   // OpenRouter models
   if (model.provider === SystemProviderIds.openrouter) {
-    if (isKimiK3Model(model)) {
+    if (isKimiK3Model(model) || isKimiK31Model(model)) {
       return ['low', 'high', 'max'].includes(reasoningEffort) ? { reasoning: { effort: reasoningEffort } } : {}
     }
     if (isGLM52Model(model)) {
@@ -450,7 +470,7 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
     return {}
   }
 
-  if (isKimiK3Model(model)) {
+  if (isKimiK3Model(model) || isKimiK31Model(model)) {
     const effort = reasoningEffort === 'auto' ? 'medium' : reasoningEffort
     if (provider.id === SystemProviderIds.dashscope) {
       return effort === 'max' ? { reasoningEffort: 'max' } : {}
@@ -668,9 +688,16 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
   // gemini series, openai compatible api
   if (isSupportedThinkingTokenGeminiModel(model)) {
     // https://ai.google.dev/gemini-api/docs/gemini-3?thinking=high#openai_compatibility
-    if (isGemini3ThinkingTokenModel(model)) {
+    // Gemini 4 accepts the same OpenAI-compatible `reasoning_effort` (low..high, xhigh on Hydrogen).
+    if (isGemini3ThinkingTokenModel(model) || isGemini4Model(model)) {
+      // Gemini 4 can't disable thinking and rejects `minimal`/`max`: clamp to a valid level.
+      const gemini4Clamp: Partial<Record<ReasoningEffortOption, OpenAIReasoningEffort>> = {
+        none: 'low',
+        minimal: 'low',
+        max: isGemini4HydrogenModel(model) ? 'xhigh' : 'high'
+      }
       return {
-        reasoningEffort
+        reasoningEffort: isGemini4Model(model) ? (gemini4Clamp[reasoningEffort] ?? reasoningEffort) : reasoningEffort
       }
     }
     const includeThoughts = resolveGoogleIncludeThoughts(model, reasoningEffort)
@@ -1064,6 +1091,26 @@ export function getGeminiReasoningParams(
     const isHighThinking = reasoningEffort === 'high' || reasoningEffort === 'xhigh'
     thinkingLevel = isHighThinking ? 'high' : 'minimal'
 
+    return {
+      thinkingConfig: {
+        includeThoughts,
+        thinkingLevel
+      }
+    }
+  }
+
+  // Gemini 4 only accepts `thinking_level` (low|medium|high; Hydrogen adds `xhigh` as its
+  // default). `thinking_budget` and `minimal` both return HTTP 400, and thinking cannot be
+  // disabled — so clamp none/minimal to `low` and `max` to the model's top level.
+  // https://ai.google.dev/gemini-api/docs/gemini-4
+  if (isGemini4Model(model)) {
+    thinkingLevel = mapToGeminiThinkingLevel(reasoningEffort)
+    if (thinkingLevel === 'minimal' || thinkingLevel === 'xhigh') {
+      thinkingLevel = 'low'
+    }
+    if (reasoningEffort === 'max' || reasoningEffort === 'xhigh') {
+      thinkingLevel = isGemini4HydrogenModel(model) ? 'xhigh' : 'high'
+    }
     return {
       thinkingConfig: {
         includeThoughts,

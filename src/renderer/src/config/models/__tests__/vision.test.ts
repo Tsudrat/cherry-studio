@@ -188,10 +188,30 @@ describe('isVisionModel', () => {
     expect(isVisionModel(createModel({ id: 'MiniMax-M2.7', provider: 'minimax' }))).toBe(false)
   })
 
-  it.each(['muse-glimmer-30b', 'muse-spark-1.2', 'namazu'])(
-    'recognizes current main multimodal chat model %s',
+  it.each([
+    'muse-glimmer-30b',
+    'muse-spark-1.2',
+    'muse-wonder-1.0',
+    'muse-ember-1.0',
+    'namazu',
+    'gpt-6-sol',
+    'gpt-6.1-terra',
+    'gemini-4-argon',
+    'gemini-4-hydrogen',
+    'inkling',
+    'thinkingmachines/inkling-2-small',
+    'hy4',
+    'nvidia/nemotron-3.5-super-vl-120b-a12b',
+    'nvidia/nemotron-3.5-bolt-74b-a9b',
+    'kimi-k3.1-pro'
+  ])('recognizes current main multimodal chat model %s', (id) => {
+    expect(isVisionModel(createModel({ id }))).toBe(true)
+  })
+
+  it.each(['hy4-preview', 'beam-1.0-501b-a23b', 'reflection/beam-1.0-501b-a23b'])(
+    'does not mark text-only model %s as vision-capable',
     (id) => {
-      expect(isVisionModel(createModel({ id }))).toBe(true)
+      expect(isVisionModel(createModel({ id }))).toBe(false)
     }
   )
 

@@ -308,6 +308,31 @@ export const isGeminiModel = (model: Model) => {
   return modelId.includes('gemini')
 }
 
+/**
+ * Check if the model is a Gemini 4 model
+ * Matches: gemini-4-argon, gemini-4-carbon, gemini-4-hydrogen (and variants like
+ * -cyber-permissive / -eap suffixes).
+ */
+export const isGemini4Model = (model: Model | undefined | null): boolean => {
+  if (!model) {
+    return false
+  }
+  const modelId = getLowerBaseModelName(model.id, '/')
+  return /^gemini-4(?:[.-]\d+)?-(?:argon|carbon|hydrogen)(?:-[\w-]+)*$/i.test(modelId)
+}
+
+/**
+ * Check if the model is Gemini 4 Hydrogen — the only Gemini 4 tier whose
+ * thinking_level ladder includes `xhigh`.
+ */
+export const isGemini4HydrogenModel = (model: Model | undefined | null): boolean => {
+  if (!model) {
+    return false
+  }
+  const modelId = getLowerBaseModelName(model.id, '/')
+  return /^gemini-4(?:[.-]\d+)?-hydrogen(?:-[\w-]+)*$/i.test(modelId)
+}
+
 export const isGrokModel = (model: Model) => {
   const modelId = getLowerBaseModelName(model.id)
   return modelId.includes('grok')
@@ -437,7 +462,7 @@ export function isClaude46SeriesModel(model: Model | undefined | null): boolean 
   return regex.test(modelId)
 }
 
-type ClaudeAdaptiveFamily = 'opus' | 'fable' | 'sonnet'
+type ClaudeAdaptiveFamily = 'opus' | 'fable' | 'sonnet' | 'haiku'
 
 /**
  * Parse Claude family + major.minor from common id shapes.
@@ -445,6 +470,7 @@ type ClaudeAdaptiveFamily = 'opus' | 'fable' | 'sonnet'
  * Recognizes:
  * - Direct API:  claude-opus-4-7, claude-opus-4.7, claude-opus-5, claude-fable-5, claude-sonnet-5
  * - AWS Bedrock: anthropic.claude-opus-4-7-v1, anthropic.claude-fable-5-v1
+ * - Bedrock inference profiles: global.anthropic.claude-*, us.anthropic.claude-*
  * - Provider / Vertex prefixes: anthropic/claude-opus-4-7
  *
  * Date-stamped base ids such as `claude-opus-4-20250514` must NOT be read as 4.<date>.
@@ -457,9 +483,11 @@ function parseClaudeAdaptiveFamilyVersion(
   if (!model) {
     return null
   }
-  const modelId = getLowerBaseModelName(model.id, '/')
+  // Strip Bedrock inference-profile region prefixes (global./us./eu./...) so
+  // `global.anthropic.claude-fable-5-2` parses the same as `anthropic.claude-fable-5-2`.
+  const modelId = getLowerBaseModelName(model.id, '/').replace(/^(?:global|us|eu|ap|apac|jp|au)\.(?=anthropic\.)/i, '')
   const match = modelId.match(
-    /^(?:anthropic\.)?claude-(opus|fable|sonnet)-(\d+)(?:[.-](\d{1,2}))?(?:[@\-:][\w\-:]+)?$/i
+    /^(?:anthropic\.)?claude-(opus|fable|sonnet|haiku)-(\d+)(?:[.-](\d{1,2}))?(?:[@\-:][\w\-:]+)?$/i
   )
   if (!match) {
     return null
@@ -478,7 +506,7 @@ function isAtLeastVersion(major: number, minor: number, minMajor: number, minMin
 /**
  * Claude models that use adaptive thinking (effort) rather than budget-token thinking.
  *
- * Per Anthropic docs: Opus 4.7+, Fable 5+, Sonnet 5+.
+ * Per Anthropic docs: Opus 4.7+, Fable 5+, Sonnet 5+, Haiku 5.5+.
  */
 export function isSupportAdaptiveThinkingClaudeModel(model: Model | undefined | null): boolean {
   const parsed = parseClaudeAdaptiveFamilyVersion(model)
@@ -490,6 +518,10 @@ export function isSupportAdaptiveThinkingClaudeModel(model: Model | undefined | 
   }
   if (parsed.family === 'opus') {
     return isAtLeastVersion(parsed.major, parsed.minor, 4, 7)
+  }
+  if (parsed.family === 'haiku') {
+    // Haiku 5.5+: adaptive thinking with effort; `disabled` allowed at low/medium/high.
+    return isAtLeastVersion(parsed.major, parsed.minor, 5, 5)
   }
   // Sonnet 5+: adaptive thinking is on by default; manual budget_tokens returns 400.
   return parsed.family === 'sonnet' && parsed.major >= 5

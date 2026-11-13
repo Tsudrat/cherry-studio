@@ -24,7 +24,7 @@ const CLAUDE_SUPPORTED_WEBSEARCH_REGEX = new RegExp(
 )
 
 export const GEMINI_SEARCH_REGEX = new RegExp(
-  'gemini-(?:2(?!.*-image-preview).*(?:-latest)?|3(?:\\.\\d+)?-(?:flash|pro)(?:-(?:image-)?preview)?|flash-latest|pro-latest|flash-lite-latest)(?:-[\\w-]+)*$',
+  'gemini-(?:2(?!.*-image-preview).*(?:-latest)?|3(?:\\.\\d+)?-(?:flash|pro)(?:-(?:image-)?preview)?|4(?:\\.\\d+)?-(?:argon|carbon|hydrogen)(?:-[\\w-]+)*|flash-latest|pro-latest|flash-lite-latest)(?:-[\\w-]+)*$',
   'i'
 )
 
@@ -175,7 +175,8 @@ export function isOpenAIWebSearchModel(model: Model): boolean {
     (modelId.includes('gpt-4o') && !modelId.includes('gpt-4o-image')) ||
     modelId.includes('o3') ||
     modelId.includes('o4') ||
-    (modelId.includes('gpt-5') && !modelId.includes('chat'))
+    (modelId.includes('gpt-5') && !modelId.includes('chat')) ||
+    modelId.includes('gpt-6')
   )
 }
 

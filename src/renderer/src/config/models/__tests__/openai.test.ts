@@ -13,6 +13,7 @@ import {
   isGPT51SeriesModel,
   isGPT56ProModel,
   isGPT56SeriesModel,
+  isGPT61SolModel,
   isOpenAIChatCompletionOnlyModel,
   isOpenAILLMModel,
   isOpenAIModel,
@@ -382,6 +383,19 @@ describe('OpenAI Model Detection', () => {
       expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-6-sol' }))).toBe(true)
       expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-6-luna' }))).toBe(true)
       expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-5.6-sol' }))).toBe(true)
+    })
+
+    it('detects GPT-6.1 Sol / Terra with per-SKU none support', () => {
+      expect(isGPT6FamilyModel(createModel({ id: 'gpt-6.1-sol' }))).toBe(true)
+      expect(isGPT6FamilyModel(createModel({ id: 'gpt-6.1-terra' }))).toBe(true)
+      expect(isGPT61SolModel(createModel({ id: 'gpt-6.1-sol' }))).toBe(true)
+      expect(isGPT61SolModel(createModel({ id: 'gpt-6-sol' }))).toBe(false)
+      expect(isGPT61SolModel(createModel({ id: 'gpt-6.1-terra' }))).toBe(false)
+      expect(isSupportedReasoningEffortOpenAIModel(createModel({ id: 'gpt-6.1-sol' }))).toBe(true)
+      expect(isSupportedReasoningEffortOpenAIModel(createModel({ id: 'gpt-6.1-terra' }))).toBe(true)
+      // 6.1 Sol rejects `none`; Terra keeps the full ladder like GPT-6 Sol/Luna.
+      expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-6.1-sol' }))).toBe(false)
+      expect(isSupportNoneReasoningEffortModel(createModel({ id: 'gpt-6.1-terra' }))).toBe(true)
     })
 
     it('supports reasoning.mode on standard GPT-5.6 / GPT-6 ids but not dedicated Pro SKUs', () => {

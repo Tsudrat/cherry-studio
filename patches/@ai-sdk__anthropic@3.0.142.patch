@@ -1,0 +1,156 @@
+diff --git a/dist/index.js b/dist/index.js
+index fefa7344442d2ab94624e9fd5b873e5bfee5fc30..b2c18a936e491135b3d5584c092f67d6a02f23e1 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -140,7 +140,7 @@ var anthropicMessagesResponseSchema = (0, import_provider_utils2.lazySchema)(
+           import_v42.z.object({
+             type: import_v42.z.literal("thinking"),
+             thinking: import_v42.z.string(),
+-            signature: import_v42.z.string()
++            signature: import_v42.z.string().optional()
+           }),
+           import_v42.z.object({
+             type: import_v42.z.literal("redacted_thinking"),
+@@ -4432,12 +4432,12 @@ var AnthropicMessagesLanguageModel = class {
+     const thinkingDisplay = thinkingType === "adaptive" && thinking != null && "display" in thinking ? thinking.display : void 0;
+     const thinkingBlockBinding = thinking != null && "blockBinding" in thinking ? thinking.blockBinding : void 0;
+     const sendThinkingConfig = sendThinking || thinkingBlockBinding != null;
+-    const maxTokens = maxOutputTokens != null ? maxOutputTokens : maxOutputTokensForModel;
++    const maxTokens = maxOutputTokens != null ? maxOutputTokens : isAnthropicModel ? maxOutputTokensForModel : void 0;
+     const baseArgs = {
+       // model id:
+       model: this.modelId,
+       // standardized settings:
+-      max_tokens: maxTokens,
++      ...(maxTokens != null && { max_tokens: maxTokens }),
+       temperature,
+       top_k: topK,
+       top_p: topP,
+@@ -4621,7 +4621,9 @@ var AnthropicMessagesLanguageModel = class {
+           details: "topP is not supported when thinking is enabled"
+         });
+       }
+-      baseArgs.max_tokens = maxTokens + (thinkingBudget != null ? thinkingBudget : 0);
++      if (maxTokens != null) {
++        baseArgs.max_tokens = maxTokens + (thinkingBudget != null ? thinkingBudget : 0);
++      }
+     } else {
+       if (isAnthropicModel && topP != null && temperature != null) {
+         warnings.push({
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 36215460a5eed3e8509d70646897841ab23ec23f..53e4f62015904e7654814bd1f07f85dcb249d6a0 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -141,7 +141,7 @@ var anthropicMessagesResponseSchema = lazySchema2(
+           z2.object({
+             type: z2.literal("thinking"),
+             thinking: z2.string(),
+-            signature: z2.string()
++            signature: z2.string().optional()
+           }),
+           z2.object({
+             type: z2.literal("redacted_thinking"),
+@@ -4493,12 +4493,12 @@ var AnthropicMessagesLanguageModel = class {
+     const thinkingDisplay = thinkingType === "adaptive" && thinking != null && "display" in thinking ? thinking.display : void 0;
+     const thinkingBlockBinding = thinking != null && "blockBinding" in thinking ? thinking.blockBinding : void 0;
+     const sendThinkingConfig = sendThinking || thinkingBlockBinding != null;
+-    const maxTokens = maxOutputTokens != null ? maxOutputTokens : maxOutputTokensForModel;
++    const maxTokens = maxOutputTokens != null ? maxOutputTokens : isAnthropicModel ? maxOutputTokensForModel : void 0;
+     const baseArgs = {
+       // model id:
+       model: this.modelId,
+       // standardized settings:
+-      max_tokens: maxTokens,
++      ...(maxTokens != null && { max_tokens: maxTokens }),
+       temperature,
+       top_k: topK,
+       top_p: topP,
+@@ -4682,7 +4682,9 @@ var AnthropicMessagesLanguageModel = class {
+           details: "topP is not supported when thinking is enabled"
+         });
+       }
+-      baseArgs.max_tokens = maxTokens + (thinkingBudget != null ? thinkingBudget : 0);
++      if (maxTokens != null) {
++        baseArgs.max_tokens = maxTokens + (thinkingBudget != null ? thinkingBudget : 0);
++      }
+     } else {
+       if (isAnthropicModel && topP != null && temperature != null) {
+         warnings.push({
+diff --git a/dist/internal/index.js b/dist/internal/index.js
+index 9ae02e30602ab8c0902b5ee3eb1921cc4208bd46..2fbb471f5d7ca6325543bb0e01ea25b5275874d4 100644
+--- a/dist/internal/index.js
++++ b/dist/internal/index.js
+@@ -135,7 +135,7 @@ var anthropicMessagesResponseSchema = (0, import_provider_utils2.lazySchema)(
+           import_v42.z.object({
+             type: import_v42.z.literal("thinking"),
+             thinking: import_v42.z.string(),
+-            signature: import_v42.z.string()
++            signature: import_v42.z.string().optional()
+           }),
+           import_v42.z.object({
+             type: import_v42.z.literal("redacted_thinking"),
+@@ -4427,12 +4427,12 @@ var AnthropicMessagesLanguageModel = class {
+     const thinkingDisplay = thinkingType === "adaptive" && thinking != null && "display" in thinking ? thinking.display : void 0;
+     const thinkingBlockBinding = thinking != null && "blockBinding" in thinking ? thinking.blockBinding : void 0;
+     const sendThinkingConfig = sendThinking || thinkingBlockBinding != null;
+-    const maxTokens = maxOutputTokens != null ? maxOutputTokens : maxOutputTokensForModel;
++    const maxTokens = maxOutputTokens != null ? maxOutputTokens : isAnthropicModel ? maxOutputTokensForModel : void 0;
+     const baseArgs = {
+       // model id:
+       model: this.modelId,
+       // standardized settings:
+-      max_tokens: maxTokens,
++      ...(maxTokens != null && { max_tokens: maxTokens }),
+       temperature,
+       top_k: topK,
+       top_p: topP,
+@@ -4616,7 +4616,9 @@ var AnthropicMessagesLanguageModel = class {
+           details: "topP is not supported when thinking is enabled"
+         });
+       }
+-      baseArgs.max_tokens = maxTokens + (thinkingBudget != null ? thinkingBudget : 0);
++      if (maxTokens != null) {
++        baseArgs.max_tokens = maxTokens + (thinkingBudget != null ? thinkingBudget : 0);
++      }
+     } else {
+       if (isAnthropicModel && topP != null && temperature != null) {
+         warnings.push({
+diff --git a/dist/internal/index.mjs b/dist/internal/index.mjs
+index 3775d23493de89878167e61b8055189bf0cc7b50..6b4cddeb7d446d571337eeef67b99af77a665fc2 100644
+--- a/dist/internal/index.mjs
++++ b/dist/internal/index.mjs
+@@ -125,7 +125,7 @@ var anthropicMessagesResponseSchema = lazySchema2(
+           z2.object({
+             type: z2.literal("thinking"),
+             thinking: z2.string(),
+-            signature: z2.string()
++            signature: z2.string().optional()
+           }),
+           z2.object({
+             type: z2.literal("redacted_thinking"),
+@@ -4477,12 +4477,12 @@ var AnthropicMessagesLanguageModel = class {
+     const thinkingDisplay = thinkingType === "adaptive" && thinking != null && "display" in thinking ? thinking.display : void 0;
+     const thinkingBlockBinding = thinking != null && "blockBinding" in thinking ? thinking.blockBinding : void 0;
+     const sendThinkingConfig = sendThinking || thinkingBlockBinding != null;
+-    const maxTokens = maxOutputTokens != null ? maxOutputTokens : maxOutputTokensForModel;
++    const maxTokens = maxOutputTokens != null ? maxOutputTokens : isAnthropicModel ? maxOutputTokensForModel : void 0;
+     const baseArgs = {
+       // model id:
+       model: this.modelId,
+       // standardized settings:
+-      max_tokens: maxTokens,
++      ...(maxTokens != null && { max_tokens: maxTokens }),
+       temperature,
+       top_k: topK,
+       top_p: topP,
+@@ -4666,7 +4666,9 @@ var AnthropicMessagesLanguageModel = class {
+           details: "topP is not supported when thinking is enabled"
+         });
+       }
+-      baseArgs.max_tokens = maxTokens + (thinkingBudget != null ? thinkingBudget : 0);
++      if (maxTokens != null) {
++        baseArgs.max_tokens = maxTokens + (thinkingBudget != null ? thinkingBudget : 0);
++      }
+     } else {
+       if (isAnthropicModel && topP != null && temperature != null) {
+         warnings.push({

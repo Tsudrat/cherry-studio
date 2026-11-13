@@ -34,7 +34,7 @@ overrides:
   '@img/sharp-win32-x64': 0.34.5
   '@langchain/core': 1.0.2
   '@napi-rs/canvas': 0.1.97
-  '@ai-sdk/provider-utils': 4.0.23
+  '@ai-sdk/provider-utils': 4.0.66
   # Keep every consumer on the single patched version; without this, ^2.0.37
   # resolves to 2.0.41 on re-resolution and the 2.0.37 patch becomes unused.
   '@ai-sdk/openai-compatible': 2.0.37
@@ -64,8 +64,8 @@ patchedDependencies:
   '@ai-sdk/openai-compatible@2.0.37': 'patches/@ai-sdk__openai-compatible@2.0.37.patch'
   '@ai-sdk/openai@3.0.53': 'patches/@ai-sdk__openai@3.0.53.patch'
   '@ai-sdk/xai@3.0.83': 'patches/@ai-sdk__xai@3.0.83.patch'
-  '@ai-sdk/google@3.0.64': 'patches/@ai-sdk__google@3.0.64.patch'
-  '@ai-sdk/anthropic': 'patches/@ai-sdk__anthropic.patch'
+  '@ai-sdk/google@3.0.146': 'patches/@ai-sdk__google@3.0.146.patch'
+  '@ai-sdk/anthropic@3.0.142': 'patches/@ai-sdk__anthropic@3.0.142.patch'
   '@cherrystudio/embedjs-loader-web@0.1.31': 'patches/@cherrystudio__embedjs-loader-web@0.1.31.patch'
 
 allowBuilds:
