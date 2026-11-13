@@ -4,13 +4,11 @@ import { HStack } from '@renderer/components/Layout'
 import UpdateDialogPopup from '@renderer/components/Popups/UpdateDialogPopup'
 import { APP_NAME, AppLogo } from '@renderer/config/env'
 import { useTheme } from '@renderer/context/ThemeProvider'
-import { useMinappPopup } from '@renderer/hooks/useMinappPopup'
 import { useRuntime } from '@renderer/hooks/useRuntime'
 import { useSettings } from '@renderer/hooks/useSettings'
 import i18n from '@renderer/i18n'
 import { useAppDispatch } from '@renderer/store'
 import { setUpdateState } from '@renderer/store/runtime'
-import { ThemeMode } from '@renderer/types'
 import { runAsyncFunction } from '@renderer/utils'
 import { UpgradeChannel } from '@shared/config/constant'
 import { Avatar, Button, Progress, Radio, Row, Switch, Tag, Tooltip } from 'antd'
@@ -34,7 +32,6 @@ const AboutSettings: FC = () => {
   const { theme } = useTheme()
   const dispatch = useAppDispatch()
   const { update } = useRuntime()
-  const { openSmartMinapp } = useMinappPopup()
 
   const onCheckUpdate = debounce(
     async () => {
@@ -84,14 +81,8 @@ const AboutSettings: FC = () => {
     onOpenWebsite('https://enterprise.cherry-ai.com')
   }
 
-  const showReleases = async () => {
-    const { appPath } = await window.api.getAppInfo()
-    openSmartMinapp({
-      id: 'cherrystudio-releases',
-      name: t('settings.about.releases.title'),
-      url: `file://${appPath}/resources/cherry-studio/releases.html?theme=${theme === ThemeMode.dark ? 'dark' : 'light'}`,
-      logo: AppLogo
-    })
+  const showReleases = () => {
+    void window.api.openWebsite('https://github.com/Tsudrat/oh-my-classic-cherry/releases')
   }
 
   const currentChannelByVersion =

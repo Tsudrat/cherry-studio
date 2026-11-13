@@ -25,7 +25,6 @@ import type {
   CodeStyleVarious,
   LanguageVarious,
   MathEngine,
-  MinAppRegionFilter,
   OpenAIServiceTier,
   PaintingProvider,
   S3Config,
@@ -188,12 +187,6 @@ export interface SettingsState {
   siyuanRootPath: string | null
   // 订阅的助手地址
   agentssubscribeUrl: string | null
-  // MinApps
-  maxKeepAliveMinapps: number
-  showOpenedMinappsInSidebar: boolean
-  minappsOpenLinkExternal: boolean
-  /** Mini app region filter: 'auto' (detect from IP), 'CN', or 'Global' */
-  minAppRegion: MinAppRegionFilter
   // 隐私设置
   privacyPolicyVersion?: string
   enableDataCollection: boolean
@@ -376,11 +369,6 @@ export const initialState: SettingsState = {
   siyuanBoxId: null,
   siyuanRootPath: null,
   agentssubscribeUrl: '',
-  // MinApps
-  maxKeepAliveMinapps: 3,
-  showOpenedMinappsInSidebar: true,
-  minappsOpenLinkExternal: false,
-  minAppRegion: 'auto',
   privacyPolicyVersion: LATEST_PRIVACY_POLICY_VERSION,
   enableDataCollection: true,
   enableSpellCheck: false,
@@ -795,18 +783,6 @@ const settingsSlice = createSlice({
     setAgentssubscribeUrl: (state, action: PayloadAction<string>) => {
       state.agentssubscribeUrl = action.payload
     },
-    setMaxKeepAliveMinapps: (state, action: PayloadAction<number>) => {
-      state.maxKeepAliveMinapps = action.payload
-    },
-    setShowOpenedMinappsInSidebar: (state, action: PayloadAction<boolean>) => {
-      state.showOpenedMinappsInSidebar = action.payload
-    },
-    setMinappsOpenLinkExternal: (state, action: PayloadAction<boolean>) => {
-      state.minappsOpenLinkExternal = action.payload
-    },
-    setMinAppRegion: (state, action: PayloadAction<MinAppRegionFilter>) => {
-      state.minAppRegion = action.payload
-    },
     setEnableDataCollection: (state, action: PayloadAction<boolean>) => {
       state.enableDataCollection = action.payload
     },
@@ -1006,10 +982,6 @@ export const {
   setSiyuanBoxId,
   setAgentssubscribeUrl,
   setSiyuanRootPath,
-  setMaxKeepAliveMinapps,
-  setShowOpenedMinappsInSidebar,
-  setMinappsOpenLinkExternal,
-  setMinAppRegion,
   setEnableDataCollection,
   setPrivacyPolicyVersion,
   setEnableSpellCheck,

@@ -65,8 +65,6 @@ export enum IpcChannel {
   Open_Path = 'open:path',
   Open_Website = 'open:website',
 
-  Minapp = 'minapp',
-
   Config_Set = 'config:set',
   Config_Get = 'config:get',
 

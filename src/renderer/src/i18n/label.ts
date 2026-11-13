@@ -142,7 +142,6 @@ export const getRestoreProgressLabel = (key: string): string => {
 const titleKeyMap = {
   // TODO: update i18n key
   store: 'title.store',
-  apps: 'title.apps',
   code: 'title.code',
   files: 'title.files',
   home: 'title.home',
@@ -177,7 +176,6 @@ export const getThemeModeLabel = (key: string): string => {
 //   store: t('assistants.presets.title'),
 //   paintings: t('paintings.title'),
 //   translate: t('translate.title'),
-//   minapp: t('minapp.title'),
 //   knowledge: t('knowledge.title'),
 //   files: t('files.title'),
 
@@ -189,7 +187,6 @@ const sidebarIconKeyMap = {
   agents: 'agent.sidebar_title',
   paintings: 'paintings.title',
   translate: 'translate.title',
-  minapp: 'minapp.title',
   knowledge: 'knowledge.title',
   files: 'files.title',
   notes: 'notes.title',
@@ -307,15 +304,6 @@ const mcpProviderDescriptionKeyMap = {
 
 export const getMcpProviderDescriptionLabel = (key: string): string => {
   return getLabel(mcpProviderDescriptionKeyMap, key)
-}
-
-const miniappsStatusKeyMap = {
-  visible: 'settings.miniapps.visible',
-  disabled: 'settings.miniapps.disabled'
-} as const
-
-export const getMiniappsStatusLabel = (key: string): string => {
-  return getLabel(miniappsStatusKeyMap, key)
 }
 
 const httpMessageKeyMap = {

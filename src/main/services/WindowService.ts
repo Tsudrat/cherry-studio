@@ -112,7 +112,7 @@ export class WindowService {
       this.miniWindow = this.createMiniWindow(true)
     }
 
-    //init the MinApp webviews' useragent
+    //init webview useragent
     initSessionUserAgent()
 
     return this.mainWindow
