@@ -22,7 +22,6 @@ import {
   DEFAULT_TEMPERATURE,
   isMac
 } from '@renderer/config/constant'
-import { allMinApps } from '@renderer/config/minapps'
 import { isFunctionCallingModel, isNotSupportTextDeltaModel, qwenModel, SYSTEM_MODELS } from '@renderer/config/models'
 import { BUILTIN_OCR_PROVIDERS, BUILTIN_OCR_PROVIDERS_MAP, DEFAULT_OCR_PROVIDER } from '@renderer/config/ocr'
 import { TRANSLATE_PROMPT } from '@renderer/config/prompts'
@@ -66,18 +65,31 @@ import { defaultWebSearchProviders } from './websearch'
 
 const logger = loggerService.withContext('Migrate')
 
+// Mini apps were removed in migration 212; the helpers below still run inside
+// older migrations, so they operate on the legacy persisted shape.
+type LegacyMinApp = { id: string; logo?: string } & Record<string, unknown>
+
+type LegacyMinAppsState = {
+  minapps?: {
+    enabled: LegacyMinApp[]
+    disabled: LegacyMinApp[]
+    pinned: LegacyMinApp[]
+  }
+}
+
 // remove logo base64 data to reduce the size of the state
 function removeMiniAppIconsFromState(state: RootState) {
-  if (state.minapps) {
-    state.minapps.enabled = state.minapps.enabled.map((app) => ({
+  const minapps = (state as unknown as LegacyMinAppsState).minapps
+  if (minapps) {
+    minapps.enabled = minapps.enabled.map((app) => ({
       ...app,
       logo: undefined
     }))
-    state.minapps.disabled = state.minapps.disabled.map((app) => ({
+    minapps.disabled = minapps.disabled.map((app) => ({
       ...app,
       logo: undefined
     }))
-    state.minapps.pinned = state.minapps.pinned.map((app) => ({
+    minapps.pinned = minapps.pinned.map((app) => ({
       ...app,
       logo: undefined
     }))
@@ -85,22 +97,19 @@ function removeMiniAppIconsFromState(state: RootState) {
 }
 
 function removeMiniAppFromState(state: RootState, id: string) {
-  if (state.minapps) {
-    state.minapps.pinned = state.minapps.pinned.filter((app) => app.id !== id)
-    state.minapps.enabled = state.minapps.enabled.filter((app) => app.id !== id)
-    state.minapps.disabled = state.minapps.disabled.filter((app) => app.id !== id)
+  const minapps = (state as unknown as LegacyMinAppsState).minapps
+  if (minapps) {
+    minapps.pinned = minapps.pinned.filter((app) => app.id !== id)
+    minapps.enabled = minapps.enabled.filter((app) => app.id !== id)
+    minapps.disabled = minapps.disabled.filter((app) => app.id !== id)
   }
 }
 
+// Mini apps can no longer be seeded: their builtin catalog was removed together
+// with the feature. Kept as a no-op so legacy migrations below stay readable.
 function addMiniApp(state: RootState, id: string) {
-  if (state.minapps) {
-    const app = allMinApps.find((app) => app.id === id)
-    if (app) {
-      if (!state.minapps.enabled.find((app) => app.id === id)) {
-        state.minapps.enabled.push(app)
-      }
-    }
-  }
+  void state
+  void id
 }
 
 // add provider to state
@@ -1067,18 +1076,11 @@ const migrateConfig = {
   },
   '71': (state: RootState) => {
     try {
-      const appIds = ['dify', 'wpslingxi', 'lechat', 'abacus', 'lambdachat', 'baidu-ai-search']
-
-      if (state.minapps) {
-        appIds.forEach((id) => {
-          const app = allMinApps.find((app) => app.id === id)
-          if (app) {
-            state.minapps.enabled.push(app)
-          }
-        })
+      const legacyMinapps = (state as unknown as LegacyMinAppsState).minapps
+      if (legacyMinapps) {
         // remove zhihu-zhiada
-        state.minapps.enabled = state.minapps.enabled.filter((app) => app.id !== 'zhihu-zhiada')
-        state.minapps.disabled = state.minapps.disabled.filter((app) => app.id !== 'zhihu-zhiada')
+        legacyMinapps.enabled = legacyMinapps.enabled.filter((app) => app.id !== 'zhihu-zhiada')
+        legacyMinapps.disabled = legacyMinapps.disabled.filter((app) => app.id !== 'zhihu-zhiada')
       }
 
       state.settings.thoughtAutoCollapse = true
@@ -1293,8 +1295,9 @@ const migrateConfig = {
   },
   '87': (state: RootState) => {
     try {
-      state.settings.maxKeepAliveMinapps = 3
-      state.settings.showOpenedMinappsInSidebar = true
+      const legacySettings = state.settings as unknown as Record<string, unknown>
+      legacySettings.maxKeepAliveMinapps = 3
+      legacySettings.showOpenedMinappsInSidebar = true
       return state
     } catch (error) {
       return state
@@ -3184,7 +3187,7 @@ const migrateConfig = {
         }
       })
       // Initialize mini app region filter setting
-      state.settings.minAppRegion ??= 'auto'
+      ;(state.settings as unknown as Record<string, unknown>).minAppRegion ??= 'auto'
       return state
     } catch (error) {
       logger.error('migrate 194 error', error as Error)
@@ -3265,10 +3268,11 @@ const migrateConfig = {
       })
 
       // Migrate minimax app id to hailuo
-      if (state.minapps) {
+      const legacyMinapps = (state as unknown as LegacyMinAppsState).minapps
+      if (legacyMinapps) {
         const lists: Array<'enabled' | 'disabled' | 'pinned'> = ['enabled', 'disabled', 'pinned']
         lists.forEach((list) => {
-          state.minapps[list] = state.minapps[list].map((app) =>
+          legacyMinapps[list] = legacyMinapps[list].map((app) =>
             app.id === 'minimax' ? { ...app, id: 'hailuo' } : app
           )
         })
@@ -3499,6 +3503,25 @@ const migrateConfig = {
       return state
     } catch (error) {
       logger.error('migrate 211 error', error as Error)
+      return state
+    }
+  },
+  '212': (state: RootState) => {
+    try {
+      // my-classic-cherry: Mini Apps feature removed; drop its persisted slice
+      // and the now-defunct settings fields.
+      const legacy = state as unknown as LegacyMinAppsState
+      delete legacy.minapps
+      const legacySettings = state.settings as unknown as Record<string, unknown>
+      delete legacySettings.maxKeepAliveMinapps
+      delete legacySettings.showOpenedMinappsInSidebar
+      delete legacySettings.minappsOpenLinkExternal
+      delete legacySettings.minAppRegion
+
+      logger.info('migrate 212 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 212 error', error as Error)
       return state
     }
   }

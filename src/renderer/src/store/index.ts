@@ -32,7 +32,6 @@ import mcp from './mcp'
 import memory from './memory'
 import messageBlocksReducer from './messageBlock'
 import migrate from './migrate'
-import minapps from './minapps'
 import newMessagesReducer from './newMessage'
 import { setNotesPath } from './note'
 import note from './note'
@@ -62,7 +61,6 @@ const rootReducer = combineReducers({
   runtime,
   shortcuts,
   knowledge,
-  minapps,
   websearch,
   mcp,
   memory,
@@ -84,7 +82,7 @@ const persistedReducer = persistReducer(
   {
     key: 'cherry-studio',
     storage,
-    version: 211,
+    version: 212,
     blacklist: ['runtime', 'messages', 'messageBlocks', 'tabs', 'toolPermissions'],
     migrate
   },

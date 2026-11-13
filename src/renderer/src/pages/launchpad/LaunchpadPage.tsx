@@ -1,11 +1,7 @@
 import { OpenClawIcon } from '@renderer/components/Icons/SVGIcon'
-import App from '@renderer/components/MinApp/MinApp'
-import { useMinapps } from '@renderer/hooks/useMinapps'
-import { useRuntime } from '@renderer/hooks/useRuntime'
 import { useSettings } from '@renderer/hooks/useSettings'
-import { FileSearch, Folder, Languages, LayoutGrid, NotepadText, Palette } from 'lucide-react'
+import { FileSearch, Folder, Languages, NotepadText, Palette } from 'lucide-react'
 import type { FC } from 'react'
-import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -14,16 +10,8 @@ const LaunchpadPage: FC = () => {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { defaultPaintingProvider } = useSettings()
-  const { pinned } = useMinapps()
-  const { openedKeepAliveMinapps } = useRuntime()
 
   const appMenuItems = [
-    {
-      icon: <LayoutGrid size={32} className="icon" />,
-      text: t('title.apps'),
-      path: '/apps',
-      bgColor: 'linear-gradient(135deg, #8B5CF6, #A855F7)' // 小程序：紫色，代表多功能和灵活性
-    },
     {
       icon: <FileSearch size={32} className="icon" />,
       text: t('title.knowledge'),
@@ -62,21 +50,6 @@ const LaunchpadPage: FC = () => {
     }
   ]
 
-  // 合并并排序小程序列表
-  const sortedMinapps = useMemo(() => {
-    // 先添加固定的小程序，保持原有顺序
-    const result = [...pinned]
-
-    // 再添加其他已打开但未固定的小程序
-    openedKeepAliveMinapps.forEach((app) => {
-      if (!result.some((pinnedApp) => pinnedApp.id === app.id)) {
-        result.push(app)
-      }
-    })
-
-    return result
-  }, [openedKeepAliveMinapps, pinned])
-
   return (
     <Container>
       <Content>
@@ -93,19 +66,6 @@ const LaunchpadPage: FC = () => {
             ))}
           </Grid>
         </Section>
-
-        {sortedMinapps.length > 0 && (
-          <Section>
-            <SectionTitle>{t('launchpad.minapps')}</SectionTitle>
-            <Grid>
-              {sortedMinapps.map((app) => (
-                <AppWrapper key={app.id}>
-                  <App app={app} size={56} />
-                </AppWrapper>
-              ))}
-            </Grid>
-          </Section>
-        )}
       </Content>
     </Container>
   )
@@ -205,20 +165,6 @@ const AppName = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`
-
-const AppWrapper = styled.div`
-  padding: 8px 4px;
-  border-radius: 8px;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
 `
 
 export default LaunchpadPage

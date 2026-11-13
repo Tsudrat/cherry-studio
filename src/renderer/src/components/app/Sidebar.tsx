@@ -4,10 +4,8 @@ import { UserAvatar } from '@renderer/config/env'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import useAvatar from '@renderer/hooks/useAvatar'
 import { useFullscreen } from '@renderer/hooks/useFullscreen'
-import { useMinappPopup } from '@renderer/hooks/useMinappPopup'
-import { useMinapps } from '@renderer/hooks/useMinapps'
 import useNavBackgroundColor from '@renderer/hooks/useNavBackgroundColor'
-import { modelGenerating, useRuntime } from '@renderer/hooks/useRuntime'
+import { modelGenerating } from '@renderer/hooks/useRuntime'
 import { useSettings } from '@renderer/hooks/useSettings'
 import { getSidebarIconLabel, getThemeModeLabel } from '@renderer/i18n/label'
 import { ThemeMode } from '@renderer/types'
@@ -17,7 +15,6 @@ import {
   FileSearch,
   Folder,
   Languages,
-  LayoutGrid,
   MessageSquare,
   Monitor,
   Moon,
@@ -34,14 +31,8 @@ import styled from 'styled-components'
 
 import { OpenClawSidebarIcon } from '../Icons/SVGIcon'
 import UserPopup from '../Popups/UserPopup'
-import { SidebarOpenedMinappTabs, SidebarPinnedApps } from './PinnedMinapps'
 
 const Sidebar: FC = () => {
-  const { hideMinappPopup } = useMinappPopup()
-  const { minappShow } = useRuntime()
-  const { sidebarIcons } = useSettings()
-  const { pinned } = useMinapps()
-
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
@@ -53,8 +44,6 @@ const Sidebar: FC = () => {
 
   const backgroundColor = useNavBackgroundColor()
 
-  const showPinnedApps = pinned.length > 0 && sidebarIcons.visible.includes('minapp')
-
   const to = async (path: string) => {
     await modelGenerating()
     navigate(path)
@@ -63,10 +52,7 @@ const Sidebar: FC = () => {
   const isFullscreen = useFullscreen()
 
   return (
-    <Container
-      $isFullscreen={isFullscreen}
-      id="app-sidebar"
-      style={{ backgroundColor, zIndex: minappShow ? 10000 : 'initial' }}>
+    <Container $isFullscreen={isFullscreen} id="app-sidebar" style={{ backgroundColor }}>
       {isEmoji(avatar) ? (
         <EmojiAvatar onClick={onEditUser} className="sidebar-avatar" size={31} fontSize={18}>
           {avatar}
@@ -75,18 +61,9 @@ const Sidebar: FC = () => {
         <AvatarImg src={avatar || UserAvatar} draggable={false} className="nodrag" onClick={onEditUser} />
       )}
       <MainMenusContainer>
-        <Menus onClick={hideMinappPopup}>
+        <Menus>
           <MainMenus />
         </Menus>
-        <SidebarOpenedMinappTabs />
-        {showPinnedApps && (
-          <AppsContainer>
-            <Divider />
-            <Menus>
-              <SidebarPinnedApps />
-            </Menus>
-          </AppsContainer>
-        )}
       </MainMenusContainer>
       <Menus>
         <Tooltip title={t('settings.theme.title') + ': ' + getThemeModeLabel(settedTheme)} placement="right">
@@ -103,10 +80,9 @@ const Sidebar: FC = () => {
         <Tooltip title={t('settings.title')} mouseEnterDelay={0.8} placement="right">
           <StyledLink
             onClick={async () => {
-              hideMinappPopup()
               await to('/settings/provider')
             }}>
-            <Icon theme={theme} className={pathname.startsWith('/settings') && !minappShow ? 'active' : ''}>
+            <Icon theme={theme} className={pathname.startsWith('/settings') ? 'active' : ''}>
               <Settings size={20} className="icon" />
             </Icon>
           </StyledLink>
@@ -117,22 +93,19 @@ const Sidebar: FC = () => {
 }
 
 const MainMenus: FC = () => {
-  const { hideMinappPopup } = useMinappPopup()
   const { pathname } = useLocation()
   const { sidebarIcons, defaultPaintingProvider } = useSettings()
-  const { minappShow } = useRuntime()
   const navigate = useNavigate()
   const { theme } = useTheme()
 
-  const isRoute = (path: string): string => (pathname === path && !minappShow ? 'active' : '')
-  const isRoutes = (path: string): string => (pathname.startsWith(path) && path !== '/' && !minappShow ? 'active' : '')
+  const isRoute = (path: string): string => (pathname === path ? 'active' : '')
+  const isRoutes = (path: string): string => (pathname.startsWith(path) && path !== '/' ? 'active' : '')
 
   const iconMap = {
     assistants: <MessageSquare size={18} className="icon" />,
     agents: <MousePointerClick size={18} className="icon" />,
     paintings: <Palette size={18} className="icon" />,
     translate: <Languages size={18} className="icon" />,
-    minapp: <LayoutGrid size={18} className="icon" />,
     knowledge: <FileSearch size={18} className="icon" />,
     files: <Folder size={18} className="icon" />,
     notes: <NotepadText size={18} className="icon" />,
@@ -144,7 +117,6 @@ const MainMenus: FC = () => {
     agents: '/agents',
     paintings: `/paintings/${defaultPaintingProvider}`,
     translate: '/translate',
-    minapp: '/apps',
     knowledge: '/knowledge',
     files: '/files',
     notes: '/notes',
@@ -159,7 +131,6 @@ const MainMenus: FC = () => {
       <Tooltip key={icon} title={getSidebarIconLabel(icon)} mouseEnterDelay={0.8} placement="right">
         <StyledLink
           onClick={async () => {
-            hideMinappPopup()
             await modelGenerating()
             navigate(path)
           }}>
@@ -256,20 +227,6 @@ const Icon = styled.div<{ theme: string }>`
     }
   }
 
-  &.opened-minapp {
-    position: relative;
-  }
-  &.opened-minapp::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    border-radius: inherit;
-    opacity: 0.3;
-    border: 0.5px solid var(--color-primary);
-  }
 `
 
 const StyledLink = styled.div`
@@ -278,26 +235,6 @@ const StyledLink = styled.div`
   &* {
     user-select: none;
   }
-`
-
-const AppsContainer = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-  overflow-x: hidden;
-  margin-bottom: 10px;
-  -webkit-app-region: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`
-
-const Divider = styled.div`
-  width: 50%;
-  margin: 8px 0;
-  border-bottom: 0.5px solid var(--color-border);
 `
 
 export default Sidebar
