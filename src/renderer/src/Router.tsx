@@ -11,7 +11,6 @@ import NavigationHandler from './handler/NavigationHandler'
 import { useOnboardingState } from './hooks/useOnboardingState'
 import { useNavbarPosition } from './hooks/useSettings'
 import AgentPage from './pages/agents/AgentPage'
-import CodeToolsPage from './pages/code/CodeToolsPage'
 import FilesPage from './pages/files/FilesPage'
 import HomePage from './pages/home/HomePage'
 import KnowledgePage from './pages/knowledge/KnowledgePage'
@@ -44,7 +43,6 @@ const Router: FC = () => {
           <Route path="/knowledge" element={<KnowledgePage />} />
           <Route path="/apps/:appId" element={<MinAppPage />} />
           <Route path="/apps" element={<MinAppsPage />} />
-          <Route path="/code" element={<CodeToolsPage />} />
           <Route path="/openclaw" element={<OpenClawPage />} />
           <Route path="/settings/*" element={<SettingsPage />} />
           <Route path="/launchpad" element={<LaunchpadPage />} />

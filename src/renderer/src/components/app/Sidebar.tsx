@@ -14,7 +14,6 @@ import { ThemeMode } from '@renderer/types'
 import { isEmoji } from '@renderer/utils'
 import { Avatar, Tooltip } from 'antd'
 import {
-  Code,
   FileSearch,
   Folder,
   Languages,
@@ -139,7 +138,6 @@ const MainMenus: FC = () => {
     knowledge: <FileSearch size={18} className="icon" />,
     files: <Folder size={18} className="icon" />,
     notes: <NotepadText size={18} className="icon" />,
-    code_tools: <Code size={18} className="icon" />,
     openclaw: <OpenClawSidebarIcon style={{ width: 18, height: 18 }} className="icon" />
   }
 
@@ -152,7 +150,6 @@ const MainMenus: FC = () => {
     minapp: '/apps',
     knowledge: '/knowledge',
     files: '/files',
-    code_tools: '/code',
     notes: '/notes',
     openclaw: '/openclaw'
   }

@@ -8,7 +8,6 @@ import { setSidebarIcons } from '@renderer/store/settings'
 import type { SidebarIcon } from '@renderer/types'
 import { message } from 'antd'
 import {
-  Code,
   FileSearch,
   Folder,
   Languages,
@@ -126,7 +125,6 @@ const SidebarIconsManager: FC<SidebarIconsManagerProps> = ({
         knowledge: <FileSearch size={16} />,
         files: <Folder size={16} />,
         notes: <NotepadText size={16} />,
-        code_tools: <Code size={16} />,
         openclaw: <OpenClawSidebarIcon style={{ width: 16, height: 16 }} />
       }) satisfies Record<SidebarIcon, ReactNode>,
     []

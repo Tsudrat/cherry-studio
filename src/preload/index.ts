@@ -3,10 +3,9 @@ import type { TokenUsageData } from '@cherrystudio/analytics-client'
 import { electronAPI } from '@electron-toolkit/preload'
 import type { SpanEntity, TokenUsage } from '@mcp-trace/trace-core'
 import type { SpanContext } from '@opentelemetry/api'
-import type { GitBashPathInfo, TerminalConfig, UpgradeChannel } from '@shared/config/constant'
+import type { GitBashPathInfo, UpgradeChannel } from '@shared/config/constant'
 import type { LogLevel, LogSourceWithContext } from '@shared/config/logger'
 import type {
-  CodeToolsRunResult,
   FileChangeEvent,
   LanClientEvent,
   LanFileCompleteMessage,
@@ -706,24 +705,6 @@ const api = {
     getAccessToken: () => ipcRenderer.invoke(IpcChannel.Anthropic_GetAccessToken),
     hasCredentials: () => ipcRenderer.invoke(IpcChannel.Anthropic_HasCredentials),
     clearCredentials: () => ipcRenderer.invoke(IpcChannel.Anthropic_ClearCredentials)
-  },
-  codeTools: {
-    run: (
-      cliTool: string,
-      model: string,
-      directory: string,
-      env: Record<string, string>,
-      options?: { autoUpdateToLatest?: boolean; terminal?: string }
-    ): Promise<CodeToolsRunResult> =>
-      ipcRenderer.invoke(IpcChannel.CodeTools_Run, cliTool, model, directory, env, options),
-    getAvailableTerminals: (): Promise<TerminalConfig[]> =>
-      ipcRenderer.invoke(IpcChannel.CodeTools_GetAvailableTerminals),
-    setCustomTerminalPath: (terminalId: string, path: string): Promise<void> =>
-      ipcRenderer.invoke(IpcChannel.CodeTools_SetCustomTerminalPath, terminalId, path),
-    getCustomTerminalPath: (terminalId: string): Promise<string | undefined> =>
-      ipcRenderer.invoke(IpcChannel.CodeTools_GetCustomTerminalPath, terminalId),
-    removeCustomTerminalPath: (terminalId: string): Promise<void> =>
-      ipcRenderer.invoke(IpcChannel.CodeTools_RemoveCustomTerminalPath, terminalId)
   },
   ocr: {
     ocr: (file: SupportedOcrFile, provider: OcrProvider): Promise<OcrResult> =>
