@@ -34,7 +34,7 @@ This file guides AI coding assistants in this repository.
 ## Pull Requests (this fork only)
 
 - Never target `CherryHQ/cherry-studio`.
-- PRs stay on `Tsudrat/cherry-studio` (or the current fork remote), base = `v1` (or the active personal long-lived branch).
+- PRs stay on `Tsudrat/oh-my-classic-cherry` (or the current fork remote), base = `v1` (or the active personal long-lived branch).
 - Prefer feature branches + PR over committing straight to `v1` when the change is non-trivial.
 
 ## Review Workflow
