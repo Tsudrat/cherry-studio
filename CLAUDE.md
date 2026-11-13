@@ -178,7 +178,7 @@ Upstream has a large v2 refactor; many files carry `@deprecated` / “V2 DATA&UI
 
 For running this Electron app headlessly in a Cursor Cloud Agent VM (Ubuntu 24.04). Assumes you can fill in standard details.
 
-- **Node**: needs `>=24.11.1` (`.nvmrc`), but the VM's default `node` is older and wins on PATH. Prepend nvm's: `export PATH="$HOME/.nvm/versions/node/v24.11.1/bin:$PATH"` (install once with `nvm install 24.11.1`). pnpm 10.27.0 already matches.
+- **Node**: `.nvmrc` pins `26.13.0` (`engines` still allows `>=24.11.1`), but the VM's default `node` is older and wins on PATH. Prepend nvm's: `export PATH="$HOME/.nvm/versions/node/v26.13.0/bin:$PATH"` (install once with `nvm install 26.13.0`). pnpm is standalone (no Corepack on Node 26); it auto-switches to the `packageManager` version.
 
 - **System libs (once)**: install Electron's GUI deps + `xvfb` + native-build headers, e.g.:
   `sudo apt-get install -y xvfb imagemagick libnss3 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libgbm1 libgtk-3-0t64 libasound2t64 libxshmfence1 libxdamage1 libxrandr2 libxcomposite1 libxfixes3 libxkbcommon0 libpango-1.0-0 libcairo2 libatspi2.0-0t64 fonts-noto-cjk libxtst-dev libx11-dev libxext-dev libxi-dev libevdev-dev build-essential`

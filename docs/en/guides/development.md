@@ -47,10 +47,10 @@ nvm install
 
 ### Setup pnpm
 
-The pnpm version is locked in the `packageManager` field of `package.json`. Just enable corepack and it will use the correct version automatically:
+The pnpm version is locked in the `packageManager` field of `package.json`. Install pnpm once via the [standalone installer](https://pnpm.io/installation) — it automatically downloads and switches to the version declared by the project (Corepack is no longer bundled with Node.js):
 
 ```bash
-corepack enable
+curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
 
 ### Install Dependencies

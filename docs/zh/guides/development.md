@@ -39,10 +39,10 @@ nvm install
 
 ### 安装 pnpm
 
-pnpm 版本已锁定在 `package.json` 的 `packageManager` 字段中，通过 corepack 即可自动安装对应版本：
+pnpm 版本已锁定在 `package.json` 的 `packageManager` 字段中。通过[独立安装脚本](https://pnpm.io/installation)安装一次 pnpm 即可——它会自动下载并切换到项目声明的版本（Node.js 已不再内置 Corepack）：
 
 ```bash
-corepack enable
+curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
 
 ### 安装依赖
