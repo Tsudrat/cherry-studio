@@ -15,8 +15,7 @@ import {
   MessageSquareQuote,
   MousePointerClick,
   NotepadText,
-  Palette,
-  Sparkle
+  Palette
 } from 'lucide-react'
 import type { FC, ReactNode } from 'react'
 import { useCallback, useMemo } from 'react'
@@ -118,7 +117,6 @@ const SidebarIconsManager: FC<SidebarIconsManagerProps> = ({
       ({
         assistants: <MessageSquareQuote size={16} />,
         agents: <MousePointerClick size={16} />,
-        store: <Sparkle size={16} />,
         paintings: <Palette size={16} />,
         translate: <Languages size={16} />,
         minapp: <LayoutGrid size={16} />,
