@@ -388,13 +388,6 @@ export enum IpcChannel {
   // ExternalApps
   ExternalApps_DetectInstalled = 'external-apps:detect-installed',
 
-  // CodeTools
-  CodeTools_Run = 'code-tools:run',
-  CodeTools_GetAvailableTerminals = 'code-tools:get-available-terminals',
-  CodeTools_SetCustomTerminalPath = 'code-tools:set-custom-terminal-path',
-  CodeTools_GetCustomTerminalPath = 'code-tools:get-custom-terminal-path',
-  CodeTools_RemoveCustomTerminalPath = 'code-tools:remove-custom-terminal-path',
-
   // OCR
   OCR_ocr = 'ocr:ocr',
   OCR_ListProviders = 'ocr:list-providers',

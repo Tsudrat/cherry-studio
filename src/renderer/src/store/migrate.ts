@@ -2215,9 +2215,14 @@ const migrateConfig = {
   },
   '133': (state: RootState) => {
     try {
-      state.settings.sidebarIcons.visible.push('code_tools')
-      if (state.codeTools) {
-        state.codeTools.environmentVariables = {
+      // legacy migration; 'code_tools' icon/slice removed in omcc (see migrate 211)
+      const legacy = state as unknown as {
+        settings: { sidebarIcons: { visible: string[] } }
+        codeTools?: { environmentVariables?: Record<string, string> }
+      }
+      legacy.settings.sidebarIcons.visible.push('code_tools')
+      if (legacy.codeTools) {
+        legacy.codeTools.environmentVariables = {
           'qwen-code': '',
           'claude-code': '',
           'gemini-cli': ''
@@ -3483,6 +3488,18 @@ const migrateConfig = {
       return state
     } catch (error) {
       logger.error('migrate 210 error', error as Error)
+      return state
+    }
+  },
+  '211': (state: RootState) => {
+    try {
+      // my-classic-cherry: Code Tools feature removed; drop its persisted slice.
+      delete (state as Record<string, unknown>).codeTools
+
+      logger.info('migrate 211 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 211 error', error as Error)
       return state
     }
   }

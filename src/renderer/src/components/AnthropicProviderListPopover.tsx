@@ -67,7 +67,7 @@ const AnthropicProviderListPopover: FC<AnthropicProviderListPopoverProps> = ({
 
   const content = (
     <PopoverContent>
-      <PopoverTitle>{t('code.supported_providers')}</PopoverTitle>
+      <PopoverTitle>{t('agent.add.model.supported_providers')}</PopoverTitle>
       <ProviderListContainer>
         {providers.map((provider) =>
           useWindowNavigate ? (
