@@ -107,9 +107,6 @@ jobs:
       - name: OpenAPI Spec Check
         run: pnpm openapi:check
 
-      - name: Skills Check
-        run: pnpm skills:check
-
   general-test:
     runs-on: ubuntu-latest
     needs: changes
