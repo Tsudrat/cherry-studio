@@ -4,6 +4,5 @@ export {
   type ToolApprovalActions,
   type ToolApprovalState,
   useMcpToolApproval,
-  useToolApproval,
-  type UseToolApprovalOptions
+  useToolApproval
 } from './useToolApproval'

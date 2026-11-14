@@ -73,7 +73,7 @@ const InputbarTools = ({ scope, assistant, model }: InputbarToolsNewProps) => {
     [toolsContext.toolsRegistry]
   )
 
-  const reduxToolOrder = useAppSelector((state) => selectToolOrderForScope(state, scope))
+  const reduxToolOrder = useAppSelector((state) => selectToolOrderForScope(state))
   const isCollapse = useAppSelector((state) => state.inputTools.isCollapsed)
   const [targetTool, setTargetTool] = useState<ToolConfig | null>(null)
 

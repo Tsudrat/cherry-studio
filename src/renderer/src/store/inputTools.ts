@@ -77,7 +77,7 @@ const inputToolsSlice = createSlice({
 export const { setToolOrder, setIsCollapsed } = inputToolsSlice.actions
 
 // Selector to get tool order for a specific scope
-export const selectToolOrderForScope = (state: { inputTools: InputToolsState }, _scope: InputbarScope): ToolOrder => {
+export const selectToolOrderForScope = (state: { inputTools: InputToolsState }): ToolOrder => {
   return state.inputTools.toolOrder
 }
 

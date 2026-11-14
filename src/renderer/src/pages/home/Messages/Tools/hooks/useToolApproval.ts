@@ -28,23 +28,13 @@ export interface ToolApprovalActions {
   autoApprove?: () => void | Promise<void>
 }
 
-export interface UseToolApprovalOptions {
-  /** Force a specific approval type */
-  forceType?: 'mcp'
-}
-
 /**
- * Unified hook for tool approval - selects MCP approval
- * based on the tool type in the block metadata.
+ * Unified hook for tool approval — delegates to the MCP approval path.
  *
  * @param block - The tool message block
- * @param options - Optional configuration
  * @returns Unified approval state and actions
  */
-export function useToolApproval(
-  block: ToolMessageBlock,
-  _options: UseToolApprovalOptions = {}
-): ToolApprovalState & ToolApprovalActions {
+export function useToolApproval(block: ToolMessageBlock): ToolApprovalState & ToolApprovalActions {
   return useMcpToolApproval(block)
 }
 
