@@ -69,7 +69,7 @@ const ModelTypeSelector: FC<ModelTypeSelectorProps> = ({
             }
             return t
           })
-          updatedModelCapabilities.push(newCapability as any)
+          updatedModelCapabilities.push(newCapability)
           onCapabilitiesChange(uniqueObjectArray(updatedModelCapabilities))
         }
       },

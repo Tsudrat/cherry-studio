@@ -35,7 +35,6 @@ import {
 } from '@modelcontextprotocol/sdk/types.js'
 import { nanoid } from '@reduxjs/toolkit'
 import { HOME_CHERRY_DIR } from '@shared/config/constant'
-import type { MCPProgressEvent } from '@shared/config/types'
 import type { MCPServerLogEntry } from '@shared/config/types'
 import { IpcChannel } from '@shared/IpcChannel'
 import { buildFunctionCallToolName } from '@shared/mcp'
@@ -803,7 +802,7 @@ class McpService {
       } catch (error) {
         // Ignore ENOENT - file may not exist if server never used OAuth
         if (error instanceof Error && 'code' in error && (error as NodeJS.ErrnoException).code !== 'ENOENT') {
-          getServerLogger(server).error(`Failed to cleanup OAuth token file`, error as Error)
+          getServerLogger(server).error(`Failed to cleanup OAuth token file`, error)
         }
       }
     }
@@ -968,7 +967,7 @@ class McpService {
               mainWindow.webContents.send(IpcChannel.Mcp_Progress, {
                 callId: toolCallId,
                 progress: process.progress / (process.total || 1)
-              } as MCPProgressEvent)
+              })
             }
           },
           timeout: server.timeout ? server.timeout * 1000 : 60000, // Default timeout of 1 minute,
@@ -1016,7 +1015,7 @@ class McpService {
     } catch (error: unknown) {
       // -32601 is the code for the method not found
       if (error instanceof McpError && error.code !== -32601) {
-        getServerLogger(server).error(`Failed to list prompts`, error as Error)
+        getServerLogger(server).error(`Failed to list prompts`, error)
       }
       return []
     }

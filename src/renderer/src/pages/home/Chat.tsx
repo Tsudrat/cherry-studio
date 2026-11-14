@@ -81,7 +81,7 @@ const Chat: FC<Props> = (props) => {
     })
     if (name && topic.name !== name) {
       const updatedTopic = { ...topic, name, isNameManuallyEdited: true }
-      updateTopic(updatedTopic as Topic)
+      updateTopic(updatedTopic)
     }
   })
 

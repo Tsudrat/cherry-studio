@@ -57,7 +57,7 @@ const createMockCallbacks = (
 
 // Mock external dependencies
 vi.mock('@renderer/config/models', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>
+  const actual = await importOriginal<Record<string, unknown>>()
   return {
     ...actual,
     qwen3Model: {
@@ -268,7 +268,7 @@ vi.mock('i18next', () => {
 })
 
 vi.mock('@renderer/utils/error', async (importOriginal) => {
-  const actual = (await importOriginal()) as typeof errorUtils
+  const actual = await importOriginal<typeof errorUtils>()
   return {
     ...actual,
     formatErrorMessage: vi.fn((error) => error.message || 'Unknown error'),

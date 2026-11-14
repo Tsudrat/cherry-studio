@@ -60,7 +60,7 @@ export async function addOdLoader(
       filePath: file.path,
       chunkSize: base.chunkSize,
       chunkOverlap: base.chunkOverlap
-    }) as any,
+    }),
     forceReload
   )
 }
@@ -89,7 +89,7 @@ export async function addFileLoader(
           path: filePath,
           chunkSize: base.chunkSize,
           chunkOverlap: base.chunkOverlap
-        }) as any,
+        }),
         forceReload
       )
       break
@@ -105,7 +105,7 @@ export async function addFileLoader(
           filePath: filePath,
           chunkSize: base.chunkSize ?? 1000,
           chunkOverlap: base.chunkOverlap ?? 200
-        }) as any,
+        }),
         forceReload
       )
       break
@@ -122,7 +122,7 @@ export async function addFileLoader(
           urlOrContent: await readTextFileWithAutoEncoding(filePath),
           chunkSize: base.chunkSize,
           chunkOverlap: base.chunkOverlap
-        }) as any,
+        }),
         forceReload
       )
       break
@@ -151,7 +151,7 @@ export async function addFileLoader(
           text: await readTextFileWithAutoEncoding(filePath),
           chunkSize: base.chunkSize,
           chunkOverlap: base.chunkOverlap
-        }) as any,
+        }),
         forceReload
       )
       break
@@ -162,5 +162,5 @@ export async function addFileLoader(
     uniqueId: loaderReturn.uniqueId,
     uniqueIds: [loaderReturn.uniqueId],
     loaderType: loaderReturn.loaderType
-  } as LoaderReturn
+  }
 }

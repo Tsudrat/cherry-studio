@@ -91,7 +91,7 @@ const ModelSelector = ({
                 label: fancyName,
                 title: p.name,
                 options: modelOptions
-              } as GroupedModelOption
+              }
             ]
           : []
       })

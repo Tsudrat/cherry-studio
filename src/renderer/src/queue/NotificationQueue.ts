@@ -27,7 +27,7 @@ export class NotificationQueue {
   }
 
   public async add(notification: Notification): Promise<void> {
-    await this.queue.add(() => Promise.all(this.listeners.map((listener) => listener(notification))))
+    await this.queue.add(() => Promise.all(this.listeners.map(async (listener) => listener(notification))))
   }
 
   /**

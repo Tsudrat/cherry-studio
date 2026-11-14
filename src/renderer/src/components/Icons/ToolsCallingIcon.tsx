@@ -11,7 +11,7 @@ const ToolsCallingIcon: FC<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElem
   return (
     <Container>
       <Tooltip title={t('models.function_calling')} placement="top">
-        <Icon {...(props as any)} />
+        <Icon {...props} />
       </Tooltip>
     </Container>
   )

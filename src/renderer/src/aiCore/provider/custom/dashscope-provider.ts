@@ -152,5 +152,5 @@ export function createDashScope(options: DashScopeProviderSettings = {}): DashSc
     })
   provider.imageModel = (modelId: string) => new DashScopeImageModel(modelId, { ...options, baseURL })
 
-  return provider as DashScopeProvider
+  return provider
 }

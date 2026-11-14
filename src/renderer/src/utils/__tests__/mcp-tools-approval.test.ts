@@ -61,7 +61,7 @@ function makeServer(overrides: Partial<MCPServer> = {}): MCPServer {
     isActive: true,
     command: 'test',
     ...overrides
-  } as MCPServer
+  }
 }
 
 describe('isToolAutoApproved', () => {

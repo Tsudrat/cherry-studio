@@ -247,7 +247,7 @@ function buildVertexConfig(
     providerId: isAnthropic ? 'google-vertex-anthropic' : 'google-vertex',
     endpoint: ctx.endpoint,
     providerSettings: { ...ctx.baseConfig, baseURL, project, location, googleCredentials: creds }
-  } as ProviderConfig<'google-vertex'> | ProviderConfig<'google-vertex-anthropic'>
+  }
 }
 
 function buildCherryinConfig(ctx: BuilderContext): ProviderConfig<'cherryin'> {
@@ -330,7 +330,7 @@ function buildAzureConfig(
     providerId: useResponsesMode ? 'azure-responses' : 'azure',
     endpoint: ctx.endpoint,
     providerSettings
-  } as ProviderConfig<'azure'> | ProviderConfig<'azure-responses'>
+  }
 }
 
 async function buildAnthropicConfig(ctx: BuilderContext): Promise<ProviderConfig<'anthropic'>> {

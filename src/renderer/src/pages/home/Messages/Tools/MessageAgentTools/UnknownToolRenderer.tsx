@@ -45,7 +45,7 @@ function extractMcpText(output: unknown): string | null {
  * Uses shared ArgsTable for consistent styling with MCP tools
  */
 export function UnknownToolRenderer({
-  toolName = '',
+  toolName,
   input,
   output
 }: UnknownToolProps): NonNullable<CollapseProps['items']>[number] {
@@ -88,7 +88,7 @@ export function UnknownToolRenderer({
         {normalizedInput && <ToolArgsTable args={normalizedInput} title={t('message.tools.sections.input')} />}
         {normalizedOutput && <ToolArgsTable args={normalizedOutput} title={t('message.tools.sections.output')} />}
         {!normalizedInput && !normalizedOutput && (
-          <div className="p-3 text-foreground-500 text-xs">{t('message.tools.noData')}</div>
+          <div className="text-foreground-500 p-3 text-xs">{t('message.tools.noData')}</div>
         )}
       </div>
     )

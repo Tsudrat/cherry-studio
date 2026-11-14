@@ -21,7 +21,7 @@ const ProtocolInstallWarningContent: React.FC<ProtocolInstallWarningContentProps
       {commandPreview && (
         <div className="space-y-1">
           <div className="font-semibold">{commandLabel}</div>
-          <pre className="whitespace-pre-wrap break-all rounded-md bg-[var(--color-fill-secondary)] p-2">
+          <pre className="rounded-md bg-[var(--color-fill-secondary)] p-2 break-all whitespace-pre-wrap">
             {commandPreview}
           </pre>
         </div>

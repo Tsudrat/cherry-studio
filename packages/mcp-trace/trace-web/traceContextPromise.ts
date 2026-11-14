@@ -27,7 +27,7 @@ class TraceContextPromise<T> extends Promise<T> {
   static resolve<T>(value: T | PromiseLike<T>): Promise<T>
   static resolve<T>(value: T | PromiseLike<T>, ctx?: Context): Promise<T>
   static resolve<T>(value?: T | PromiseLike<T>, ctx?: Context): Promise<T | void> {
-    return new TraceContextPromise<T | void>((resolve) => resolve(value as T), ctx)
+    return new TraceContextPromise<T | void>((resolve) => resolve(value), ctx)
   }
 
   static reject<T = never>(reason?: any): Promise<T>
@@ -51,7 +51,7 @@ class TraceContextPromise<T> extends Promise<T> {
     if (Array.isArray(values) && values.length > 0 && values[0] instanceof TraceContextPromise) {
       capturedContext = (values[0] as TraceContextPromise<any>)._context
     }
-    return originalPromise.all(newValues) as Promise<T[]>
+    return originalPromise.all(newValues as (T | PromiseLike<T>)[]) as Promise<T[]>
   }
 
   static race<T>(values: (T | PromiseLike<T>)[]): Promise<T> {
@@ -89,7 +89,7 @@ class TraceContextPromise<T> extends Promise<T> {
  * 用 TraceContextPromise 替换全局 Promise
  */
 export function instrumentPromises() {
-  globalThis.Promise = TraceContextPromise as unknown as PromiseConstructor
+  globalThis.Promise = TraceContextPromise
 }
 
 /**

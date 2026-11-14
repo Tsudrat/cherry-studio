@@ -50,7 +50,7 @@ export function useSettings() {
       dispatch(_setSendMessageShortcut(shortcut))
     },
 
-    setLaunch(isLaunchOnBoot: boolean | undefined, isLaunchToTray: boolean | undefined = undefined) {
+    setLaunch(isLaunchOnBoot: boolean | undefined, isLaunchToTray?: boolean) {
       if (isLaunchOnBoot !== undefined) {
         dispatch(setLaunchOnBoot(isLaunchOnBoot))
         void window.api.setLaunchOnBoot(isLaunchOnBoot)
@@ -62,7 +62,7 @@ export function useSettings() {
       }
     },
 
-    setTray(isShowTray: boolean | undefined, isTrayOnClose: boolean | undefined = undefined) {
+    setTray(isShowTray: boolean | undefined, isTrayOnClose?: boolean) {
       if (isShowTray !== undefined) {
         dispatch(_setTray(isShowTray))
         void window.api.setTray(isShowTray)

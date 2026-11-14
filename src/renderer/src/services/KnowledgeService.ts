@@ -291,14 +291,13 @@ export const processKnowledgeSearch = async (
     // 转换为引用格式
     const result = await Promise.all(
       uniqueResults.map(
-        async (item, index) =>
-          ({
-            id: index + 1,
-            content: item.pageContent,
-            sourceUrl: await getKnowledgeSourceUrl(item),
-            metadata: item.metadata,
-            type: 'file'
-          }) as KnowledgeReference
+        async (item, index): Promise<KnowledgeReference> => ({
+          id: index + 1,
+          content: item.pageContent,
+          sourceUrl: await getKnowledgeSourceUrl(item),
+          metadata: item.metadata,
+          type: 'file'
+        })
       )
     )
     return result

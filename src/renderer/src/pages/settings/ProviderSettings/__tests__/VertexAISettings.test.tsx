@@ -65,7 +65,7 @@ describe('VertexAISettings', () => {
       warning: vi.fn(),
       info: vi.fn(),
       loading: vi.fn()
-    } as typeof window.toast
+    }
   })
 
   it('parses a valid service account JSON payload and clears the input', async () => {

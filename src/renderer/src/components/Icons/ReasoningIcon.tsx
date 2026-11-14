@@ -10,7 +10,7 @@ const ReasoningIcon: FC<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement
   return (
     <Container>
       <Tooltip title={t('models.type.reasoning')} placement="top">
-        <Icon className="iconfont icon-thinking" {...(props as any)} />
+        <Icon className="iconfont icon-thinking" {...props} />
       </Tooltip>
     </Container>
   )

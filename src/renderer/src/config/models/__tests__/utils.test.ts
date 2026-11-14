@@ -788,7 +788,7 @@ describe('model utils', () => {
 
       it('returns false for undefined and null', () => {
         expect(isClaude46SeriesModel(undefined as unknown as Model)).toBe(false)
-        expect(isClaude46SeriesModel(null as unknown as Model)).toBe(false)
+        expect(isClaude46SeriesModel(null)).toBe(false)
       })
     })
   })
@@ -870,7 +870,7 @@ describe('model utils', () => {
 
       it('returns false for undefined and null', () => {
         expect(isSupportAdaptiveThinkingClaudeModel(undefined as unknown as Model)).toBe(false)
-        expect(isSupportAdaptiveThinkingClaudeModel(null as unknown as Model)).toBe(false)
+        expect(isSupportAdaptiveThinkingClaudeModel(null)).toBe(false)
       })
 
       it('matches rejection predicates for sampling parameters', () => {
@@ -930,7 +930,7 @@ describe('model utils', () => {
 
       it('returns false for undefined and null', () => {
         expect(isClaudeAlwaysOnAdaptiveThinkingModel(undefined as unknown as Model)).toBe(false)
-        expect(isClaudeAlwaysOnAdaptiveThinkingModel(null as unknown as Model)).toBe(false)
+        expect(isClaudeAlwaysOnAdaptiveThinkingModel(null)).toBe(false)
       })
     })
   })

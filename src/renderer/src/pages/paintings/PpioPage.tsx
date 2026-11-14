@@ -15,7 +15,7 @@ import FileManager from '@renderer/services/FileManager'
 import { translateText } from '@renderer/services/TranslateService'
 import { useAppDispatch } from '@renderer/store'
 import { setGenerating } from '@renderer/store/runtime'
-import type { FileMetadata, PaintingsState, PpioPainting } from '@renderer/types'
+import type { FileMetadata, PpioPainting } from '@renderer/types'
 import { getErrorMessage, uuid } from '@renderer/utils'
 import type { UploadFile } from 'antd'
 import { Button, Input, Segmented, Select, Switch, Tooltip, Upload } from 'antd'
@@ -51,7 +51,7 @@ const PpioPage: FC<{ Options: string[] }> = ({ Options }) => {
   const { t } = useTranslation()
   const { theme } = useTheme()
   const [mode, setMode] = useState<PpioMode>('ppio_draw')
-  const { ppio_draw = [], ppio_edit = [], addPainting, removePainting, updatePainting } = usePaintings()
+  const { ppio_draw, ppio_edit, addPainting, removePainting, updatePainting } = usePaintings()
 
   const paintings = useMemo(
     () => ({
@@ -558,7 +558,7 @@ const PpioPage: FC<{ Options: string[] }> = ({ Options }) => {
           </InputContainer>
         </MainContainer>
         <PaintingsList
-          namespace={mode as keyof PaintingsState}
+          namespace={mode}
           paintings={filteredPaintings}
           selectedPainting={painting}
           onSelectPainting={onSelectPainting}

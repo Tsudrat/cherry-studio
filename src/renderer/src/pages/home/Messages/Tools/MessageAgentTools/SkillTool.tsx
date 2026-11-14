@@ -30,9 +30,9 @@ export function SkillTool({
         {/* Args 输入区域 */}
         {input?.args && (
           <div>
-            <div className="mb-1 font-medium text-muted-foreground text-xs">{t('message.tools.sections.args')}</div>
-            <div className="max-h-40 overflow-y-auto rounded-md bg-muted/50 p-2">
-              <code className="whitespace-pre-wrap break-all font-mono text-xs">{input.args}</code>
+            <div className="text-muted-foreground mb-1 text-xs font-medium">{t('message.tools.sections.args')}</div>
+            <div className="bg-muted/50 max-h-40 overflow-y-auto rounded-md p-2">
+              <code className="font-mono text-xs break-all whitespace-pre-wrap">{input.args}</code>
             </div>
           </div>
         )}
@@ -40,9 +40,9 @@ export function SkillTool({
         {/* Output 输出区域 */}
         {truncatedOutput ? (
           <div>
-            <div className="mb-1 font-medium text-muted-foreground text-xs">{t('message.tools.sections.output')}</div>
-            <div className="max-h-60 overflow-y-auto rounded-md bg-muted/30 p-2">
-              <pre className="whitespace-pre-wrap font-mono text-xs">{truncatedOutput}</pre>
+            <div className="text-muted-foreground mb-1 text-xs font-medium">{t('message.tools.sections.output')}</div>
+            <div className="bg-muted/30 max-h-60 overflow-y-auto rounded-md p-2">
+              <pre className="font-mono text-xs whitespace-pre-wrap">{truncatedOutput}</pre>
             </div>
             {isTruncated && <TruncatedIndicator originalLength={originalLength} />}
           </div>

@@ -419,7 +419,7 @@ export class SelectionService {
    * Toggle the enabled state of the selection service
    * Will sync the new enabled store to all renderer windows
    */
-  public toggleEnabled(enabled: boolean | undefined = undefined): void {
+  public toggleEnabled(enabled?: boolean): void {
     if (!this.selectionHook) return
 
     const newEnabled = enabled === undefined ? !configManager.getSelectionAssistantEnabled() : enabled

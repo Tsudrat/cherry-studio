@@ -12,13 +12,6 @@ interface BackupFile {
   size: number
 }
 
-interface WebdavConfig {
-  webdavHost: string
-  webdavUser?: string
-  webdavPass?: string
-  webdavPath?: string
-}
-
 interface WebdavBackupManagerProps {
   visible: boolean
   onClose: () => void
@@ -71,7 +64,7 @@ export function WebdavBackupManager({
         webdavUser,
         webdavPass,
         webdavPath
-      } as WebdavConfig)
+      })
       setBackupFiles(files)
       setPagination((prev) => ({
         ...prev,
@@ -127,7 +120,7 @@ export function WebdavBackupManager({
               webdavUser,
               webdavPass,
               webdavPath
-            } as WebdavConfig)
+            })
           }
           window.toast.success(
             t('settings.data.webdav.backup.manager.delete.success.multiple', { count: selectedRowKeys.length })
@@ -164,7 +157,7 @@ export function WebdavBackupManager({
             webdavUser,
             webdavPass,
             webdavPath
-          } as WebdavConfig)
+          })
           window.toast.success(t('settings.data.webdav.backup.manager.delete.success.single'))
           await fetchBackupFiles()
         } catch (error: any) {

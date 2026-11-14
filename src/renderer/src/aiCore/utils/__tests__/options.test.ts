@@ -11,7 +11,7 @@ import { buildProviderOptions } from '../options'
 
 // Mock dependencies
 vi.mock('@cherrystudio/ai-core/provider', async (importOriginal) => {
-  const actual = (await importOriginal()) as object
+  const actual = await importOriginal<object>()
   return {
     ...actual,
     baseProviderIdSchema: {
@@ -299,7 +299,7 @@ describe('options utils', () => {
         apiHost: 'https://generativelanguage.googleapis.com',
         isSystem: true,
         models: [{ id: 'gemini-2.0-flash-exp' }] as Model[]
-      } as Provider
+      }
 
       const googleModel: Model = {
         id: 'gemini-2.0-flash-exp',

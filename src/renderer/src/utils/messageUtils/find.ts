@@ -42,7 +42,7 @@ export const findMainTextBlocks = (message: Message): MainTextMessageBlock[] => 
   for (const blockId of message.blocks) {
     const block = messageBlocksSelectors.selectById(state, blockId)
     if (block && block.type === MessageBlockType.MAIN_TEXT) {
-      textBlocks.push(block as MainTextMessageBlock)
+      textBlocks.push(block)
     }
   }
   return textBlocks
@@ -62,7 +62,7 @@ export const findThinkingBlocks = (message: Message): ThinkingMessageBlock[] => 
   for (const blockId of message.blocks) {
     const block = messageBlocksSelectors.selectById(state, blockId)
     if (block && block.type === MessageBlockType.THINKING) {
-      thinkingBlocks.push(block as ThinkingMessageBlock)
+      thinkingBlocks.push(block)
     }
   }
   return thinkingBlocks
@@ -82,7 +82,7 @@ export const findImageBlocks = (message: Message): ImageMessageBlock[] => {
   for (const blockId of message.blocks) {
     const block = messageBlocksSelectors.selectById(state, blockId)
     if (block && block.type === MessageBlockType.IMAGE) {
-      imageBlocks.push(block as ImageMessageBlock)
+      imageBlocks.push(block)
     }
   }
   return imageBlocks
@@ -102,7 +102,7 @@ export const findFileBlocks = (message: Message): FileMessageBlock[] => {
   for (const blockId of message.blocks) {
     const block = messageBlocksSelectors.selectById(state, blockId)
     if (block && block.type === MessageBlockType.FILE) {
-      fileBlocks.push(block as FileMessageBlock)
+      fileBlocks.push(block)
     }
   }
   return fileBlocks
@@ -176,7 +176,7 @@ export const findCitationBlocks = (message: Message): CitationMessageBlock[] => 
   for (const blockId of message.blocks) {
     const block = messageBlocksSelectors.selectById(state, blockId)
     if (block && block.type === MessageBlockType.CITATION) {
-      citationBlocks.push(block as CitationMessageBlock)
+      citationBlocks.push(block)
     }
   }
   return citationBlocks
@@ -196,7 +196,7 @@ export const findTranslationBlocks = (message: Message): TranslationMessageBlock
   for (const blockId of message.blocks) {
     const block = messageBlocksSelectors.selectById(state, blockId)
     if (block && block.type === MessageBlockType.TRANSLATION) {
-      translationBlocks.push(block as TranslationMessageBlock)
+      translationBlocks.push(block)
     }
   }
   return translationBlocks

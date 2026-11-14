@@ -25,7 +25,7 @@ function model(id: string, overrides: Partial<Model> = {}): Model {
     provider: 'custom',
     group: 'test',
     ...overrides
-  } as Model
+  }
 }
 
 describe('resolveReasoningDialectExtractors', () => {

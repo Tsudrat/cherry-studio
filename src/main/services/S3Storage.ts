@@ -109,7 +109,7 @@ export default class S3Storage {
       if (!res.Body || !(res.Body instanceof Readable)) {
         throw new Error('Empty body received from S3')
       }
-      return await streamToBuffer(res.Body as Readable)
+      return await streamToBuffer(res.Body)
     } catch (error) {
       logger.error('[S3Storage] Error getting object:', error as Error)
       throw error

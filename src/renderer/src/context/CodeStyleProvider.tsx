@@ -57,10 +57,13 @@ export const CodeStyleProvider: React.FC<PropsWithChildren> = ({ children }) => 
     // CodeMirror 主题
     // 更保险的做法可能是硬编码主题列表
     if (codeEditor.enabled) {
-      return ['auto', 'light', 'dark']
-        .concat(Object.keys(cmThemes))
-        .filter((item) => typeof cmThemes[item as keyof typeof cmThemes] !== 'function')
-        .filter((item) => !/^(defaultSettings)/.test(item) && !/(Style)$/.test(item))
+      return (
+        ['auto', 'light', 'dark']
+          .concat(Object.keys(cmThemes))
+          // oxlint-disable-next-line import/namespace
+          .filter((item) => typeof cmThemes[item as keyof typeof cmThemes] !== 'function')
+          .filter((item) => !/^(defaultSettings)/.test(item) && !/(Style)$/.test(item))
+      )
     }
 
     // Shiki 主题，取出所有 BundledThemeInfo 的 id 作为主题名
@@ -89,6 +92,7 @@ export const CodeStyleProvider: React.FC<PropsWithChildren> = ({ children }) => 
     if (!themeName || themeName === 'auto' || !themeNames.includes(themeName)) {
       themeName = theme === ThemeMode.light ? 'materialLight' : 'dark'
     }
+    // oxlint-disable-next-line import/namespace
     return cmThemes[themeName as keyof typeof cmThemes] || themeName
   }, [theme, codeEditor, themeNames])
 
@@ -100,7 +104,7 @@ export const CodeStyleProvider: React.FC<PropsWithChildren> = ({ children }) => 
       svg: 'xml',
       vab: 'vb',
       graphviz: 'dot'
-    } as Record<string, string>
+    }
   }, [])
 
   useEffect(() => {

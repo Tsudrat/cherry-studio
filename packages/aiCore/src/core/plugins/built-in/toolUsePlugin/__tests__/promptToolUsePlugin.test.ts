@@ -434,7 +434,7 @@ describe('promptToolUsePlugin', () => {
       const inputChunks = [stepStartEvent]
 
       const inputStream = simulateReadableStream<TextStreamPart<ToolSet>>({
-        chunks: inputChunks as TextStreamPart<ToolSet>[],
+        chunks: inputChunks,
         initialDelayInMs: 0,
         chunkDelayInMs: 0
       })

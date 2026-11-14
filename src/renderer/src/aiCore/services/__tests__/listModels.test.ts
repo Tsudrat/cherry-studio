@@ -316,7 +316,7 @@ function makeProvider(overrides: Partial<Provider> & { id: string }): Provider {
     isSystem: true,
     enabled: true,
     ...overrides
-  } as Provider
+  }
 }
 
 function assertValidModels(models: { id: string; name: string; provider: string; group: string }[]) {
@@ -538,7 +538,7 @@ describe('listModels', () => {
       mockGetFromApi.mockResolvedValue({ value: REAL_ANTHROPIC })
 
       const models = await listModels(
-        makeProvider({ id: 'anthropic', type: 'anthropic' as any, apiHost: 'https://api.anthropic.com/v1' })
+        makeProvider({ id: 'anthropic', type: 'anthropic', apiHost: 'https://api.anthropic.com/v1' })
       )
 
       expect(mockGetFromApi).toHaveBeenCalledTimes(1)
@@ -577,7 +577,7 @@ describe('listModels', () => {
         })
 
       const models = await listModels(
-        makeProvider({ id: 'anthropic', type: 'anthropic' as any, apiHost: 'https://api.anthropic.com/v1' })
+        makeProvider({ id: 'anthropic', type: 'anthropic', apiHost: 'https://api.anthropic.com/v1' })
       )
 
       expect(mockGetFromApi).toHaveBeenCalledTimes(2)
@@ -985,7 +985,7 @@ describe('listModels', () => {
       const models = await listModels(
         makeProvider({
           id: 'gateway',
-          type: 'gateway' as any,
+          type: 'gateway',
           apiHost: 'https://ai-gateway.vercel.sh/v1/ai',
           apiKey: 'sk-gw'
         })
@@ -1023,7 +1023,7 @@ describe('listModels', () => {
         }
       })
       const models = await listModels(
-        makeProvider({ id: 'gateway', type: 'gateway' as any, apiHost: 'https://ai-gateway.vercel.sh/v1/ai' })
+        makeProvider({ id: 'gateway', type: 'gateway', apiHost: 'https://ai-gateway.vercel.sh/v1/ai' })
       )
       expect(models).toHaveLength(1)
       expect(models[0].name).toBe('openai/gpt-4o')
@@ -1035,7 +1035,7 @@ describe('listModels', () => {
       ['aws-bedrock', { id: 'aws-bedrock' }],
       ['vertex-anthropic', { id: 'vertex-anthro', type: 'vertex-anthropic' as any }]
     ])('should return empty for %s', async (_, overrides) => {
-      const models = await listModels(makeProvider(overrides as any))
+      const models = await listModels(makeProvider(overrides))
       expect(models).toEqual([])
       expect(mockGetFromApi).not.toHaveBeenCalled()
     })

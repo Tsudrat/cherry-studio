@@ -37,14 +37,12 @@ const logger = loggerService.withContext('RichEditor')
  * 3. Closest line <= target
  */
 function findElementByLine(editorDom: HTMLElement, lineNumber: number, lineContent?: string): HTMLElement | null {
-  const allElements = Array.from(editorDom.querySelectorAll(`[${MARKDOWN_SOURCE_LINE_ATTR}]`)) as HTMLElement[]
+  const allElements = Array.from(editorDom.querySelectorAll<HTMLElement>(`[${MARKDOWN_SOURCE_LINE_ATTR}]`))
   if (allElements.length === 0) {
     logger.warn('No elements with data-source-line attribute found')
     return null
   }
-  const exactMatches = editorDom.querySelectorAll(
-    `[${MARKDOWN_SOURCE_LINE_ATTR}="${lineNumber}"]`
-  ) as NodeListOf<HTMLElement>
+  const exactMatches = editorDom.querySelectorAll<HTMLElement>(`[${MARKDOWN_SOURCE_LINE_ATTR}="${lineNumber}"]`)
 
   // Strategy 1: Exact line + content match
   if (exactMatches.length > 1 && lineContent) {

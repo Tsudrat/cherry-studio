@@ -215,9 +215,9 @@ export function TruncatedIndicator({ originalLength }: { originalLength: number 
   const sizeStr = formatFileSize(originalLength)
 
   return (
-    <div className="mt-2 flex items-center gap-1 text-muted-foreground text-xs">
+    <div className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
       <Ellipsis size={14} />
-      <span className="rounded bg-muted px-1.5 py-0.5 font-mono">
+      <span className="bg-muted rounded px-1.5 py-0.5 font-mono">
         {t('message.tools.truncated', { defaultValue: sizeStr, size: sizeStr })}
       </span>
     </div>

@@ -441,7 +441,7 @@ describe('export', () => {
         id: 't_plain_formatted',
         name: 'Formatted Plain Topic',
         assistantId: 'asst_test_formatted',
-        messages: [userMsg, assistantMsg] as any,
+        messages: [userMsg, assistantMsg],
         createdAt: '',
         updatedAt: '',
         type: TopicType.Chat
@@ -542,7 +542,7 @@ describe('export', () => {
         id: 't_multi_plain_formatted',
         name: 'Multi Plain Formatted',
         assistantId: 'asst_test_multi_formatted',
-        messages: [msg1, msg2] as any,
+        messages: [msg1, msg2],
         createdAt: '',
         updatedAt: '',
         type: TopicType.Chat
@@ -578,7 +578,7 @@ describe('export', () => {
         id: 'topic_empty_content',
         name: 'Topic with empty content',
         assistantId: 'asst_test',
-        messages: [msgWithEmpty] as any,
+        messages: [msgWithEmpty],
         createdAt: '',
         updatedAt: '',
         type: TopicType.Chat
@@ -600,7 +600,7 @@ describe('export', () => {
         id: 'topic_special_chars',
         name: 'Topic with "quotes" & symbols',
         assistantId: 'asst_test',
-        messages: [msgWithSpecial] as any,
+        messages: [msgWithSpecial],
         createdAt: '',
         updatedAt: '',
         type: TopicType.Chat
@@ -627,7 +627,7 @@ describe('export', () => {
         id: 'topic1_plain',
         name: '# Topic One',
         assistantId: 'asst_test',
-        messages: [msg1, msg2] as any,
+        messages: [msg1, msg2],
         createdAt: '',
         updatedAt: '',
         type: TopicType.Chat
@@ -649,7 +649,7 @@ describe('export', () => {
         id: 'topic_empty_plain',
         name: '## Empty Topic',
         assistantId: 'asst_test',
-        messages: [] as any,
+        messages: [],
         createdAt: '',
         updatedAt: '',
         type: TopicType.Chat

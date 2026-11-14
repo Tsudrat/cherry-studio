@@ -392,7 +392,7 @@ const MCPToolsButton: FC<Props> = ({ quickPanel, setInputValue, resizeTextArea, 
       label: prompt.name,
       description: prompt.description,
       icon: <Hammer />,
-      action: () => handlePromptSelect(prompt as MCPPromptWithArgs)
+      action: () => handlePromptSelect(prompt)
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activedMcpServers])

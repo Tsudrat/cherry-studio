@@ -1,4 +1,4 @@
-import type { KnowledgeBase, Model } from '@renderer/types'
+import type { KnowledgeBase } from '@renderer/types'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -105,7 +105,7 @@ function createKnowledgeBase(overrides: Partial<KnowledgeBase> = {}): KnowledgeB
       provider: 'test-provider',
       name: 'Test Model',
       group: 'test'
-    } as Model,
+    },
     items: [],
     created_at: Date.now(),
     updated_at: Date.now(),

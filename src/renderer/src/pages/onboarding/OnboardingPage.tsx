@@ -70,11 +70,11 @@ const OnboardingPage: FC<OnboardingPageProps> = ({ onComplete }) => {
               checked={privacyAccepted}
               className="max-w-5xl text-center"
               onChange={(event) => updateDataCollection(event.target.checked)}>
-              <span className="text-(--color-text-3) text-xs leading-relaxed">
+              <span className="text-xs leading-relaxed text-(--color-text-3)">
                 {t('onboarding.privacy.notice')}
                 <button
                   type="button"
-                  className="ml-1 cursor-pointer border-none bg-transparent p-0 text-(--color-primary) text-xs hover:underline"
+                  className="ml-1 cursor-pointer border-none bg-transparent p-0 text-xs text-(--color-primary) hover:underline"
                   onClick={(event) => {
                     event.preventDefault()
                     event.stopPropagation()

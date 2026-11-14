@@ -48,7 +48,7 @@ export const PopupContainer: FC<PopupContainerProps> = ({ resolve }) => {
       transitionName="animation-move-down">
       <div className="flex flex-col gap-3">
         {/* Error Display */}
-        {lastError && <div className="text-[var(--color-error)] text-xs">{lastError}</div>}
+        {lastError && <div className="text-xs text-[var(--color-error)]">{lastError}</div>}
 
         {/* Device List */}
         <div className="mt-2 flex flex-col gap-3">

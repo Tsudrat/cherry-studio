@@ -397,7 +397,7 @@ const SelectedBadge: FC<PropsWithChildren<React.HTMLAttributes<HTMLSpanElement>>
   <span
     {...props}
     className={cn(
-      'inline-flex h-[18px] min-w-[18px] cursor-pointer items-center justify-center rounded-[9px] bg-[var(--color-primary)] px-[5px] font-medium text-[11px] text-white transition-opacity duration-200 hover:opacity-[0.85]',
+      'inline-flex h-[18px] min-w-[18px] cursor-pointer items-center justify-center rounded-[9px] bg-[var(--color-primary)] px-[5px] text-[11px] font-medium text-white transition-opacity duration-200 hover:opacity-[0.85]',
       className
     )}>
     {children}

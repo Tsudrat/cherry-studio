@@ -74,8 +74,8 @@ const WelcomePage: FC<WelcomePageProps> = ({ setStep, setCherryInLoggedIn }) => 
         <img src={CherryStudioLogo} alt="Cherry Studio" className="h-16 w-16 rounded-xl" />
 
         <div className="flex flex-col items-center gap-2">
-          <h1 className="m-0 font-semibold text-(--color-text) text-2xl">{t('onboarding.welcome.title')}</h1>
-          <p className="m-0 text-(--color-text-2) text-sm">{t('onboarding.welcome.subtitle')}</p>
+          <h1 className="m-0 text-2xl font-semibold text-(--color-text)">{t('onboarding.welcome.title')}</h1>
+          <p className="m-0 text-sm text-(--color-text-2)">{t('onboarding.welcome.subtitle')}</p>
         </div>
 
         <div className="mt-2 flex w-100 flex-col gap-3">
@@ -90,7 +90,7 @@ const WelcomePage: FC<WelcomePageProps> = ({ setStep, setCherryInLoggedIn }) => 
           </Button>
 
           <Divider className="my-1!">
-            <span className="text-(--color-text-3) text-xs">{t('onboarding.welcome.or_continue_with')}</span>
+            <span className="text-xs text-(--color-text-3)">{t('onboarding.welcome.or_continue_with')}</span>
           </Divider>
 
           <Button size="large" block className="h-12 rounded-lg" onClick={handleSelectProvider}>
@@ -98,7 +98,7 @@ const WelcomePage: FC<WelcomePageProps> = ({ setStep, setCherryInLoggedIn }) => 
           </Button>
         </div>
 
-        <p className="mt-1 text-(--color-text-3) text-xs">{t('onboarding.welcome.setup_hint')}</p>
+        <p className="mt-1 text-xs text-(--color-text-3)">{t('onboarding.welcome.setup_hint')}</p>
       </div>
     </div>
   )

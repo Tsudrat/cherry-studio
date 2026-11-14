@@ -96,7 +96,7 @@ function ToolContent({
   hasError?: boolean
 }) {
   const renderedItem = isValidAgentToolsType(toolName)
-    ? renderTool(toolName, (input ?? {}) as Record<string, unknown>, output)
+    ? renderTool(toolName, input ?? {}, output)
     : UnknownToolRenderer({ toolName: toolName ?? 'Tool', input, output })
 
   const toolContentItem: NonNullable<CollapseProps['items']>[number] = {

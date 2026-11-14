@@ -210,7 +210,7 @@ async function getKnowledgeBaseParams(base: KnowledgeBase): Promise<KnowledgeBas
 export const searchKnowledge = async (req: ValidationRequest, res: Response): Promise<Response> => {
   try {
     // Use Zod-validated body (defaults already applied by validator)
-    const { query, knowledge_base_ids, document_count = 5 } = (req.validatedBody ?? {}) as ValidatedSearchBody
+    const { query, knowledge_base_ids, document_count } = (req.validatedBody ?? {}) as ValidatedSearchBody
 
     logger.debug(`Searching knowledge bases: "${query}"`, { knowledge_base_ids, document_count })
 

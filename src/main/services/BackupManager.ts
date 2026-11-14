@@ -759,7 +759,7 @@ class BackupManager {
       // Write file using streaming
       await new Promise<void>((resolve, reject) => {
         const writeStream = fs.createWriteStream(backupedFilePath)
-        writeStream.write(retrievedFile as Buffer)
+        writeStream.write(retrievedFile)
         writeStream.end()
 
         writeStream.on('finish', () => resolve())

@@ -42,7 +42,7 @@ export type SelectorProps<V> = SingleSelectorProps<V> | MultipleSelectorProps<V>
 const Selector = <V extends string | number>({
   options,
   value,
-  onChange = () => {},
+  onChange,
   placement = 'bottomRight',
   size = 13,
   placeholder,

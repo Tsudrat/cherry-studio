@@ -11,7 +11,7 @@ const WebSearchIcon: FC<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement
   return (
     <Container>
       <Tooltip title={t('models.type.websearch')} placement="top">
-        <Icon {...(props as any)} />
+        <Icon {...props} />
       </Tooltip>
     </Container>
   )

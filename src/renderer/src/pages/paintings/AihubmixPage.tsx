@@ -21,7 +21,20 @@ import { setGenerating } from '@renderer/store/runtime'
 import type { FileMetadata } from '@renderer/types'
 import type { PaintingAction, PaintingsState } from '@renderer/types'
 import { getErrorMessage, uuid } from '@renderer/utils'
-import { Avatar, Button, Input, InputNumber, Radio, Segmented, Select, Slider, Switch, Tooltip, Upload } from 'antd'
+import {
+  Avatar,
+  Button,
+  Input,
+  InputNumber,
+  Radio,
+  Segmented,
+  Select,
+  type SelectProps,
+  Slider,
+  Switch,
+  Tooltip,
+  Upload
+} from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { Info } from 'lucide-react'
 import type { FC } from 'react'
@@ -717,7 +730,8 @@ const AihubmixPage: FC<{ Options: string[] }> = ({ Options }) => {
             listHeight={500}
             disabled={isDisabled}
             value={painting[item.key!] || item.initialValue}
-            options={selectOptions as any}
+            // oxlint-disable-next-line typescript/no-unnecessary-type-assertion — required under tsgo
+            options={selectOptions as SelectProps['options']}
             onChange={(v) => updatePaintingState({ [item.key!]: v })}
           />
         )

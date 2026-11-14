@@ -78,7 +78,7 @@ export class ToolCallChunkHandler {
         name: toolName,
         description: toolName,
         type: 'builtin'
-      } as BaseTool
+      }
     } else if ((mcpTool = this.mcpTools.find((t) => t.id === toolName) as MCPTool)) {
       return mcpTool
     } else {
@@ -120,7 +120,7 @@ export class ToolCallChunkHandler {
         name: toolName,
         description: toolName,
         type: 'provider'
-      } as BaseTool
+      }
     } else {
       tool = this.determineToolType(toolName, toolCallId)
     }
@@ -266,7 +266,7 @@ export class ToolCallChunkHandler {
         name: toolName,
         description: toolName,
         type: 'provider'
-      } as BaseTool
+      }
     } else if (toolName.startsWith('builtin_')) {
       // 如果是内置工具，沿用现有逻辑
       logger.info(`[ToolCallChunkHandler] Handling builtin tool: ${toolName}`)
@@ -275,7 +275,7 @@ export class ToolCallChunkHandler {
         name: toolName,
         description: toolName,
         type: 'builtin'
-      } as BaseTool
+      }
     } else if ((mcpTool = this.mcpTools.find((t) => t.id === toolName) as MCPTool)) {
       // 如果是客户端执行的 MCP 工具，沿用现有逻辑
       // toolName is mcpTool.id (registered with id as key in convertMcpToolsToAiSdkTools)

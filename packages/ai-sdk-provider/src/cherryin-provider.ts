@@ -332,7 +332,7 @@ export const createCherryIn = (options: CherryInProviderSettings = {}): CherryIn
   provider.speech = createSpeechModel
   provider.speechModel = createSpeechModel
 
-  return provider as CherryInProvider
+  return provider
 }
 
 export const cherryIn = createCherryIn()

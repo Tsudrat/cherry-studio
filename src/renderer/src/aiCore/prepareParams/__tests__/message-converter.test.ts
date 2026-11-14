@@ -60,16 +60,15 @@ const createModel = (overrides: Partial<Model> = {}): Model => ({
   ...overrides
 })
 
-const createMessage = (role: Message['role']): MockableMessage =>
-  ({
-    id: `message-${++messageCounter}`,
-    role,
-    assistantId: 'assistant-1',
-    topicId: 'topic-1',
-    createdAt: new Date(2024, 0, 1, 0, 0, messageCounter).toISOString(),
-    status: role === 'assistant' ? AssistantMessageStatus.SUCCESS : UserMessageStatus.SUCCESS,
-    blocks: []
-  }) as MockableMessage
+const createMessage = (role: Message['role']): MockableMessage => ({
+  id: `message-${++messageCounter}`,
+  role,
+  assistantId: 'assistant-1',
+  topicId: 'topic-1',
+  createdAt: new Date(2024, 0, 1, 0, 0, messageCounter).toISOString(),
+  status: role === 'assistant' ? AssistantMessageStatus.SUCCESS : UserMessageStatus.SUCCESS,
+  blocks: []
+})
 
 const createFileBlock = (
   messageId: string,

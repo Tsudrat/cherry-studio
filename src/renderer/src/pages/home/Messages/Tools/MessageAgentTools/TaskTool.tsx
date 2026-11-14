@@ -44,8 +44,8 @@ export function TaskTool({
         {/* Prompt 输入区域 */}
         {input?.prompt && (
           <div>
-            <div className="mb-1 font-medium text-muted-foreground text-xs">{t('message.tools.sections.prompt')}</div>
-            <div className="max-h-40 overflow-y-auto rounded-md bg-muted/50 p-2 text-sm">
+            <div className="text-muted-foreground mb-1 text-xs font-medium">{t('message.tools.sections.prompt')}</div>
+            <div className="bg-muted/50 max-h-40 overflow-y-auto rounded-md p-2 text-sm">
               <Markdown>{input.prompt}</Markdown>
             </div>
           </div>
@@ -54,8 +54,8 @@ export function TaskTool({
         {/* Output 输出区域 */}
         {hasOutput ? (
           <div>
-            <div className="mb-1 font-medium text-muted-foreground text-xs">{t('message.tools.sections.output')}</div>
-            <div className="rounded-md bg-muted/30 p-2">
+            <div className="text-muted-foreground mb-1 text-xs font-medium">{t('message.tools.sections.output')}</div>
+            <div className="bg-muted/30 rounded-md p-2">
               <Markdown>{truncatedText}</Markdown>
               {isTruncated && <TruncatedIndicator originalLength={originalLength} />}
             </div>

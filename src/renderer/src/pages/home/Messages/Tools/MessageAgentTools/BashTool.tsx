@@ -38,7 +38,7 @@ function TerminalTool({ input, output, toolName }: TerminalToolProps): NonNullab
         {/* Command 输入区域 */}
         {command && (
           <div>
-            <div className="mb-1 font-medium text-muted-foreground text-xs">{t('message.tools.sections.command')}</div>
+            <div className="text-muted-foreground mb-1 text-xs font-medium">{t('message.tools.sections.command')}</div>
             <TerminalOutput content={command} commandMode maxHeight="10rem" />
           </div>
         )}
@@ -46,7 +46,7 @@ function TerminalTool({ input, output, toolName }: TerminalToolProps): NonNullab
         {/* Output 输出区域 */}
         {truncatedOutput ? (
           <div>
-            <div className="mb-1 font-medium text-muted-foreground text-xs">{t('message.tools.sections.output')}</div>
+            <div className="text-muted-foreground mb-1 text-xs font-medium">{t('message.tools.sections.output')}</div>
             <TerminalOutput content={truncatedOutput} maxHeight="15rem" />
             {isTruncated && <TruncatedIndicator originalLength={originalLength} />}
           </div>

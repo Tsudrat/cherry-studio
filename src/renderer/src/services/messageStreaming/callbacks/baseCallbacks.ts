@@ -9,13 +9,7 @@ import { selectMessagesForTopic } from '@renderer/store/newMessage'
 import { newMessagesActions } from '@renderer/store/newMessage'
 import type { Assistant } from '@renderer/types'
 import { ERROR_I18N_KEY_REQUEST_TIMEOUT, ERROR_I18N_KEY_STREAM_PAUSED } from '@renderer/types/error'
-import type {
-  MessageBlock,
-  PlaceholderMessageBlock,
-  Response,
-  ThinkingMessageBlock,
-  ToolMessageBlock
-} from '@renderer/types/newMessage'
+import type { MessageBlock, Response, ThinkingMessageBlock, ToolMessageBlock } from '@renderer/types/newMessage'
 import { AssistantMessageStatus, MessageBlockStatus, MessageBlockType } from '@renderer/types/newMessage'
 import { uuid } from '@renderer/utils'
 import { isAbortError, isTimeoutError, serializeError } from '@renderer/utils/error'
@@ -81,7 +75,7 @@ export const createBaseCallbacks = (deps: BaseCallbacksDependencies) => {
       const baseBlock = createBaseMessageBlock(assistantMsgId, MessageBlockType.UNKNOWN, {
         status: MessageBlockStatus.PROCESSING
       })
-      await blockManager.handleBlockTransition(baseBlock as PlaceholderMessageBlock, MessageBlockType.UNKNOWN)
+      await blockManager.handleBlockTransition(baseBlock, MessageBlockType.UNKNOWN)
     },
 
     onError: async (error: AISDKError) => {

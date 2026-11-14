@@ -210,7 +210,7 @@ const TokenFluxPage: FC<{ Options: string[] }> = ({ Options }) => {
   const handleAddPainting = () => {
     const newPainting = addPainting('tokenflux_paintings', getNewPainting())
     updatePainting('tokenflux_paintings', newPainting)
-    setPainting(newPainting as TokenFluxPainting)
+    setPainting(newPainting)
     return newPainting
   }
 
@@ -536,8 +536,8 @@ const TokenFluxPage: FC<{ Options: string[] }> = ({ Options }) => {
           namespace="tokenflux_paintings"
           paintings={tokenFluxPaintings}
           selectedPainting={painting}
-          onSelectPainting={onSelectPainting as any}
-          onDeletePainting={onDeletePainting as any}
+          onSelectPainting={onSelectPainting}
+          onDeletePainting={onDeletePainting}
           onNewPainting={handleAddPainting}
         />
       </ContentContainer>

@@ -58,7 +58,7 @@ export const LanDeviceCard: FC<LanDeviceCardProps> = ({
       onKeyDown={handleKeyDown}
       className={cn(
         // Base styles
-        'flex cursor-pointer flex-col gap-2 rounded-xl border p-3 outline-none transition-all duration-[120ms]',
+        'flex cursor-pointer flex-col gap-2 rounded-xl border p-3 transition-all duration-[120ms] outline-none',
         // Hover state
         'hover:-translate-y-px hover:border-[var(--color-primary-hover)] hover:shadow-md',
         // Focus state
@@ -73,17 +73,17 @@ export const LanDeviceCard: FC<LanDeviceCardProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex flex-col gap-1">
-          <div className="break-words font-semibold text-[var(--color-text-1)] text-sm">{displayTitle}</div>
-          <span className="text-[var(--color-text-2)] text-xs">{statusText}</span>
+          <div className="text-sm font-semibold break-words text-[var(--color-text-1)]">{displayTitle}</div>
+          <span className="text-xs text-[var(--color-text-2)]">{statusText}</span>
         </div>
       </div>
 
       {/* Meta Row - IP Address */}
       <div className="flex flex-col gap-1">
-        <span className="text-[11px] text-[var(--color-text-3)] uppercase tracking-[0.03em]">
+        <span className="text-[11px] tracking-[0.03em] text-[var(--color-text-3)] uppercase">
           {t('settings.data.export_to_phone.lan.ip_addresses')}
         </span>
-        <span className="break-words text-[var(--color-text)] text-xs">{addressesWithPort || t('common.unknown')}</span>
+        <span className="text-xs break-words text-[var(--color-text)]">{addressesWithPort || t('common.unknown')}</span>
       </div>
 
       {/* Footer with Progress */}

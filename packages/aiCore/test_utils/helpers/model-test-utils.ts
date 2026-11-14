@@ -10,7 +10,6 @@ import type {
   LanguageModelV3Middleware,
   ProviderV3
 } from '@ai-sdk/provider'
-import type { ProviderId } from '@test-utils'
 import type { Tool, ToolSet } from 'ai'
 import { tool } from 'ai'
 import { MockLanguageModelV3 } from 'ai/test'
@@ -46,12 +45,12 @@ export function createMockContext(overrides?: ContextOverrides): AiRequestContex
   })
 
   const base: AiRequestContext<StreamTextParams, StreamTextResult> = {
-    providerId: 'openai' as ProviderId,
+    providerId: 'openai',
     model: mockModel,
     originalParams: {
       model: mockModel,
       messages: [{ role: 'user', content: 'Test message' }]
-    } as StreamTextParams,
+    },
     metadata: {},
     startTime: Date.now(),
     requestId: 'test-request-id',
@@ -115,7 +114,7 @@ export function createMockEmbeddingModel(overrides?: Partial<EmbeddingModelV3>):
     }),
 
     ...overrides
-  } as EmbeddingModelV3
+  }
 }
 
 /**
@@ -156,26 +155,24 @@ export function createMockProviderV3(overrides?: {
 
     imageModel: overrides?.imageModel
       ? overrides.imageModel
-      : (modelId: string) =>
-          ({
-            specificationVersion: 'v3',
-            provider: overrides?.provider ?? 'mock-provider',
-            modelId,
-            maxImagesPerCall: undefined,
-            doGenerate: vi.fn()
-          }) as ImageModelV3,
+      : (modelId: string) => ({
+          specificationVersion: 'v3',
+          provider: overrides?.provider ?? 'mock-provider',
+          modelId,
+          maxImagesPerCall: undefined,
+          doGenerate: vi.fn()
+        }),
 
     embeddingModel: overrides?.embeddingModel
       ? overrides.embeddingModel
-      : (modelId: string) =>
-          ({
-            specificationVersion: 'v3',
-            provider: overrides?.provider ?? 'mock-provider',
-            modelId,
-            maxEmbeddingsPerCall: 100,
-            supportsParallelCalls: true,
-            doEmbed: vi.fn()
-          }) as EmbeddingModelV3
+      : (modelId: string) => ({
+          specificationVersion: 'v3',
+          provider: overrides?.provider ?? 'mock-provider',
+          modelId,
+          maxEmbeddingsPerCall: 100,
+          supportsParallelCalls: true,
+          doEmbed: vi.fn()
+        })
   } as ProviderV3
 }
 
