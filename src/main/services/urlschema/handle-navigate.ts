@@ -6,27 +6,13 @@ import { windowService } from '../WindowService'
 const logger = loggerService.withContext('URLSchema:handleNavigateProtocolUrl')
 
 // Allowed route prefixes to prevent arbitrary navigation
-const ALLOWED_ROUTES = [
-  '/settings/',
-  '/agents',
-  '/knowledge',
-  '/paintings',
-  '/translate',
-  '/files',
-  '/notes',
-  '/apps',
-  '/code',
-  '/store',
-  '/launchpad',
-  '/'
-]
+const ALLOWED_ROUTES = ['/settings/', '/knowledge', '/paintings', '/translate', '/files', '/notes', '/launchpad', '/']
 
 /**
  * Handle cherrystudio://navigate/<path> deep links.
  *
  * Examples:
  *   cherrystudio://navigate/settings/provider
- *   cherrystudio://navigate/agents
  *   cherrystudio://navigate/knowledge
  */
 export function handleNavigateProtocolUrl(url: URL) {
