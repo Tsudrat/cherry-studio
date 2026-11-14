@@ -100,7 +100,6 @@ packages/
 
 Notable services: `WindowService`, `MCPService`, `KnowledgeService`, `LoggerService`, `StoreSyncService`, `BackupManager`, `ApiServerService`, `AppUpdater` (disabled for official feeds in this fork), `ShortcutService`, `ThemeService`, `SelectionService`, `CopilotService`, `PythonService`, `NodeTraceService`.
 
-There is also an **Agents** subsystem under `src/main/services/agents/` (Drizzle / LibSQL). This personal build does not use it day-to-day; avoid expanding it unless asked. Prefer not to invest in Agents DB tooling.
 
 ### Renderer Process (`src/renderer/src/`)
 
@@ -119,7 +118,6 @@ Slices include `assistants`, `settings`, `llm`, `mcp`, `messageBlock`, `knowledg
 ### Database
 
 - **IndexedDB (Dexie)** — topics, files, message_blocks, etc. Prefer additive, careful upgrades.
-- **SQLite (agents)** — present for Agents; unused for this product focus.
 
 ### IPC
 
