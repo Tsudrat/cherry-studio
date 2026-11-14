@@ -4,7 +4,6 @@
  */
 
 import type { MCPTool } from '@renderer/types'
-import type { Tool } from 'ai'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { convertMcpToolsToAiSdkTools, hasMultimodalContent, mcpResultToTextSummary, setupToolsConfig } from '../mcp'
@@ -143,7 +142,7 @@ describe('mcp utils', () => {
       // Tools are keyed by id for uniqueness when multiple server instances exist
       expect(Object.keys(result)).toEqual(['get-weather-id'])
 
-      const tool = result['get-weather-id'] as Tool
+      const tool = result['get-weather-id']
       expect(tool.description).toBe('Get weather information')
       expect(tool.inputSchema).toBeDefined()
       expect(typeof tool.execute).toBe('function')
@@ -167,7 +166,7 @@ describe('mcp utils', () => {
       const result = convertMcpToolsToAiSdkTools(mcpTools)
 
       expect(Object.keys(result)).toEqual(['no-desc-tool-id'])
-      const tool = result['no-desc-tool-id'] as Tool
+      const tool = result['no-desc-tool-id']
       expect(tool.description).toBe('Tool from test-server')
     })
 
@@ -209,7 +208,7 @@ describe('mcp utils', () => {
       const result = convertMcpToolsToAiSdkTools(mcpTools)
 
       expect(Object.keys(result)).toEqual(['complex-tool-id'])
-      const tool = result['complex-tool-id'] as Tool
+      const tool = result['complex-tool-id']
       expect(tool.inputSchema).toBeDefined()
       expect(typeof tool.execute).toBe('function')
     })
@@ -448,7 +447,7 @@ describe('mcp utils', () => {
       ]
 
       const tools = convertMcpToolsToAiSdkTools(mcpTools)
-      const tool = tools['test-exec-tool-id'] as Tool
+      const tool = tools['test-exec-tool-id']
       const result = await tool.execute!({}, { messages: [], abortSignal: undefined, toolCallId: 'test-call-123' })
 
       expect(requestToolConfirmation).toHaveBeenCalled()
@@ -481,7 +480,7 @@ describe('mcp utils', () => {
       ]
 
       const tools = convertMcpToolsToAiSdkTools(mcpTools)
-      const tool = tools['cancelled-tool-id'] as Tool
+      const tool = tools['cancelled-tool-id']
       const result = await tool.execute!({}, { messages: [], abortSignal: undefined, toolCallId: 'cancel-call-123' })
 
       expect(requestToolConfirmation).toHaveBeenCalled()
@@ -523,7 +522,7 @@ describe('mcp utils', () => {
       ]
 
       const tools = convertMcpToolsToAiSdkTools(mcpTools)
-      const tool = tools['error-tool-id'] as Tool
+      const tool = tools['error-tool-id']
 
       await expect(
         tool.execute!({}, { messages: [], abortSignal: undefined, toolCallId: 'error-call-123' })
@@ -559,7 +558,7 @@ describe('mcp utils', () => {
       ]
 
       const tools = convertMcpToolsToAiSdkTools(mcpTools)
-      const tool = tools['auto-approve-tool-id'] as Tool
+      const tool = tools['auto-approve-tool-id']
       const result = await tool.execute!({}, { messages: [], abortSignal: undefined, toolCallId: 'auto-call-123' })
 
       expect(requestToolConfirmation).not.toHaveBeenCalled()

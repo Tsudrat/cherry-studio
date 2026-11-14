@@ -14,7 +14,6 @@ import { SettingDivider, SettingRow, SettingRowTitle } from '@renderer/pages/set
 import { CollapsibleSettingGroup } from '@renderer/pages/settings/SettingGroup'
 import { getDefaultModel } from '@renderer/services/AssistantService'
 import { useAppDispatch } from '@renderer/store'
-import type { SendMessageShortcut } from '@renderer/store/settings'
 import {
   setAutoTranslateWithSpace,
   setCodeCollapsible,
@@ -44,7 +43,7 @@ import {
   setShowTranslateConfirm,
   setThoughtAutoCollapse
 } from '@renderer/store/settings'
-import type { Assistant, CodeStyleVarious, MathEngine } from '@renderer/types'
+import type { Assistant, CodeStyleVarious } from '@renderer/types'
 import { isGroqSystemProvider, ThemeMode } from '@renderer/types'
 import { getSendMessageShortcutLabel } from '@renderer/utils/input'
 import {
@@ -264,7 +263,7 @@ const AssistantSettingsTab = (props: Props) => {
             <SettingRowTitleSmall>{t('settings.math.engine.label')}</SettingRowTitleSmall>
             <Selector
               value={mathEngine}
-              onChange={(value) => dispatch(setMathEngine(value as MathEngine))}
+              onChange={(value) => dispatch(setMathEngine(value))}
               options={[
                 { value: 'KaTeX', label: 'KaTeX' },
                 { value: 'MathJax', label: 'MathJax' },
@@ -542,7 +541,7 @@ const AssistantSettingsTab = (props: Props) => {
             <SettingRowTitleSmall>{t('settings.messages.input.send_shortcuts')}</SettingRowTitleSmall>
             <Selector
               value={sendMessageShortcut}
-              onChange={(value) => setSendMessageShortcut(value as SendMessageShortcut)}
+              onChange={(value) => setSendMessageShortcut(value)}
               options={[
                 { value: 'Enter', label: getSendMessageShortcutLabel('Enter') },
                 { value: 'Ctrl+Enter', label: getSendMessageShortcutLabel('Ctrl+Enter') },

@@ -264,14 +264,10 @@ export async function upgradeToV7(tx: Transaction): Promise<void> {
 
       // 9. Create Citation Block (if any citation data was found, no need to set citationType)
       if (hasCitationData) {
-        const block = createCitationBlock(
-          oldMessage.id,
-          citationDataToCreate as Omit<CitationMessageBlock, keyof BaseMessageBlock | 'type'>,
-          {
-            createdAt: oldMessage.createdAt,
-            status: MessageBlockStatus.SUCCESS
-          }
-        )
+        const block = createCitationBlock(oldMessage.id, citationDataToCreate, {
+          createdAt: oldMessage.createdAt,
+          status: MessageBlockStatus.SUCCESS
+        })
         blocksToCreate.push(block)
         messageBlockIds.push(block.id)
       }
@@ -299,7 +295,7 @@ export async function upgradeToV7(tx: Transaction): Promise<void> {
       // 11. Create the New Message reference object (Add usage/metrics assignment)
       const newMessageReference: NewMessage = {
         id: oldMessage.id,
-        role: oldMessage.role as NewMessage['role'],
+        role: oldMessage.role,
         assistantId: oldMessage.assistantId || '',
         topicId: oldTopic.id,
         createdAt: oldMessage.createdAt,

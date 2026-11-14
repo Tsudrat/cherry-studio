@@ -17,7 +17,7 @@ import { useAppDispatch } from '@renderer/store'
 import { setGenerating } from '@renderer/store/runtime'
 import type { FileMetadata, OvmsPainting } from '@renderer/types'
 import { getErrorMessage, uuid } from '@renderer/utils'
-import { Avatar, Button, Input, InputNumber, Select, Slider, Switch, Tooltip } from 'antd'
+import { Avatar, Button, Input, InputNumber, Select, type SelectProps, Slider, Switch, Tooltip } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import { Info } from 'lucide-react'
 import type { FC } from 'react'
@@ -365,7 +365,8 @@ const OvmsPage: FC<{ Options: string[] }> = ({ Options }) => {
             listHeight={500}
             disabled={isDisabled}
             value={painting[item.key!] || item.initialValue}
-            options={selectOptions as any}
+            // oxlint-disable-next-line typescript/no-unnecessary-type-assertion — required under tsgo
+            options={selectOptions as SelectProps['options']}
             onChange={(v) => updatePaintingState({ [item.key!]: v })}
           />
         )

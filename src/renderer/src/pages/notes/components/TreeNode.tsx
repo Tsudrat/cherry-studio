@@ -125,7 +125,7 @@ const TreeNode = memo<TreeNodeProps>(({ node, depth, renderChildren = true, onHi
   return (
     <div key={node.id}>
       <Dropdown
-        menu={{ items: getMenuItems(node as NotesTreeNode) }}
+        menu={{ items: getMenuItems(node) }}
         trigger={['contextMenu']}
         open={openDropdownKey === node.id}
         onOpenChange={(open) => onDropdownOpenChange(open ? node.id : null)}>
@@ -140,12 +140,12 @@ const TreeNode = memo<TreeNodeProps>(({ node, depth, renderChildren = true, onHi
             isDragAfter={isDragAfter}
             draggable={!isEditing}
             data-node-id={node.id}
-            onDragStart={(e) => onDragStart(e, node as NotesTreeNode)}
-            onDragOver={(e) => onDragOver(e, node as NotesTreeNode)}
+            onDragStart={(e) => onDragStart(e, node)}
+            onDragOver={(e) => onDragOver(e, node)}
             onDragLeave={onDragLeave}
-            onDrop={(e) => onDrop(e, node as NotesTreeNode)}
+            onDrop={(e) => onDrop(e, node)}
             onDragEnd={onDragEnd}>
-            <TreeNodeContent onClick={() => onSelectNode(node as NotesTreeNode)}>
+            <TreeNodeContent onClick={() => onSelectNode(node)}>
               <NodeIndent depth={depth} />
 
               {node.type === 'folder' && (

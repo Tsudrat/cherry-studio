@@ -5,7 +5,6 @@ import Scrollbar from '@renderer/components/Scrollbar'
 import { useSettings } from '@renderer/hooks/useSettings'
 import { useAppDispatch } from '@renderer/store'
 import { setFoldDisplayMode } from '@renderer/store/settings'
-import type { Model } from '@renderer/types'
 import { AssistantMessageStatus, type Message } from '@renderer/types/newMessage'
 import { lightbulbSoftVariants } from '@renderer/utils/motionVariants'
 import { Avatar, Segmented as AntdSegmented, Tooltip } from 'antd'
@@ -52,7 +51,7 @@ const MessageGroupModelList: FC<MessageGroupModelListProps> = ({ messages, selec
                 setSelectedMessage(message)
               }}>
               <motion.span variants={lightbulbSoftVariants} animate={isProcessing ? 'active' : 'idle'} initial="idle">
-                <ModelAvatar model={message.model as Model} size={22} />
+                <ModelAvatar model={message.model} size={22} />
               </motion.span>
             </AvatarWrapper>
           </Tooltip>
@@ -60,7 +59,7 @@ const MessageGroupModelList: FC<MessageGroupModelListProps> = ({ messages, selec
       }
       return (
         <SegmentedLabel>
-          <ModelAvatar className={isProcessing ? 'animation-pulse' : ''} model={message.model as Model} size={20} />
+          <ModelAvatar className={isProcessing ? 'animation-pulse' : ''} model={message.model} size={20} />
           <ModelName>{message.model?.name}</ModelName>
         </SegmentedLabel>
       )

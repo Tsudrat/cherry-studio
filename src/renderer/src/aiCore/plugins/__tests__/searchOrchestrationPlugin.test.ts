@@ -1,4 +1,4 @@
-import type { Assistant, Model, Provider } from '@renderer/types'
+import type { Assistant, Model } from '@renderer/types'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { mockFetchGenerate, mockGetProviderByModel } = vi.hoisted(() => ({
@@ -63,7 +63,7 @@ describe('searchOrchestrationPlugin', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockFetchGenerate.mockResolvedValue('')
-    mockGetProviderByModel.mockReturnValue({ id: 'provider', apiKey: 'test-key' } as Provider)
+    mockGetProviderByModel.mockReturnValue({ id: 'provider', apiKey: 'test-key' })
   })
 
   it('sends the formatted search prompt as user content', async () => {

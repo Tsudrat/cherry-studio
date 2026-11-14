@@ -22,15 +22,15 @@ const ModelIdWithTags = ({
   return (
     <div
       ref={ref}
-      className="flex min-w-0 items-center gap-2.5 font-semibold text-(--color-text) leading-[1.2]"
+      className="flex min-w-0 items-center gap-2.5 leading-[1.2] font-semibold text-(--color-text)"
       style={{ fontSize, ...style }}>
       <div className="flex min-w-0 flex-1 items-center gap-2">
-        <span className="block min-w-0 shrink overflow-hidden text-ellipsis whitespace-nowrap leading-[1.3]">
+        <span className="block min-w-0 shrink overflow-hidden leading-[1.3] text-ellipsis whitespace-nowrap">
           {model.name}
         </span>
         {shouldShowIdentifier && (
           <span
-            className="min-w-0 max-w-[50%] shrink truncate font-mono text-(--color-text-3) text-[12px]! leading-[1.2]"
+            className="max-w-[50%] min-w-0 shrink truncate font-mono text-[12px]! leading-[1.2] text-(--color-text-3)"
             title={model.id}>
             {model.id}
           </span>

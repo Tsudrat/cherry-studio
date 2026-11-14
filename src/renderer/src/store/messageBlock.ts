@@ -35,7 +35,7 @@ const messageBlocksAdapter = createEntityAdapter<MessageBlockEntity>()
 // 2. 使用适配器定义初始状态 (Initial State)
 // 如果需要，可以在规范化实体的旁边添加其他状态属性。
 const initialState = messageBlocksAdapter.getInitialState({
-  loadingState: 'idle' as 'idle' | 'loading' | 'succeeded' | 'failed',
+  loadingState: 'idle',
   error: null as string | null
 })
 

@@ -475,7 +475,7 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
     if (provider.id === SystemProviderIds.dashscope) {
       return effort === 'max' ? { reasoningEffort: 'max' } : {}
     }
-    return ['low', 'medium', 'high', 'max'].includes(effort) ? { reasoningEffort: effort as OpenAIReasoningEffort } : {}
+    return ['low', 'medium', 'high', 'max'].includes(effort) ? { reasoningEffort: effort } : {}
   }
 
   if (isQwen38EffortModel(model)) {
@@ -513,7 +513,7 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
     if (!effort) return {}
     return {
       thinking: { type: 'enabled' as const },
-      reasoningEffort: effort as OpenAIReasoningEffort
+      reasoningEffort: effort
     }
   }
 
@@ -522,7 +522,7 @@ export function getReasoningEffort(assistant: Assistant, model: Model): Reasonin
     if (!['low', 'high', 'max'].includes(effort)) return {}
     return {
       thinking: { type: 'enabled' as const },
-      reasoningEffort: effort as OpenAIReasoningEffort
+      reasoningEffort: effort
     }
   }
 

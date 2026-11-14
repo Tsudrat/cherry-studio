@@ -420,7 +420,7 @@ describe('StreamEventManager', () => {
             type: 'text-delta',
             id: 'test-id',
             text: 'test'
-          } as TextStreamPart<EmptyToolSet>
+          }
         ],
         initialDelayInMs: 0,
         chunkDelayInMs: 0

@@ -24,13 +24,6 @@ interface WorkerRequest {
   themes?: string[]
 }
 
-interface WorkerResponse {
-  id: number
-  type: string
-  result?: any
-  error?: string
-}
-
 interface HighlightChunkResult {
   lines: ThemedToken[][]
   recall: number
@@ -191,7 +184,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
       case 'init':
         if (e.data.languages && e.data.themes) {
           await initHighlighter(e.data.themes, e.data.languages)
-          self.postMessage({ id, type: 'init-result', result: { success: true } } as WorkerResponse)
+          self.postMessage({ id, type: 'init-result', result: { success: true } })
         } else {
           throw new Error('Missing required init parameters')
         }
@@ -204,7 +197,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 
         if (e.data.callerId && e.data.chunk && e.data.language && e.data.theme) {
           const result = await highlightCodeChunk(e.data.callerId, e.data.chunk, e.data.language, e.data.theme)
-          self.postMessage({ id, type: 'highlight-result', result } as WorkerResponse)
+          self.postMessage({ id, type: 'highlight-result', result })
         } else {
           throw new Error('Missing required highlight parameters')
         }
@@ -213,7 +206,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
       case 'cleanup':
         if (e.data.callerId) {
           cleanupTokenizer(e.data.callerId)
-          self.postMessage({ id, type: 'cleanup-result', result: { success: true } } as WorkerResponse)
+          self.postMessage({ id, type: 'cleanup-result', result: { success: true } })
         } else {
           throw new Error('Missing callerId for cleanup')
         }
@@ -223,7 +216,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
         tokenizerMap.clear()
         highlighter?.dispose()
         highlighter = null
-        self.postMessage({ id, type: 'dispose-result', result: { success: true } } as WorkerResponse)
+        self.postMessage({ id, type: 'dispose-result', result: { success: true } })
         break
 
       default:
@@ -235,6 +228,6 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
       id,
       type: 'error',
       error: errorMessage
-    } as WorkerResponse)
+    })
   }
 }

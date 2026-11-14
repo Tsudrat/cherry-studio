@@ -172,7 +172,7 @@ export async function parsePluginMetadata(
         yaml: (s) => parse(s, YAML_PARSE_OPTIONS) as object
       }
     })
-    data = (parsed.data ?? {}) as Record<string, unknown>
+    data = parsed.data ?? {}
   } catch (error: any) {
     logger.warn('Failed to parse plugin frontmatter, attempting recovery', {
       filePath,
@@ -342,7 +342,7 @@ export async function parseSkillMetadata(
         yaml: (s) => parse(s, YAML_PARSE_OPTIONS) as object
       }
     })
-    data = (parsed.data ?? {}) as Record<string, unknown>
+    data = parsed.data ?? {}
   } catch (error: any) {
     logger.warn('Failed to parse SKILL.md frontmatter, attempting recovery', {
       skillMdPath,

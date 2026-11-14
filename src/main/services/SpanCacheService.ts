@@ -172,7 +172,7 @@ class SpanCacheService implements TraceCache {
       attributes['outputs'] = msgArray
     } else {
       msgArray = [message]
-      span.attributes = { ...attributes, outputs: msgArray } as Attributes
+      span.attributes = { ...attributes, outputs: msgArray }
     }
     this._updateParentOutputs(span.parentId, modelName, context)
   }
@@ -293,7 +293,7 @@ class SpanCacheService implements TraceCache {
       }
       span.attributes = attributes
     } else if (span.modelName) {
-      span.attributes = { outputs: { [`${modelName}`]: context } } as Attributes
+      span.attributes = { outputs: { [`${modelName}`]: context } }
     } else {
       return
     }

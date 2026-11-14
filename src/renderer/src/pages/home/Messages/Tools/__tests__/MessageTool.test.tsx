@@ -118,7 +118,7 @@ describe('MessageTool', () => {
       toolName,
       input,
       providerExecuted: true
-    } as Parameters<ToolCallChunkHandler['handleToolCall']>[0])
+    })
 
     expect(ToolCallChunkHandler.getActiveToolCalls().get(toolCallId)?.tool.type).toBe('provider')
 
@@ -128,7 +128,7 @@ describe('MessageTool', () => {
       toolName,
       input,
       output: 'future provider output'
-    } as Parameters<ToolCallChunkHandler['handleToolResult']>[0])
+    })
 
     const completeChunk = emittedChunks.find((chunk) => chunk.type === ChunkType.MCP_TOOL_COMPLETE)
     expect(completeChunk?.type).toBe(ChunkType.MCP_TOOL_COMPLETE)

@@ -21,7 +21,7 @@ describe('store migrations', () => {
         _persist: { version: 206, rehydrated: false }
       }
 
-      const migrated: any = await migrate(state as any, 207)
+      const migrated: any = await migrate(state, 207)
 
       expect(migrated.llm.providers[0].anthropicApiHost).toBe('https://api.stepfun.com')
     })
@@ -40,7 +40,7 @@ describe('store migrations', () => {
         _persist: { version: 206, rehydrated: false }
       }
 
-      const migrated: any = await migrate(state as any, 207)
+      const migrated: any = await migrate(state, 207)
 
       expect(migrated.llm.providers[0].anthropicApiHost).toBe('https://custom.example.com')
     })
@@ -63,7 +63,7 @@ describe('store migrations', () => {
         _persist: { version: 208, rehydrated: false }
       }
 
-      const migrated: any = await migrate(state as any, 209)
+      const migrated: any = await migrate(state, 209)
 
       expect(migrated.mcp.servers[0].command).toBe('bun')
       expect(migrated.mcp.servers[0].args).toEqual(['x', CURRENT_MCP_AUTO_INSTALL_PACKAGE, 'connect', '--json'])
@@ -92,7 +92,7 @@ describe('store migrations', () => {
         _persist: { version: 208, rehydrated: false }
       }
 
-      const migrated: any = await migrate(state as any, 209)
+      const migrated: any = await migrate(state, 209)
 
       expect(migrated.mcp.servers[0].command).toBe('/usr/local/bin/npx')
       expect(migrated.mcp.servers[0].args).toEqual([
@@ -121,7 +121,7 @@ describe('store migrations', () => {
         _persist: { version: 208, rehydrated: false }
       }
 
-      const migrated: any = await migrate(state as any, 209)
+      const migrated: any = await migrate(state, 209)
 
       expect(migrated.mcp.servers[0].command).toBe('npx')
       expect(migrated.mcp.servers[0].args).toEqual(MCP_AUTO_INSTALL_ARGS)

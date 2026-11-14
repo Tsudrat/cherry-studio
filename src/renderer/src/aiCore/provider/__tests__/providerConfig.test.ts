@@ -165,15 +165,14 @@ const setupStoreMock = (overrides?: StoreMockOverrides) => {
 
 // ==================== Provider Factories ====================
 
-const makeProvider = (overrides: Partial<Provider> & { id: string; type: string }): Provider =>
-  ({
-    name: overrides.id,
-    apiKey: 'test-key',
-    apiHost: 'https://api.example.com',
-    models: [],
-    isSystem: true,
-    ...overrides
-  }) as Provider
+const makeProvider = (overrides: Partial<Provider> & { id: string; type: string }): Provider => ({
+  name: overrides.id,
+  apiKey: 'test-key',
+  apiHost: 'https://api.example.com',
+  models: [],
+  isSystem: true,
+  ...overrides
+})
 
 const makeModel = (id: string, provider: string, overrides?: Partial<Model>): Model => ({
   id,

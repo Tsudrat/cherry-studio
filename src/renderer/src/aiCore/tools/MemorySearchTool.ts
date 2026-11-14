@@ -16,7 +16,7 @@ export const memorySearchTool = (assistantId: string) => {
       query: z.string().describe('Search query to find relevant memories'),
       limit: z.number().min(1).max(20).default(5).describe('Maximum number of memories to return')
     }),
-    execute: async ({ query, limit = 5 }) => {
+    execute: async ({ query, limit }) => {
       const globalMemoryEnabled = selectGlobalMemoryEnabled(store.getState())
       if (!globalMemoryEnabled) {
         return []

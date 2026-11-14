@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  type AwsBedrockImage,
   type AwsBedrockImageFormat,
   base64ToUint8Array,
   convertBase64ImageToAwsBedrockFormat,
@@ -174,7 +173,7 @@ describe('utils/aws-bedrock-utils', () => {
         source: {
           bytes: expect.any(Uint8Array)
         }
-      } as AwsBedrockImage)
+      })
     })
 
     it('should handle empty base64 string', () => {

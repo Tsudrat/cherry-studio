@@ -414,7 +414,7 @@ const AssistantNameRow = ({
 }: PropsWithChildren<{} & React.HTMLAttributes<HTMLDivElement>>) => (
   <div
     {...props}
-    className={cn('flex min-w-0 flex-1 flex-row items-center gap-2 text-(--color-text) text-[13px]', className)}>
+    className={cn('flex min-w-0 flex-1 flex-row items-center gap-2 text-[13px] text-(--color-text)', className)}>
     {children}
   </div>
 )
@@ -426,7 +426,7 @@ const AssistantName = ({
 }: PropsWithChildren<{} & React.HTMLAttributes<HTMLDivElement>>) => (
   <div
     {...props}
-    className={cn('min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[13px]', className)}>
+    className={cn('min-w-0 flex-1 overflow-hidden text-[13px] text-ellipsis whitespace-nowrap', className)}>
     {children}
   </div>
 )
@@ -439,7 +439,7 @@ const MenuButton = ({
   <div
     {...props}
     className={cn(
-      'absolute top-1.5 right-2.25 flex h-5.5 min-h-5.5 min-w-5.5 flex-row items-center justify-center rounded-[11px] border-(--color-border) border-[0.5px] bg-(--color-background) px-1.25',
+      'absolute top-1.5 right-2.25 flex h-5.5 min-h-5.5 min-w-5.5 flex-row items-center justify-center rounded-[11px] border-[0.5px] border-(--color-border) bg-(--color-background) px-1.25',
       className
     )}>
     {children}

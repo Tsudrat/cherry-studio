@@ -17,7 +17,6 @@ import { vi } from 'vitest'
 import * as z from 'zod'
 
 import type { StreamTextParams, StreamTextResult } from '../../src/core/plugins'
-import type { RegisteredProviderId } from '../../src/core/providers/types'
 import type { AiRequestContext } from '../../src/types'
 
 /**
@@ -47,12 +46,12 @@ export function createMockContext(overrides?: ContextOverrides): AiRequestContex
   })
 
   const base: AiRequestContext<StreamTextParams, StreamTextResult> = {
-    providerId: 'openai' as RegisteredProviderId,
+    providerId: 'openai',
     model: mockModel,
     originalParams: {
       model: mockModel,
       messages: [{ role: 'user', content: 'Test message' }]
-    } as StreamTextParams,
+    },
     metadata: {},
     startTime: Date.now(),
     requestId: 'test-request-id',
@@ -116,7 +115,7 @@ export function createMockEmbeddingModel(overrides?: Partial<EmbeddingModelV3>):
     }),
 
     ...overrides
-  } as EmbeddingModelV3
+  }
 }
 
 /**

@@ -53,7 +53,7 @@ const SpanDetail: FC<SpanDetailProps> = ({ node, clickShowModal }) => {
       return
     }
     setIsJson(false)
-    setJsonData(data as unknown as object)
+    setJsonData(data)
   }, [node.attributes, node.status, node.events, showInput])
 
   useEffect(() => {

@@ -55,7 +55,7 @@ function stripKeywords(schema: JSONSchema7Definition, keywords: ReadonlySet<stri
     if (next !== value) changed = true
     result[key] = next
   }
-  return changed ? (result as JSONSchema7) : schema
+  return changed ? result : schema
 }
 
 function stripList(list: unknown[], keywords: ReadonlySet<string>): unknown[] {

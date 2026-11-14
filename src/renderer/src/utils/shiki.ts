@@ -1,6 +1,6 @@
 import { loggerService } from '@logger'
 import type { BundledLanguage, BundledTheme } from 'shiki/bundle/web'
-import type { SpecialLanguage, ThemedToken } from 'shiki/core'
+import type { ThemedToken } from 'shiki/core'
 import { getTokenStyleObject, type HighlighterGeneric } from 'shiki/core'
 
 import { AsyncInitializer } from './asyncInitializer'
@@ -59,7 +59,7 @@ export async function loadLanguageIfNeeded(
   if (!highlighter.getLoadedLanguages().includes(language)) {
     try {
       if (['text', 'ansi'].includes(language)) {
-        await highlighter.loadLanguage(language as SpecialLanguage)
+        await highlighter.loadLanguage(language)
       } else {
         const languageImportFn = shiki.bundledLanguages[language]
         const langData = await languageImportFn()

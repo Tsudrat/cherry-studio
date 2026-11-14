@@ -151,7 +151,7 @@ const PopupContainer: React.FC<Props> = ({ source, title, resolve }) => {
     return Object.entries(CONTENT_TYPE_CONFIG)
       .map(([type, config]) => {
         const contentType = type as ContentType
-        const count = contentStats[contentType as keyof ContentStats] || 0
+        const count = contentStats[contentType] || 0
         const descriptionKey =
           isTopicMode && 'topicDescription' in config && config.topicDescription
             ? config.topicDescription

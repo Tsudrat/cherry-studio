@@ -354,7 +354,7 @@ describe('websearch utils', () => {
 
     describe('unsupported provider', () => {
       it('should return empty object for unsupported provider', () => {
-        const result = buildProviderBuiltinWebSearchConfig('unsupported' as any, defaultWebSearchConfig)
+        const result = buildProviderBuiltinWebSearchConfig('unsupported', defaultWebSearchConfig)
 
         expect(result).toEqual({})
       })

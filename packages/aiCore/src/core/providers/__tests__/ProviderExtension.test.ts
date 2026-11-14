@@ -606,7 +606,7 @@ describe('ProviderExtension', () => {
 
       const extension = new ProviderExtension<TestSettings>({
         name: 'test-provider',
-        create: createFn as any
+        create: createFn
       })
 
       const settings = { apiKey: 'test-key' }

@@ -79,9 +79,9 @@ describe('AiSdkToChunkAdapter finish reason handling (#16072)', () => {
 
   it('preserves streamed text blocks emitted before an abnormal finish', async () => {
     const chunks = await run([
-      { type: 'text-start', id: 't1' } as Part,
-      { type: 'text-delta', id: 't1', text: 'partial answer' } as Part,
-      { type: 'text-end', id: 't1' } as Part,
+      { type: 'text-start', id: 't1' },
+      { type: 'text-delta', id: 't1', text: 'partial answer' },
+      { type: 'text-end', id: 't1' },
       finish('content-filter')
     ])
 
@@ -90,7 +90,7 @@ describe('AiSdkToChunkAdapter finish reason handling (#16072)', () => {
   })
 
   it('does not emit a duplicate error or a completion when an error part precedes finish', async () => {
-    const chunks = await run([{ type: 'error', error: new Error('boom') } as Part, finish('error')])
+    const chunks = await run([{ type: 'error', error: new Error('boom') }, finish('error')])
 
     // Exactly one error chunk — from the 'error' part, not a second FinishReasonError.
     const errorChunks = chunks.filter((c) => c.type === ChunkType.ERROR)
@@ -103,13 +103,13 @@ describe('AiSdkToChunkAdapter finish reason handling (#16072)', () => {
 describe('AiSdkToChunkAdapter reasoning mapping', () => {
   it('maps reasoning-start/delta/end to THINKING_* chunks', async () => {
     const chunks = await run([
-      { type: 'reasoning-start', id: 'r1' } as Part,
-      { type: 'reasoning-delta', id: 'r1', text: 'Let me think' } as Part,
-      { type: 'reasoning-delta', id: 'r1', text: ' more' } as Part,
-      { type: 'reasoning-end', id: 'r1' } as Part,
-      { type: 'text-start', id: 't1' } as Part,
-      { type: 'text-delta', id: 't1', text: 'Answer' } as Part,
-      { type: 'text-end', id: 't1' } as Part,
+      { type: 'reasoning-start', id: 'r1' },
+      { type: 'reasoning-delta', id: 'r1', text: 'Let me think' },
+      { type: 'reasoning-delta', id: 'r1', text: ' more' },
+      { type: 'reasoning-end', id: 'r1' },
+      { type: 'text-start', id: 't1' },
+      { type: 'text-delta', id: 't1', text: 'Answer' },
+      { type: 'text-end', id: 't1' },
       finish('stop')
     ])
 
@@ -133,10 +133,10 @@ describe('AiSdkToChunkAdapter reasoning mapping', () => {
 
   it('emits THINKING_COMPLETE on text-start when reasoning-end was missing', async () => {
     const chunks = await run([
-      { type: 'reasoning-start', id: 'r1' } as Part,
-      { type: 'reasoning-delta', id: 'r1', text: 'partial' } as Part,
-      { type: 'text-start', id: 't1' } as Part,
-      { type: 'text-delta', id: 't1', text: 'body' } as Part,
+      { type: 'reasoning-start', id: 'r1' },
+      { type: 'reasoning-delta', id: 'r1', text: 'partial' },
+      { type: 'text-start', id: 't1' },
+      { type: 'text-delta', id: 't1', text: 'body' },
       finish('stop')
     ])
 

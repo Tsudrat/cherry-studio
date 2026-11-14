@@ -502,7 +502,7 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
       return null
     }
 
-    const customPath = configManager.get(ConfigKeys.GitBashPath) as string | undefined
+    const customPath = configManager.get<string | undefined>(ConfigKeys.GitBashPath)
     return customPath ?? null
   })
 

@@ -128,7 +128,7 @@ const Markdown: FC<Props> = ({ block, postProcess }) => {
     return plugins
   }, [mathEngine, messageContent, block.id])
 
-  const components = useMemo(() => {
+  const components = useMemo<Partial<Components>>(() => {
     return {
       a: (props: any) => <Link {...props} />,
       code: (props: any) => <CodeBlock {...props} blockId={block.id} />,
@@ -141,7 +141,7 @@ const Markdown: FC<Props> = ({ block, postProcess }) => {
         return <p {...props} />
       },
       svg: MarkdownSvgRenderer
-    } as Partial<Components>
+    }
   }, [block.id])
 
   if (/<style\b[^>]*>/i.test(messageContent)) {

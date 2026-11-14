@@ -91,7 +91,7 @@ const AIDiagnosisSectionWithStatus = memo(
     return (
       <div className="mt-4 rounded-lg p-3.5 px-4" style={diagPanelStyle}>
         {status === 'loading' && (
-          <div className="flex items-center gap-1.5 font-semibold text-sm" style={{ color: 'var(--color-primary)' }}>
+          <div className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>
             <Loader2 size={14} className="animation-rotate" />
             {t('error.diagnosis.ai_loading')}...
           </div>
@@ -99,7 +99,7 @@ const AIDiagnosisSectionWithStatus = memo(
         {status === 'error' && (
           <>
             <div
-              className="mb-2.5 flex items-center gap-1.5 font-semibold text-sm"
+              className="mb-2.5 flex items-center gap-1.5 text-sm font-semibold"
               style={{ color: 'var(--color-error)' }}>
               {diagError}
             </div>
@@ -115,7 +115,7 @@ const AIDiagnosisSectionWithStatus = memo(
         {status === 'done' && result && (
           <>
             <div
-              className="mb-2.5 flex items-center gap-1.5 font-semibold text-sm"
+              className="mb-2.5 flex items-center gap-1.5 text-sm font-semibold"
               style={{ color: 'var(--color-primary)' }}>
               <CheckCircle size={14} />
               {t('error.diagnosis.ai_result')}
@@ -131,7 +131,7 @@ const AIDiagnosisSectionWithStatus = memo(
                     className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px]"
                     style={stepBgStyle}>
                     <span
-                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full font-bold text-[10px] text-white"
+                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
                       style={{ background: 'var(--color-primary)' }}>
                       {i + 1}
                     </span>

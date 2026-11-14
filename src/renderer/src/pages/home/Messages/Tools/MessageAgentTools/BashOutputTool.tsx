@@ -119,7 +119,7 @@ export function BashOutputTool({
       {/* Standard Output */}
       {truncatedStdout.data && (
         <div>
-          <div className="mb-2 font-medium text-default-600 text-xs">{t('message.tools.sections.stdout')}:</div>
+          <div className="text-default-600 mb-2 text-xs font-medium">{t('message.tools.sections.stdout')}:</div>
           <TerminalOutput content={truncatedStdout.data} />
           {truncatedStdout.isTruncated && <TruncatedIndicator originalLength={truncatedStdout.originalLength} />}
         </div>
@@ -127,8 +127,8 @@ export function BashOutputTool({
 
       {/* Standard Error */}
       {truncatedStderr.data && (
-        <div className="border border-danger-200">
-          <div className="mb-2 font-medium text-danger-600 text-xs">{t('message.tools.sections.stderr')}:</div>
+        <div className="border-danger-200 border">
+          <div className="text-danger-600 mb-2 text-xs font-medium">{t('message.tools.sections.stderr')}:</div>
           <TerminalOutput content={truncatedStderr.data} />
           {truncatedStderr.isTruncated && <TruncatedIndicator originalLength={truncatedStderr.originalLength} />}
         </div>
@@ -136,10 +136,10 @@ export function BashOutputTool({
 
       {/* Tool Use Error */}
       {truncatedError.data && (
-        <div className="border border-danger-200">
+        <div className="border-danger-200 border">
           <div className="mb-2 flex items-center gap-2">
-            <XCircle className="h-4 w-4 text-danger" />
-            <span className="font-medium text-danger-600 text-xs">{t('message.tools.status.error')}:</span>
+            <XCircle className="text-danger h-4 w-4" />
+            <span className="text-danger-600 text-xs font-medium">{t('message.tools.status.error')}:</span>
           </div>
           <TerminalOutput content={truncatedError.data} />
           {truncatedError.isTruncated && <TruncatedIndicator originalLength={truncatedError.originalLength} />}

@@ -183,6 +183,6 @@ export default class MistralPreprocessProvider extends BasePreprocessProvider {
       ext: '.md',
       size: fs.statSync(mdFilePath).size,
       count: 1
-    } as FileMetadata
+    }
   }
 }

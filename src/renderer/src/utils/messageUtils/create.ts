@@ -208,7 +208,7 @@ export function createErrorBlock(
     error: errorData,
     ...overrides
   })
-  return baseBlock as ErrorMessageBlock
+  return baseBlock
 }
 
 /**

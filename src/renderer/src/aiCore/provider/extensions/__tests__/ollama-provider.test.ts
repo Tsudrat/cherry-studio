@@ -14,7 +14,7 @@ async function captureRequest(options: Omit<LanguageModelV3CallOptions, 'prompt'
   try {
     await createOllama({ baseURL: 'https://ollama.example/api', fetch })
       .languageModel('qwen3:8b')
-      .doGenerate({ prompt, ...options } as LanguageModelV3CallOptions)
+      .doGenerate({ prompt, ...options })
   } catch {
     // The response is intentionally empty; this test only asserts the outbound protocol.
   }

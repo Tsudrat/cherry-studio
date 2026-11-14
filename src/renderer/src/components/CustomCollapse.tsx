@@ -27,7 +27,7 @@ const CustomCollapse: FC<CustomCollapseProps> = ({
   destroyInactivePanel = false,
   defaultActiveKey = ['1'],
   activeKey,
-  collapsible = undefined,
+  collapsible,
   onChange,
   style,
   styles

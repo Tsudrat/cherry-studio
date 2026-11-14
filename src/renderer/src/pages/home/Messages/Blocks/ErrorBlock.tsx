@@ -153,7 +153,7 @@ const MessageErrorInfo: React.FC<{ block: ErrorMessageBlock; message: Message }>
       {/* Close button */}
       <button
         type="button"
-        className="absolute top-2 right-2 flex h-5.5 w-5.5 cursor-pointer items-center justify-center rounded border-none bg-transparent opacity-0 transition-all duration-150 hover:bg-[color-mix(in_srgb,var(--color-status-warning)_12%,transparent)] hover:text-(--color-status-warning) group-hover:opacity-100"
+        className="absolute top-2 right-2 flex h-5.5 w-5.5 cursor-pointer items-center justify-center rounded border-none bg-transparent opacity-0 transition-all duration-150 group-hover:opacity-100 hover:bg-[color-mix(in_srgb,var(--color-status-warning)_12%,transparent)] hover:text-(--color-status-warning)"
         onClick={onRemoveBlock}
         aria-label="close"
         title={t('common.close')}>
@@ -165,14 +165,14 @@ const MessageErrorInfo: React.FC<{ block: ErrorMessageBlock; message: Message }>
         <div className="flex shrink-0 items-center justify-center" style={{ color: 'var(--color-status-warning)' }}>
           <AlertTriangle size={15} />
         </div>
-        <div className="pr-5 font-semibold text-[13px] leading-[1.4]" style={{ color: 'var(--color-status-warning)' }}>
+        <div className="pr-5 text-[13px] leading-[1.4] font-semibold" style={{ color: 'var(--color-status-warning)' }}>
           {aiSummary || t(classification.i18nKey)}
         </div>
       </div>
 
       {/* Description */}
       <div
-        className="wrap-break-word ml-5.75 line-clamp-3 text-xs leading-normal [&_a]:text-(--color-link)"
+        className="ml-5.75 line-clamp-3 text-xs leading-normal wrap-break-word [&_a]:text-(--color-link)"
         style={{ color: 'var(--color-text-2)' }}>
         {block.error?.message || <ErrorMessage block={block} />}
       </div>
@@ -183,7 +183,7 @@ const MessageErrorInfo: React.FC<{ block: ErrorMessageBlock; message: Message }>
           <Button
             size="small"
             type="default"
-            className="inline-flex items-center gap-1 rounded-[5px] border-[color-mix(in_srgb,var(--color-status-warning)_25%,transparent)] text-(--color-status-warning) text-xs hover:border-(--color-status-warning)"
+            className="inline-flex items-center gap-1 rounded-[5px] border-[color-mix(in_srgb,var(--color-status-warning)_25%,transparent)] text-xs text-(--color-status-warning) hover:border-(--color-status-warning)"
             onClick={onNavigate}>
             <SettingOutlined style={{ fontSize: 12 }} />
             {t('error.diagnosis.go_to_settings')}

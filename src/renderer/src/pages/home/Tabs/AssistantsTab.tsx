@@ -38,7 +38,7 @@ const AssistantsTab: FC<AssistantsTabProps> = (props) => {
   const { assistants, removeAssistant, copyAssistant, updateAssistants } = useAssistants()
   const { addAssistantPreset } = useAssistantPresets()
   const { collapsedTags, toggleTagCollapse } = useTags()
-  const { assistantsTabSortType = 'list', setAssistantsTabSortType } = useAssistantsTabSortType()
+  const { assistantsTabSortType, setAssistantsTabSortType } = useAssistantsTabSortType()
   const [dragging, setDragging] = useState(false)
   const savedTagsOrder = useAppSelector(selectTagsOrder)
 

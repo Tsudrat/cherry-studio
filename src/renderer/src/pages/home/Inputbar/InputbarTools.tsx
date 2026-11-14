@@ -124,7 +124,7 @@ const InputbarTools = ({ scope, assistant, model }: InputbarToolsNewProps) => {
         quickPanel,
         quickPanelController: quickPanelContext,
         t
-      } as ToolRenderContext<S, A>
+      }
     },
     [assistant, model, quickPanelContext, scope, t, toolsContext, getQuickPanelApiForTool]
   )

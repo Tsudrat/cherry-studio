@@ -40,11 +40,11 @@ import { isOpenAILLMModel } from '@renderer/config/models/openai'
 import { createPdfCompatibilityPlugin } from '../pdfCompatibilityPlugin'
 
 function makeProvider(id: string, type: ProviderType): Provider {
-  return { id, name: id, type, apiKey: 'test', apiHost: 'https://test.com', isSystem: false, models: [] } as Provider
+  return { id, name: id, type, apiKey: 'test', apiHost: 'https://test.com', isSystem: false, models: [] }
 }
 
 function makeModel(overrides: Partial<Model> = {}): Model {
-  return { id: 'test-model', provider: 'test', name: 'Test', group: 'test', ...overrides } as Model
+  return { id: 'test-model', provider: 'test', name: 'Test', group: 'test', ...overrides }
 }
 
 function makePdfFilePart(filename = 'test.pdf') {

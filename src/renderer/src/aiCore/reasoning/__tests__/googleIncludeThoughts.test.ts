@@ -10,7 +10,7 @@ import { isHostedGemma4ThinkingModel } from '@renderer/config/models'
 import { resolveGoogleIncludeThoughts } from '../googleIncludeThoughts'
 
 function model(id: string, provider = 'gemini'): Model {
-  return { id, name: id, provider, group: 'test' } as Model
+  return { id, name: id, provider, group: 'test' }
 }
 
 describe('resolveGoogleIncludeThoughts', () => {

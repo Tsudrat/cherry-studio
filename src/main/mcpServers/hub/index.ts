@@ -129,7 +129,7 @@ export class HubServer {
       try {
         switch (name) {
           case 'list':
-            return await this.handleList(args as unknown as ListInput)
+            return await this.handleList(args)
           case 'inspect':
             return await this.handleInspect(args as unknown as InspectInput)
           case 'invoke':

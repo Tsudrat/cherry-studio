@@ -137,8 +137,8 @@ describe('BackupManager.copyDirWithProgress - Symlink Handling', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     backupManager = new BackupManager()
-    vi.mocked(fs.ensureDir).mockResolvedValue(undefined as never)
-    vi.mocked(fs.copy).mockResolvedValue(undefined as never)
+    vi.mocked(fs.ensureDir).mockResolvedValue(undefined)
+    vi.mocked(fs.copy).mockResolvedValue(undefined)
     vi.mocked(fs.realpath).mockImplementation(async (entryPath) => String(entryPath) as never)
   })
 
@@ -355,7 +355,7 @@ describe('BackupManager.deleteLanTransferBackup - Security Tests', () => {
   describe('Normal Operations', () => {
     it('should delete valid file in allowed directory', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(true as never)
-      vi.mocked(fs.remove).mockResolvedValue(undefined as never)
+      vi.mocked(fs.remove).mockResolvedValue(undefined)
 
       const validPath = '/tmp/cherry-studio/lan-transfer/backup.zip'
       const result = await backupManager.deleteLanTransferBackup({} as Electron.IpcMainInvokeEvent, validPath)
@@ -367,7 +367,7 @@ describe('BackupManager.deleteLanTransferBackup - Security Tests', () => {
 
     it('should delete file in nested subdirectory', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(true as never)
-      vi.mocked(fs.remove).mockResolvedValue(undefined as never)
+      vi.mocked(fs.remove).mockResolvedValue(undefined)
 
       const nestedPath = '/tmp/cherry-studio/lan-transfer/sub/dir/file.zip'
       const result = await backupManager.deleteLanTransferBackup({} as Electron.IpcMainInvokeEvent, nestedPath)
@@ -462,7 +462,7 @@ describe('BackupManager.deleteLanTransferBackup - Security Tests', () => {
   describe('Error Handling', () => {
     it('should return false and log error on permission denied', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(true as never)
-      vi.mocked(fs.remove).mockRejectedValue(new Error('EACCES: permission denied') as never)
+      vi.mocked(fs.remove).mockRejectedValue(new Error('EACCES: permission denied'))
 
       const validPath = '/tmp/cherry-studio/lan-transfer/file.zip'
       const result = await backupManager.deleteLanTransferBackup({} as Electron.IpcMainInvokeEvent, validPath)
@@ -472,7 +472,7 @@ describe('BackupManager.deleteLanTransferBackup - Security Tests', () => {
     })
 
     it('should return false on fs.pathExists error', async () => {
-      vi.mocked(fs.pathExists).mockRejectedValue(new Error('ENOENT') as never)
+      vi.mocked(fs.pathExists).mockRejectedValue(new Error('ENOENT'))
 
       const validPath = '/tmp/cherry-studio/lan-transfer/file.zip'
       const result = await backupManager.deleteLanTransferBackup({} as Electron.IpcMainInvokeEvent, validPath)
@@ -492,7 +492,7 @@ describe('BackupManager.deleteLanTransferBackup - Security Tests', () => {
   describe('Edge Cases', () => {
     it('should allow deletion of the temp directory itself', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(true as never)
-      vi.mocked(fs.remove).mockResolvedValue(undefined as never)
+      vi.mocked(fs.remove).mockResolvedValue(undefined)
 
       const tempDir = '/tmp/cherry-studio/lan-transfer'
       const result = await backupManager.deleteLanTransferBackup({} as Electron.IpcMainInvokeEvent, tempDir)
@@ -503,7 +503,7 @@ describe('BackupManager.deleteLanTransferBackup - Security Tests', () => {
 
     it('should handle path with trailing slash', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(true as never)
-      vi.mocked(fs.remove).mockResolvedValue(undefined as never)
+      vi.mocked(fs.remove).mockResolvedValue(undefined)
 
       const pathWithSlash = '/tmp/cherry-studio/lan-transfer/sub/'
       const result = await backupManager.deleteLanTransferBackup({} as Electron.IpcMainInvokeEvent, pathWithSlash)
@@ -514,7 +514,7 @@ describe('BackupManager.deleteLanTransferBackup - Security Tests', () => {
 
     it('should handle file with special characters in name', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(true as never)
-      vi.mocked(fs.remove).mockResolvedValue(undefined as never)
+      vi.mocked(fs.remove).mockResolvedValue(undefined)
 
       const specialPath = '/tmp/cherry-studio/lan-transfer/file with spaces & (special).zip'
       const result = await backupManager.deleteLanTransferBackup({} as Electron.IpcMainInvokeEvent, specialPath)
@@ -525,7 +525,7 @@ describe('BackupManager.deleteLanTransferBackup - Security Tests', () => {
 
     it('should handle path with double slashes', async () => {
       vi.mocked(fs.pathExists).mockResolvedValue(true as never)
-      vi.mocked(fs.remove).mockResolvedValue(undefined as never)
+      vi.mocked(fs.remove).mockResolvedValue(undefined)
 
       const doubleSlashPath = '/tmp/cherry-studio//lan-transfer//file.zip'
       const result = await backupManager.deleteLanTransferBackup({} as Electron.IpcMainInvokeEvent, doubleSlashPath)

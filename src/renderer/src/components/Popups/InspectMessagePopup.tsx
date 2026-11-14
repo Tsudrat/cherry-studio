@@ -49,9 +49,9 @@ const InspectMessagePopupContainer: React.FC<Props> = ({ title, message, blocks,
       width={'80vw'}
       transitionName="animation-move-down"
       centered>
-      <div className="mb-2 font-bold text-xl">Message</div>
+      <div className="mb-2 text-xl font-bold">Message</div>
       <CodeEditor language="json" value={JSON.stringify(message, null, 2)} editable={false} />
-      <div className="mb-2 font-bold text-xl">Blocks ({blocks.length})</div>
+      <div className="mb-2 text-xl font-bold">Blocks ({blocks.length})</div>
       <CodeEditor language="json" value={JSON.stringify(blocks, null, 2)} editable={false} />
     </Modal>
   )

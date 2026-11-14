@@ -139,7 +139,7 @@ const SelectModelPopupView: React.FC<Props> = ({
               <span className="min-w-0 truncate">{model.name}</span>
               {showIdentifier && model.id !== model.name && (
                 <span
-                  className="min-w-0 max-w-[45%] shrink truncate font-mono text-[12px] text-[var(--color-text-3)]"
+                  className="max-w-[45%] min-w-0 shrink truncate font-mono text-[12px] text-[var(--color-text-3)]"
                   title={model.id}>
                   {model.id}
                 </span>

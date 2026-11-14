@@ -524,7 +524,7 @@ const turndownService = new TurndownService({
   emDelimiter: '*', // Use * for emphasis
   strongDelimiter: '**', // Use ** for strong
   blankReplacement: (_content, node) => {
-    const el = node as any as HTMLElement
+    const el = node
     if (el.nodeName === 'DIV' && el.getAttribute?.('data-type') === 'block-math') {
       const latex = el.getAttribute?.('data-latex') || ''
       const decodedLatex = he.decode(latex, {
@@ -760,7 +760,7 @@ const taskListItemsPlugin: TurndownPlugin = (turndownService) => {
       return node.nodeName === 'LI' && node.getAttribute && node.getAttribute('data-type') === 'taskItem'
     },
     replacement: (_content: string, node: Element) => {
-      const checkbox = node.querySelector('input[type="checkbox"]') as HTMLInputElement | null
+      const checkbox = node.querySelector<HTMLInputElement>('input[type="checkbox"]')
       const isChecked = checkbox?.checked || node.getAttribute('data-checked') === 'true'
 
       // Check if this task item uses the div format

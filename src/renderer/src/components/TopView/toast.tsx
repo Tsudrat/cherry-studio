@@ -74,7 +74,7 @@ const ToastContent: React.FC<{ title?: React.ReactNode; description?: React.Reac
 const createToast = (color: ToastColor) => {
   return (arg: ToastConfig | string): string | null => {
     const api = getMessageApi()
-    const type = colorToType(color) as 'error' | 'success' | 'warning' | 'info'
+    const type = colorToType(color)
 
     if (typeof arg === 'string') {
       // antd message methods return a function to close the message

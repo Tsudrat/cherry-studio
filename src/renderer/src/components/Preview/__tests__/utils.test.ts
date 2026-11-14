@@ -42,7 +42,7 @@ describe('renderSvgInShadowHost', () => {
         configurable: true
       })
 
-      return shadowRootContainer as unknown as ShadowRoot
+      return shadowRootContainer
     })
   })
 

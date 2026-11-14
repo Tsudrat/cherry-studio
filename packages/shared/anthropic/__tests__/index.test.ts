@@ -34,7 +34,7 @@ function makeProvider(overrides: Partial<Provider> = {}): Provider {
     models: [],
     enabled: true,
     ...overrides
-  } as Provider
+  }
 }
 
 describe('getSdkClient', () => {

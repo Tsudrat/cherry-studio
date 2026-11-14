@@ -3,5 +3,5 @@ type Props = {
 }
 
 export const SectionName: React.FC<Props> = ({ name }) => {
-  return <div className="mb-2 text-gray-500 text-sm">{name}</div>
+  return <div className="mb-2 text-sm text-gray-500">{name}</div>
 }

@@ -162,7 +162,7 @@ export async function estimateMessagesUsage({
     prompt_tokens,
     completion_tokens,
     total_tokens: prompt_tokens + completion_tokens
-  } as Usage
+  }
 }
 
 export async function estimateHistoryTokens(assistant: Assistant, msgs: Message[]) {

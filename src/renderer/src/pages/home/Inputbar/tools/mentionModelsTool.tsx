@@ -1,5 +1,4 @@
 import { defineTool, registerTool, TopicType } from '@renderer/pages/home/Inputbar/types'
-import type React from 'react'
 
 import MentionModelsButton from './components/MentionModelsButton'
 import MentionModelsQuickPanelManager from './components/MentionModelsQuickPanelManager'
@@ -33,7 +32,7 @@ const mentionModelsTool = defineTool({
         setMentionedModels={setMentionedModels}
         couldMentionNotVisionModel={couldMentionNotVisionModel}
         files={files}
-        setText={onTextChange as React.Dispatch<React.SetStateAction<string>>}
+        setText={onTextChange}
       />
     )
   },

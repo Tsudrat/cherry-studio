@@ -112,7 +112,7 @@ const MessageHeader: FC<Props> = memo(({ assistant, model, message, topic, isGro
               </Tooltip>
             )}
           </HStack>
-          <InfoWrap className="message-header-info-wrap text-(--color-text-3) text-[10px]">
+          <InfoWrap className="message-header-info-wrap text-[10px] text-(--color-text-3)">
             <MessageTime>{dayjs(message?.updatedAt ?? message.createdAt).format('MM/DD HH:mm')}</MessageTime>
           </InfoWrap>
         </UserWrap>

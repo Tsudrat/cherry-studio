@@ -8,7 +8,6 @@ import { useSettings } from '@renderer/hooks/useSettings'
 import { startAutoSync, stopAutoSync } from '@renderer/services/BackupService'
 import { useAppDispatch, useAppSelector } from '@renderer/store'
 import { setS3Partial } from '@renderer/store/settings'
-import type { S3Config } from '@renderer/types'
 import { Button, Input, Switch, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 import type { FC } from 'react'
@@ -18,18 +17,18 @@ import { useTranslation } from 'react-i18next'
 import { SettingDivider, SettingGroup, SettingHelpText, SettingRow, SettingRowTitle, SettingTitle } from '..'
 
 const S3Settings: FC = () => {
-  const { s3 = {} as S3Config } = useSettings()
+  const { s3 } = useSettings()
 
   const {
-    endpoint: s3EndpointInit = '',
-    region: s3RegionInit = '',
-    bucket: s3BucketInit = '',
-    accessKeyId: s3AccessKeyIdInit = '',
-    secretAccessKey: s3SecretAccessKeyInit = '',
+    endpoint: s3EndpointInit,
+    region: s3RegionInit,
+    bucket: s3BucketInit,
+    accessKeyId: s3AccessKeyIdInit,
+    secretAccessKey: s3SecretAccessKeyInit,
     root: s3RootInit = '',
-    syncInterval: s3SyncIntervalInit = 0,
-    maxBackups: s3MaxBackupsInit = 5,
-    skipBackupFile: s3SkipBackupFileInit = false
+    syncInterval: s3SyncIntervalInit,
+    maxBackups: s3MaxBackupsInit,
+    skipBackupFile: s3SkipBackupFileInit
   } = s3
 
   const [endpoint, setEndpoint] = useState<string | undefined>(s3EndpointInit)

@@ -33,8 +33,8 @@ export const OGCard = ({ link, show }: Props) => {
 
   const GeneratedGraph = useCallback(() => {
     return (
-      <div className="flex h-48 items-center justify-center bg-accent p-4">
-        <h2 className="font-bold text-2xl">{metadata['og:title'] || hostname}</h2>
+      <div className="bg-accent flex h-48 items-center justify-center p-4">
+        <h2 className="text-2xl font-bold">{metadata['og:title'] || hostname}</h2>
       </div>
     )
   }, [hostname, metadata])
@@ -46,7 +46,7 @@ export const OGCard = ({ link, show }: Props) => {
   return (
     <Container>
       {hasImage && (
-        <div className="flex overflow:hidden h-48 min-h-48 items-center justify-center">
+        <div className="overflow:hidden flex h-48 min-h-48 items-center justify-center">
           <img src={metadata['og:image']} alt={metadata['og:imageAlt'] || link} className="max-h-full object-contain" />
         </div>
       )}
@@ -56,13 +56,13 @@ export const OGCard = ({ link, show }: Props) => {
         <div className="mb-2 flex items-center gap-2">
           {hostname && <Favicon hostname={hostname} alt={link} />}
           <MarqueeText>
-            <span className="m-0 font-black text-sm leading-tight">{metadata['og:title'] || hostname}</span>
+            <span className="m-0 text-sm leading-tight font-black">{metadata['og:title'] || hostname}</span>
           </MarqueeText>
         </div>
 
         <div
           title={metadata['og:description'] || link}
-          className="line-clamp-3 text-(--color-text-secondary) text-xs leading-tight">
+          className="line-clamp-3 text-xs leading-tight text-(--color-text-secondary)">
           {metadata['og:description'] || link}
         </div>
       </div>

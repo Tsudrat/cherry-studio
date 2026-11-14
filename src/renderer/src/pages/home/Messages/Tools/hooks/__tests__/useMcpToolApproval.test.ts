@@ -107,7 +107,7 @@ function makeServer(overrides: Partial<MCPServer> = {}): MCPServer {
     isActive: true,
     command: 'test',
     ...overrides
-  } as MCPServer
+  }
 }
 
 function makeBlock(toolResponse?: Partial<MCPToolResponse>): ToolMessageBlock {
@@ -126,7 +126,7 @@ function makeBlock(toolResponse?: Partial<MCPToolResponse>): ToolMessageBlock {
             arguments: undefined,
             status: 'pending',
             ...toolResponse
-          } as MCPToolResponse
+          }
         }
       : undefined
   }
