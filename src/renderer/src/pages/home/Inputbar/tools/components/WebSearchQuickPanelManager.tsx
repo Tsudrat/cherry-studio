@@ -3,7 +3,9 @@ import { loggerService } from '@logger'
 import {
   BingLogo,
   BochaLogo,
+  DeepseekLogo,
   ExaLogo,
+  JinaLogo,
   QueritLogo,
   SearXNGLogo,
   TavilyLogo,
@@ -56,6 +58,10 @@ export const WebSearchProviderIcon = ({
       return <SearXNGLogo className="icon" width={size} height={size} color={color} />
     case 'querit':
       return <QueritLogo className="icon" width={size} height={size} color={color} />
+    case 'deepseek':
+      return <DeepseekLogo className="icon" width={size} height={size} color={color} />
+    case 'jina':
+      return <JinaLogo className="icon" width={size} height={size} color={color} />
     case 'local-baidu':
       return <BaiduOutlined size={size} style={{ color, fontSize: size }} />
     case 'local-bing':
