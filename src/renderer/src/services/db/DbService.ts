@@ -153,16 +153,6 @@ class DbService implements MessageDataSource {
     // File operations only apply to Dexie source
     return this.dexieSource.updateFileCounts(files)
   }
-
-  // ============ Utility Methods ============
-
-  /**
-   * Get the data source type for a topic
-   */
-  getSourceType(_topicId: string): 'dexie' | 'unknown' {
-    // Add more checks for other source types as needed
-    return 'dexie'
-  }
 }
 
 // Export singleton instance
