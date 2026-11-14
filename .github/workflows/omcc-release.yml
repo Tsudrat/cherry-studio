@@ -127,7 +127,7 @@ jobs:
           ls -lh release-assets
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: omcc-${{ matrix.os }}
           path: release-assets/*
@@ -139,7 +139,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: omcc-*
           path: release-assets
@@ -149,7 +149,7 @@ jobs:
         run: ls -lh release-assets
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.meta.outputs.tag }}
           name: Oh My Classic Cherry ${{ needs.meta.outputs.version }}
