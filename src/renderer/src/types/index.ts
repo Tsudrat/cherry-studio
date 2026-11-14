@@ -713,15 +713,7 @@ export const isAutoDetectionMethod = (method: string): method is AutoDetectionMe
   return Object.hasOwn(AutoDetectionMethods, method)
 }
 
-export type SidebarIcon =
-  | 'assistants'
-  | 'agents'
-  | 'paintings'
-  | 'translate'
-  | 'knowledge'
-  | 'files'
-  | 'notes'
-  | 'openclaw'
+export type SidebarIcon = 'assistants' | 'agents' | 'paintings' | 'translate' | 'knowledge' | 'files' | 'notes'
 
 export type ExternalToolResult = {
   mcpTools?: MCPTool[]

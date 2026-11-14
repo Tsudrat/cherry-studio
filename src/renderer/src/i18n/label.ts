@@ -153,7 +153,6 @@ const titleKeyMap = {
   paintings: 'title.paintings',
   settings: 'title.settings',
   translate: 'title.translate',
-  openclaw: 'openclaw.title',
   agents: 'agent.sidebar_title'
 } as const
 
@@ -189,8 +188,7 @@ const sidebarIconKeyMap = {
   translate: 'translate.title',
   knowledge: 'knowledge.title',
   files: 'files.title',
-  notes: 'notes.title',
-  openclaw: 'openclaw.title'
+  notes: 'notes.title'
 } as const
 
 export const getSidebarIconLabel = (key: string): string => {

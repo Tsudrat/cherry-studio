@@ -11,21 +11,7 @@ import { app } from 'electron'
 const logger = loggerService.withContext('MCPServer:Assistant')
 
 // Allowed route prefixes to prevent arbitrary navigation
-const ALLOWED_ROUTES = [
-  '/settings/',
-  '/agents',
-  '/knowledge',
-  '/openclaw',
-  '/paintings',
-  '/translate',
-  '/files',
-  '/notes',
-  '/apps',
-  '/code',
-  '/store',
-  '/launchpad',
-  '/'
-]
+const ALLOWED_ROUTES = ['/settings/', '/knowledge', '/paintings', '/translate', '/files', '/notes', '/launchpad', '/']
 
 const NAVIGATE_TOOL: Tool = {
   name: 'navigate',

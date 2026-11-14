@@ -33,7 +33,6 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { OpenClawIcon } from '../Icons/SVGIcon'
 import WindowControls from '../WindowControls'
 
 interface TabsContainerProps {
@@ -59,8 +58,6 @@ const getTabIcon = (tabId: string): React.ReactNode | undefined => {
       return <Folder size={14} />
     case 'settings':
       return <Settings size={14} />
-    case 'openclaw':
-      return <OpenClawIcon style={{ width: 14, height: 14 }} />
     default:
       return null
   }

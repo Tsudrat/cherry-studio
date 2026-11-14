@@ -1,11 +1,5 @@
 import type { ProcessingStatus } from '@types'
 
-// =============================================================================
-// OpenClaw IPC Types
-// =============================================================================
-
-export type OperationResult = { success: true } | { success: false; message: string }
-
 export type LoaderReturn = {
   entriesAdded: number
   uniqueId: string
