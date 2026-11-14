@@ -1,5 +1,3 @@
-import { useAppSelector } from '@renderer/store'
-import { selectPendingPermission } from '@renderer/store/toolPermissions'
 import type { NormalToolResponse } from '@renderer/types'
 import type { CollapseProps } from 'antd'
 import { Collapse } from 'antd'
@@ -12,8 +10,6 @@ import styled from 'styled-components'
 export * from './types'
 
 // 导入所有渲染器
-import { AskUserQuestionCard } from '../AskUserQuestionCard'
-import ToolPermissionRequestCard from '../ToolPermissionRequestCard'
 import { BashOutputTool } from './BashOutputTool'
 import { BashTool, PowerShellTool } from './BashTool'
 import { EditTool } from './EditTool'
@@ -202,10 +198,6 @@ const ExpandIconContainer = styled.div<{ $isActive?: boolean }>`
 export function MessageAgentTools({ toolResponse }: { toolResponse: NormalToolResponse }) {
   const { arguments: args, response, tool, status, partialArguments } = toolResponse
 
-  const pendingPermission = useAppSelector((state) =>
-    selectPendingPermission(state.toolPermissions, toolResponse.toolCallId)
-  )
-
   const parsedPartialArgs = useMemo(() => {
     if (!partialArguments) return undefined
     try {
@@ -220,26 +212,7 @@ export function MessageAgentTools({ toolResponse }: { toolResponse: NormalToolRe
     return <NavigateToolInline input={args ?? parsedPartialArgs} output={response} />
   }
 
-  // AskUserQuestion uses a unified card for both pending and completed states
-  if (tool?.name === AgentToolsType.AskUserQuestion) {
-    const isLoading = status === 'streaming' || status === 'invoking'
-    return (
-      <StreamingContext value={isLoading}>
-        <AskUserQuestionCard toolResponse={toolResponse} />
-      </StreamingContext>
-    )
-  }
-
-  // TodoWrite tools are always shown in PinnedTodoPanel, never in message stream
-  if (tool?.name === AgentToolsType.TodoWrite) {
-    return null
-  }
-
-  const effectiveStatus = getEffectiveStatus(status, !!pendingPermission)
-
-  if (effectiveStatus === 'waiting') {
-    return <ToolPermissionRequestCard toolResponse={toolResponse} />
-  }
+  const effectiveStatus = getEffectiveStatus(status, false)
 
   const isLoading = effectiveStatus === 'streaming' || effectiveStatus === 'invoking'
   return (

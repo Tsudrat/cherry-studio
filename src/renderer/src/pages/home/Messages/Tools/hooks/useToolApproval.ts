@@ -1,6 +1,5 @@
 import type { ToolMessageBlock } from '@renderer/types/newMessage'
 
-import { useAgentToolApproval } from './useAgentToolApproval'
 import { useMcpToolApproval } from './useMcpToolApproval'
 
 /**
@@ -11,9 +10,9 @@ export interface ToolApprovalState {
   isWaiting: boolean
   /** Whether the tool is currently executing after approval */
   isExecuting: boolean
-  /** Whether a submission is in progress (Agent only) */
+  /** Whether a submission is in progress */
   isSubmitting: boolean
-  /** Tool input from permission request (Agent only) */
+  /** Tool input from permission request */
   input?: Record<string, unknown>
 }
 
@@ -31,11 +30,11 @@ export interface ToolApprovalActions {
 
 export interface UseToolApprovalOptions {
   /** Force a specific approval type */
-  forceType?: 'mcp' | 'agent'
+  forceType?: 'mcp'
 }
 
 /**
- * Unified hook for tool approval - automatically selects between MCP and Agent approval
+ * Unified hook for tool approval - selects MCP approval
  * based on the tool type in the block metadata.
  *
  * @param block - The tool message block
@@ -44,28 +43,16 @@ export interface UseToolApprovalOptions {
  */
 export function useToolApproval(
   block: ToolMessageBlock,
-  options: UseToolApprovalOptions = {}
+  _options: UseToolApprovalOptions = {}
 ): ToolApprovalState & ToolApprovalActions {
-  const { forceType } = options
-
-  const toolResponse = block.metadata?.rawMcpToolResponse
-  const tool = toolResponse?.tool
-
-  const isMcpTool =
-    forceType === 'mcp' ||
-    (forceType !== 'agent' && (tool?.type === 'mcp' || tool?.type === 'builtin' || tool?.type === 'provider'))
-  const mcpApproval = useMcpToolApproval(block)
-  const agentApproval = useAgentToolApproval(block)
-
-  return isMcpTool ? mcpApproval : agentApproval
+  return useMcpToolApproval(block)
 }
 
 /**
- * Determine if a block needs approval (either MCP or Agent)
+ * Determine if a block needs approval
  */
 export function isBlockWaitingApproval(block: ToolMessageBlock): boolean {
   return block.metadata?.rawMcpToolResponse?.status === 'pending'
 }
 
-export { useAgentToolApproval, type UseAgentToolApprovalOptions } from './useAgentToolApproval'
 export { useMcpToolApproval } from './useMcpToolApproval'
