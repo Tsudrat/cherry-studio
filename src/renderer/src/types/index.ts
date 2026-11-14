@@ -730,6 +730,7 @@ export const WebSearchProviderIds = {
   bocha: 'bocha',
   querit: 'querit',
   deepseek: 'deepseek',
+  jina: 'jina',
   'local-google': 'local-google',
   'local-bing': 'local-bing',
   'local-baidu': 'local-baidu'

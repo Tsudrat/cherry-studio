@@ -6,6 +6,7 @@ import DeepSeekProvider from './DeepSeekProvider'
 import DefaultProvider from './DefaultProvider'
 import ExaMcpProvider from './ExaMcpProvider'
 import ExaProvider from './ExaProvider'
+import JinaProvider from './JinaProvider'
 import LocalBaiduProvider from './LocalBaiduProvider'
 import LocalBingProvider from './LocalBingProvider'
 import LocalGoogleProvider from './LocalGoogleProvider'
@@ -33,6 +34,8 @@ export default class WebSearchProviderFactory {
         return new QueritProvider(provider)
       case 'deepseek':
         return new DeepSeekProvider(provider)
+      case 'jina':
+        return new JinaProvider(provider)
       case 'local-google':
         return new LocalGoogleProvider(provider)
       case 'local-baidu':

@@ -68,6 +68,12 @@ export const WEB_SEARCH_PROVIDER_CONFIG: Record<WebSearchProviderId, WebSearchPr
       official: 'https://api-docs.deepseek.com/guides/search',
       apiKey: 'https://platform.deepseek.com/api_keys'
     }
+  },
+  jina: {
+    websites: {
+      official: 'https://jina.ai/reader',
+      apiKey: 'https://jina.ai/api-dashboard/key-manager'
+    }
   }
 }
 
@@ -133,6 +139,12 @@ export const WEB_SEARCH_PROVIDERS: WebSearchProvider[] = [
     id: 'deepseek',
     name: 'DeepSeek',
     apiHost: 'https://api.deepseek.com/v1/tools/search',
+    apiKey: ''
+  },
+  {
+    id: 'jina',
+    name: 'Jina',
+    apiHost: 'https://s.jina.ai',
     apiKey: ''
   }
 ] as const
