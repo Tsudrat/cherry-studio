@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.6.7/schema.json",
   "assist": {
     // to sort json
     "actions": {
@@ -46,7 +46,7 @@
       "!*.yml",
       "!*.mjs",
       "!*.cjs",
-      "!*.md",
+      "!**/*.md",
       "!src/main/integration/**",
       "!**/tailwind.css"
     ],
@@ -83,17 +83,15 @@
     "rules": {
       "nursery": {
         // to sort tailwind css classes
-        "useSortedClasses": {
+        "useTailwindSortedClasses": {
           "fix": "safe",
-          "level": "warn",
-          "options": {
-            "functions": ["cn"]
-          }
+          "level": "warn"
         }
       },
-      "recommended": false,
+      "preset": "none",
       "suspicious": "off"
     }
   },
-  "vcs": { "clientKind": "git", "enabled": false, "useIgnoreFile": false }
+  "vcs": { "clientKind": "git", "enabled": false, "useIgnoreFile": false },
+  "tailwind": { "mergeFunctions": ["cn"] }
 }
