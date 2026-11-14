@@ -312,7 +312,7 @@ function getMenuItems({
       onClick: async () => {
         const preset = omit(assistant, ['model'])
         preset.id = uuid()
-        preset.type = 'agent'
+        preset.type = 'assistant'
         addPreset(preset)
         window.toast.success(t('assistants.save.success'))
       }
