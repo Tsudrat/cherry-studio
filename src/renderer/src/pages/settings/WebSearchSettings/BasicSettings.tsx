@@ -1,3 +1,4 @@
+import DeepseekLogo from '@renderer/assets/images/providers/deepseek.png'
 import BaiduLogo from '@renderer/assets/images/search/baidu.svg'
 import BingLogo from '@renderer/assets/images/search/bing.svg'
 import BochaLogo from '@renderer/assets/images/search/bocha.webp'
@@ -42,6 +43,8 @@ const getProviderLogo = (providerId: WebSearchProviderId): string | undefined =>
       return BochaLogo
     case 'querit':
       return QueritLogo
+    case 'deepseek':
+      return DeepseekLogo
     case 'local-google':
       return GoogleLogo
     case 'local-bing':
