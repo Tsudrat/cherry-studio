@@ -1,7 +1,6 @@
 import { CloseOutlined } from '@ant-design/icons'
 import type { DraggableProvided, DroppableProvided, DropResult } from '@hello-pangea/dnd'
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
-import { OpenClawSidebarIcon } from '@renderer/components/Icons/SVGIcon'
 import { getSidebarIconLabel } from '@renderer/i18n/label'
 import { useAppDispatch } from '@renderer/store'
 import { setSidebarIcons } from '@renderer/store/settings'
@@ -120,8 +119,7 @@ const SidebarIconsManager: FC<SidebarIconsManagerProps> = ({
         translate: <Languages size={16} />,
         knowledge: <FileSearch size={16} />,
         files: <Folder size={16} />,
-        notes: <NotepadText size={16} />,
-        openclaw: <OpenClawSidebarIcon style={{ width: 16, height: 16 }} />
+        notes: <NotepadText size={16} />
       }) satisfies Record<SidebarIcon, ReactNode>,
     []
   )

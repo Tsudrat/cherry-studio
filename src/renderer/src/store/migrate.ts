@@ -3198,8 +3198,12 @@ const migrateConfig = {
     try {
       if (state.settings && state.settings.sidebarIcons) {
         // Add 'openclaw' to visible icons if not already present
-        if (!state.settings.sidebarIcons.visible.includes('openclaw')) {
-          state.settings.sidebarIcons.visible = [...state.settings.sidebarIcons.visible, 'openclaw']
+        const visibleIcons = state.settings.sidebarIcons.visible as string[]
+        if (!visibleIcons.includes('openclaw')) {
+          state.settings.sidebarIcons.visible = [
+            ...visibleIcons,
+            'openclaw'
+          ] as typeof state.settings.sidebarIcons.visible
         }
       }
       logger.info('migrate 195 success')
@@ -3226,8 +3230,9 @@ const migrateConfig = {
   },
   '197': (state: RootState) => {
     try {
-      if (state.openclaw?.gatewayPort === 18789) {
-        state.openclaw.gatewayPort = 18790
+      const legacyOpenclaw = (state as Record<string, unknown>).openclaw as { gatewayPort?: number } | undefined
+      if (legacyOpenclaw?.gatewayPort === 18789) {
+        legacyOpenclaw.gatewayPort = 18790
       }
       logger.info('migrate 197 success')
       return state
@@ -3522,6 +3527,18 @@ const migrateConfig = {
       return state
     } catch (error) {
       logger.error('migrate 212 error', error as Error)
+      return state
+    }
+  },
+  '213': (state: RootState) => {
+    try {
+      // my-classic-cherry: OpenClaw feature removed; drop its persisted slice.
+      delete (state as Record<string, unknown>).openclaw
+
+      logger.info('migrate 213 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 213 error', error as Error)
       return state
     }
   }
