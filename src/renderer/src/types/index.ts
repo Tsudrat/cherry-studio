@@ -16,7 +16,6 @@ import type { MCPConfigSample, MCPServerInstallSource, McpServerType } from './m
 import type { Message } from './newMessage'
 import type { BaseTool, MCPTool } from './tool'
 
-export * from './agent'
 export * from './apiModels'
 export * from './apiServer'
 export * from './knowledge'
@@ -26,7 +25,6 @@ export * from './ocr'
 export * from './plugin'
 export * from './provider'
 export * from './serialize'
-export * from './skill'
 
 export type McpMode = 'disabled' | 'auto' | 'manual'
 
@@ -713,7 +711,7 @@ export const isAutoDetectionMethod = (method: string): method is AutoDetectionMe
   return Object.hasOwn(AutoDetectionMethods, method)
 }
 
-export type SidebarIcon = 'assistants' | 'agents' | 'paintings' | 'translate' | 'knowledge' | 'files' | 'notes'
+export type SidebarIcon = 'assistants' | 'paintings' | 'translate' | 'knowledge' | 'files' | 'notes'
 
 export type ExternalToolResult = {
   mcpTools?: MCPTool[]

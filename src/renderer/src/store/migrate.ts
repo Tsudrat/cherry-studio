@@ -54,7 +54,7 @@ import { isEmpty } from 'lodash'
 import { createMigrate } from 'redux-persist'
 
 import type { RootState } from '.'
-import { DEFAULT_TOOL_ORDER, DEFAULT_TOOL_ORDER_BY_SCOPE } from './inputTools'
+import { DEFAULT_TOOL_ORDER } from './inputTools'
 import { initialState as llmInitialState, moveProvider } from './llm'
 import { mcpSlice } from './mcp'
 import { initialState as notesInitialState } from './note'
@@ -1520,11 +1520,10 @@ const migrateConfig = {
   '102': (state: RootState) => {
     try {
       state.settings.openAI = {
-        // @ts-expect-error it's a removed type. migrated on 177
         summaryText: 'off',
         serviceTier: 'auto',
         verbosity: 'medium'
-      }
+      } as unknown as typeof state.settings.openAI
 
       state.settings.codeExecution = {
         enabled: false,
@@ -1614,11 +1613,10 @@ const migrateConfig = {
       addMiniApp(state, 'google')
       if (!state.settings.openAI) {
         state.settings.openAI = {
-          // @ts-expect-error it's a removed type. migrated on 177
           summaryText: 'off',
           serviceTier: 'auto',
           verbosity: 'medium'
-        }
+        } as typeof state.settings.openAI
       }
       return state
     } catch (error) {
@@ -2263,10 +2261,10 @@ const migrateConfig = {
   '136': (state: RootState) => {
     try {
       state.settings.sidebarIcons.visible = [...new Set(state.settings.sidebarIcons.visible)].filter((icon) =>
-        DEFAULT_SIDEBAR_ICONS.includes(icon)
+        (DEFAULT_SIDEBAR_ICONS as string[]).includes(icon)
       )
       state.settings.sidebarIcons.disabled = [...new Set(state.settings.sidebarIcons.disabled)].filter((icon) =>
-        DEFAULT_SIDEBAR_ICONS.includes(icon)
+        (DEFAULT_SIDEBAR_ICONS as string[]).includes(icon)
       )
       return state
     } catch (error) {
@@ -2760,11 +2758,11 @@ const migrateConfig = {
       if (state.settings.sidebarIcons) {
         state.settings.sidebarIcons.visible = state.settings.sidebarIcons.visible.map(
           // legacy migration; 'store' icon removed in omcc, migrate 210 strips it
-          (icon) => (icon === 'agents' ? 'store' : icon) as typeof icon
-        )
-        state.settings.sidebarIcons.disabled = state.settings.sidebarIcons.disabled.map(
-          (icon) => (icon === 'agents' ? 'store' : icon) as typeof icon
-        )
+          (icon) => ((icon as string) === 'agents' ? 'store' : icon)
+        ) as typeof state.settings.sidebarIcons.visible
+        state.settings.sidebarIcons.disabled = state.settings.sidebarIcons.disabled.map((icon) =>
+          (icon as string) === 'agents' ? 'store' : icon
+        ) as typeof state.settings.sidebarIcons.disabled
       }
 
       // Migrate llm providers
@@ -2815,8 +2813,12 @@ const migrateConfig = {
   '173': (state: RootState) => {
     try {
       // Migrate toolOrder from global state to scope-based state
-      if (state.inputTools && !state.inputTools.sessionToolOrder) {
-        state.inputTools.sessionToolOrder = DEFAULT_TOOL_ORDER_BY_SCOPE.session
+      const legacyInputTools = state.inputTools as unknown as Record<string, unknown>
+      if (state.inputTools && !legacyInputTools.sessionToolOrder) {
+        legacyInputTools.sessionToolOrder = {
+          visible: ['create_session', 'permission_mode', 'slash_commands', 'attachment'],
+          hidden: []
+        }
       }
       return state
     } catch (error) {
@@ -2880,8 +2882,7 @@ const migrateConfig = {
   },
   '177': (state: RootState) => {
     try {
-      // @ts-expect-error it's a removed type
-      if (state.settings.openAI.summaryText === 'off') {
+      if ((state.settings.openAI.summaryText as string | undefined) === 'off') {
         state.settings.openAI.summaryText = 'auto'
       }
       logger.info('migrate 177 success')
@@ -3032,12 +3033,10 @@ const migrateConfig = {
       if (state.settings.apiServer) {
         state.settings.apiServer.host = API_SERVER_DEFAULTS.HOST
       }
-      // @ts-expect-error
-      if (state.settings.openAI.summaryText === 'undefined') {
+      if ((state.settings.openAI.summaryText as string | undefined) === 'undefined') {
         state.settings.openAI.summaryText = undefined
       }
-      // @ts-expect-error
-      if (state.settings.openAI.verbosity === 'undefined') {
+      if ((state.settings.openAI.verbosity as string | undefined) === 'undefined') {
         state.settings.openAI.verbosity = undefined
       }
       state.llm.providers.forEach((provider) => {
@@ -3327,17 +3326,14 @@ const migrateConfig = {
     try {
       if (state.settings && state.settings.sidebarIcons) {
         // Add 'agents' to visible icons if not already present
-        if (!state.settings.sidebarIcons.visible.includes('agents')) {
+        const visibleIcons = state.settings.sidebarIcons.visible as string[]
+        if (!visibleIcons.includes('agents')) {
           // Insert after 'assistants' if present, otherwise append
-          const assistantsIndex = state.settings.sidebarIcons.visible.indexOf('assistants')
+          const assistantsIndex = visibleIcons.indexOf('assistants')
           if (assistantsIndex !== -1) {
-            state.settings.sidebarIcons.visible = [
-              ...state.settings.sidebarIcons.visible.slice(0, assistantsIndex + 1),
-              'agents',
-              ...state.settings.sidebarIcons.visible.slice(assistantsIndex + 1)
-            ]
+            visibleIcons.splice(assistantsIndex + 1, 0, 'agents')
           } else {
-            state.settings.sidebarIcons.visible = [...state.settings.sidebarIcons.visible, 'agents']
+            visibleIcons.push('agents')
           }
         }
       }
@@ -3405,7 +3401,9 @@ const migrateConfig = {
   },
   '206': (state: RootState) => {
     try {
-      const { sessionToolOrder } = state.inputTools
+      const { sessionToolOrder } = state.inputTools as unknown as {
+        sessionToolOrder?: { visible: string[]; hidden: string[] }
+      }
       const permissionModeKey = 'permission_mode'
       if (
         sessionToolOrder &&
@@ -3532,8 +3530,40 @@ const migrateConfig = {
   },
   '213': (state: RootState) => {
     try {
-      // my-classic-cherry: OpenClaw feature removed; drop its persisted slice.
-      delete (state as Record<string, unknown>).openclaw
+      // my-classic-cherry: OpenClaw + Agents features removed; drop their
+      // persisted residues.
+      const legacy = state as Record<string, unknown>
+      delete legacy.openclaw
+      delete legacy.toolPermissions
+
+      // Strip removed sidebar icons (agents/openclaw could still linger for
+      // users who already migrated past 210).
+      const hidden = new Set<string>([...HIDDEN_SIDEBAR_ICONS, ...REMOVED_SIDEBAR_ICONS])
+      const sidebarIcons = state.settings.sidebarIcons as { visible: string[]; disabled: string[] }
+      if (sidebarIcons) {
+        sidebarIcons.visible = sidebarIcons.visible.filter((icon) => !hidden.has(icon))
+        sidebarIcons.disabled = sidebarIcons.disabled.filter((icon) => !hidden.has(icon))
+      }
+
+      // Drop agent entries from the legacy unified assistant/agent ordering.
+      const unifiedListOrder = state.assistants.unifiedListOrder as Array<{ type: string; id: string }> | undefined
+      if (Array.isArray(unifiedListOrder)) {
+        state.assistants.unifiedListOrder = unifiedListOrder.filter(
+          (entry) => entry.type !== 'agent'
+        ) as typeof state.assistants.unifiedListOrder
+      }
+
+      // Agent-session inputbar tools are gone; clean both orders.
+      const removedToolIds = new Set(['create_session', 'slash_commands', 'activity_directory', 'permission_mode'])
+      const inputTools = state.inputTools as unknown as {
+        toolOrder?: { visible?: string[]; hidden?: string[] }
+        sessionToolOrder?: { visible?: string[]; hidden?: string[] }
+      }
+      if (inputTools?.toolOrder) {
+        inputTools.toolOrder.visible = inputTools.toolOrder.visible?.filter((id) => !removedToolIds.has(id))
+        inputTools.toolOrder.hidden = inputTools.toolOrder.hidden?.filter((id) => !removedToolIds.has(id))
+      }
+      delete inputTools.sessionToolOrder
 
       logger.info('migrate 213 success')
       return state
