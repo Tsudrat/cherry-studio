@@ -2,6 +2,7 @@ import type { WebSearchProvider } from '@renderer/types'
 
 import type BaseWebSearchProvider from './BaseWebSearchProvider'
 import BochaProvider from './BochaProvider'
+import DeepSeekProvider from './DeepSeekProvider'
 import DefaultProvider from './DefaultProvider'
 import ExaMcpProvider from './ExaMcpProvider'
 import ExaProvider from './ExaProvider'
@@ -30,6 +31,8 @@ export default class WebSearchProviderFactory {
         return new ExaMcpProvider(provider)
       case 'querit':
         return new QueritProvider(provider)
+      case 'deepseek':
+        return new DeepSeekProvider(provider)
       case 'local-google':
         return new LocalGoogleProvider(provider)
       case 'local-baidu':

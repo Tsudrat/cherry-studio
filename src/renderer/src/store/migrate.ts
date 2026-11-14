@@ -3571,6 +3571,16 @@ const migrateConfig = {
       logger.error('migrate 213 error', error as Error)
       return state
     }
+  },
+  '214': (state: RootState) => {
+    try {
+      addWebSearchProvider(state, 'deepseek')
+      logger.info('migrate 214 success')
+      return state
+    } catch (error) {
+      logger.error('migrate 214 error', error as Error)
+      return state
+    }
   }
 }
 

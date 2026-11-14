@@ -729,6 +729,7 @@ export const WebSearchProviderIds = {
   'exa-mcp': 'exa-mcp',
   bocha: 'bocha',
   querit: 'querit',
+  deepseek: 'deepseek',
   'local-google': 'local-google',
   'local-bing': 'local-bing',
   'local-baidu': 'local-baidu'

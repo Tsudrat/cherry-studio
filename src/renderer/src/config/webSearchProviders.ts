@@ -62,6 +62,12 @@ export const WEB_SEARCH_PROVIDER_CONFIG: Record<WebSearchProviderId, WebSearchPr
       official: 'https://querit.ai',
       apiKey: 'https://www.querit.ai/en/dashboard/api-keys'
     }
+  },
+  deepseek: {
+    websites: {
+      official: 'https://api-docs.deepseek.com/guides/search',
+      apiKey: 'https://platform.deepseek.com/api_keys'
+    }
   }
 }
 
@@ -121,6 +127,12 @@ export const WEB_SEARCH_PROVIDERS: WebSearchProvider[] = [
     id: 'querit',
     name: 'Querit',
     apiHost: 'https://api.querit.ai',
+    apiKey: ''
+  },
+  {
+    id: 'deepseek',
+    name: 'DeepSeek',
+    apiHost: 'https://api.deepseek.com/v1/tools/search',
     apiKey: ''
   }
 ] as const
